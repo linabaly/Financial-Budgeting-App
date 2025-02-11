@@ -1,4 +1,4 @@
-# Finance Management App
+# Finance Budgeting App
 
 ## Table of Contents
 - [Project Overview](#project-overview)
