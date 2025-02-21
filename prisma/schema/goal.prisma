@@ -1,0 +1,12 @@
+model Gaol {
+    id              String          @id @default(uuid())
+    account         Account
+    account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    name            String
+    targetAmount    Decimal(10, 2)  @default(0)
+    currentSaved    Decimal(10, 2)  @default(now())
+    deadline        DateTime        @default(now())
+    createdAt       DateTime        @default(now())
+
+}
+
