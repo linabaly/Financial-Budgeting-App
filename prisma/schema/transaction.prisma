@@ -1,3 +1,8 @@
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 model Transaction {
   id         String          @id @default(uuid())
   postedAt   DateTime
