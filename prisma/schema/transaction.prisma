@@ -1,0 +1,11 @@
+model Transaction {
+  id         String          @id @default(uuid())
+  postedAt   DateTime
+  descriptor String
+  account    Account
+  currency   String          @default("USD")
+  amount     Decimal         @db.Decimal(10, 2)
+  type       TransactionType
+  category   Category
+  createdAt  DateTime        @default(now())
+}
