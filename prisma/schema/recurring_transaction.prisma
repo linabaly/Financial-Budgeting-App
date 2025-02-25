@@ -1,0 +1,23 @@
+enum Frequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  BIANNUALLY
+  ANNUALLY
+}
+
+model RecurringTransaction {
+  id          String          @id @default(uuid())
+  account     Account
+  amount      Decimal         @db.Decimal(10, 2)
+  category    Category
+  type        TransactionType
+  descriptor  String
+  frequency   Frequency
+  startDate   DateTime        @default(now())
+  endDate     DateTime
+  nextDueDate DateTime
+  createdAt   DateTime        @default(now())
+}
