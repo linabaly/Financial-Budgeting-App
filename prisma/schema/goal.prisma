@@ -2,7 +2,7 @@ model Goal {
     id              String          @id @default(uuid())
     account         Account
     name            String
-    targetAmount    Decimal         @default(0)
+    targetAmount    Decimal         @default(0) @db.Decimal(10, 2)
     currentSaved    Decimal         @default(now())
     deadline        DateTime        @default(now())
     createdAt       DateTime        @default(now())
