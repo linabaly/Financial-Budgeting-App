@@ -1,3 +1,14 @@
+enum Category {
+  FOOD
+  RENT
+  ENTERTAINMENT
+  UTILITIES
+  TRANSPORTATION
+  HEALTHCARE
+  OTHER
+  INCOME
+}
+
 model Budget {
   id         String   @id @default(uuid()) // UUID instead of auto-incrementing INT
   category   Category
