@@ -2,6 +2,7 @@
 # Configurations
 config.json
 .idea
+*.js
 
 # Logs
 logs
