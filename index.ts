@@ -4,7 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
-export let app: express.Application;
+export let ExpressApplication: express.Application;
+export let PrismaDBClient: PrismaClient;
 
 function setupExpressApplication(): express.Application {
   const expressApplication = express();
@@ -15,11 +16,15 @@ function setupExpressApplication(): express.Application {
   return expressApplication;
 }
 
-async function main() {
-  const prisma = new PrismaClient();
-  app = setupExpressApplication();
+function setupPrismaClient() {
+  return new PrismaClient();
+}
 
-  app.listen(process.env.WEB_SERVER_PORT || 3000, () => {
+async function main() {
+  ExpressApplication = setupExpressApplication();
+  PrismaDBClient = setupPrismaClient();
+
+  ExpressApplication.listen(process.env.WEB_SERVER_PORT || 3000, () => {
     console.info(
       `Server is now running on ${process.env.WEB_SERVER_BASE_URL || "https://localhost"}:${process.env.WEB_SERVER_PORT || 3000}`
     );
