@@ -1,11 +1,11 @@
 model Account {
-  id                   String                 @id @default(uuid()) // Using uuid() for unique indentification
-  email                String                 @unique // Create unique email for user authentication
-  password             String
-  name                 String // Users full name
-  createdAt            DateTime               @default(now()) // Date for account creation
-  Budget               Budget[]
-  Goal                 Goal[]
-  RecurringTransaction RecurringTransaction[]
-  Transaction          Transaction[]
+  id                    String                 @id @default(uuid()) // Using uuid() for unique indentification
+  email                 String                 @unique // Create unique email for user authentication
+  password              String
+  name                  String // Users full name
+  createdAt             DateTime               @default(now()) // Date for account creation
+  budgets               Budget[]
+  goals                 Goal[]
+  recurringTransactions RecurringTransaction[]
+  transactions          Transaction[]
 }
