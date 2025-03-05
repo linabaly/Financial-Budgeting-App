@@ -54,16 +54,35 @@ export default class AccountManager {
     return accountDetails;
   }
 
-  public static updateAccount();
-  public static async deleteAccount(account: AccountDetails) {
-    const { id, email } = account;
-    if (!id && !email) {
-      throw new Error(`Provide account ID or email.`);
+  // Update Account
+  public static async updateAccount(account: AccountDetails) {
+    const { id, username, email, name, password } = account;
+
+    // Make sure account id is provided 
+    if (!id) {
+      throw new Error(`Provide account ID.`);
     }
 
-    const accountDetails = await prisma.account.delete({ where: { id, email } });
-    if (!accountDetails) {
+    // Check if account exists
+    const existingAccount = await prisma.account.findUnique({ where: { id } });
+    if (!existingAccount) {
       throw new Error(`Account not found.`);
     }
+
+    // Prepare the data to update
+    const updateData: AccountDetails = {name, username, email, password};
+
+    // Hash password if changing password
+    if (password) {
+      updateData.password = await SecurityManager.hashPassword(password);
+    }
+
+    // Update account
+    return prisma.account.update({
+      where: { id },
+      data: updateData,
+    });
   }
+
+  public static deleteAccount();
 }
