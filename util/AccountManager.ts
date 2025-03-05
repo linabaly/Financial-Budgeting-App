@@ -43,20 +43,27 @@ export default class AccountManager {
   public static async getAccount(account: AccountDetails) {
     const { id, email } = account;
     if (!id && !email) {
-      throw new Error(
-        `Provide account ID or email.`
-      );
+      throw new Error(`Provide account ID or email.`);
     }
 
     const accountDetails = await prisma.account.findUnique({ where: { id, email } });
     if (!accountDetails) {
       throw new Error(`Account not found.`);
-    } 
+    }
 
     return accountDetails;
-
   }
 
   public static updateAccount();
-  public static deleteAccount();
+  public static async deleteAccount(account: AccountDetails) {
+    const { id, email } = account;
+    if (!id && !email) {
+      throw new Error(`Provide account ID or email.`);
+    }
+
+    const accountDetails = await prisma.account.delete({ where: { id, email } });
+    if (!accountDetails) {
+      throw new Error(`Account not found.`);
+    }
+  }
 }
