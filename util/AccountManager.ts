@@ -40,17 +40,21 @@ export default class AccountManager {
   }
 
   // Get Account
-  public static async getAccount(req: any, res: any) {
-    try {
-      const { id } = req.body;
-      const account = await prisma.account.findUnique({ where: { id } });
-      if (!account) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      res.status(200).json({ account });
-    } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+  public static async getAccount(account: AccountDetails) {
+    const { id, email } = account;
+    if (!id && !email) {
+      throw new Error(
+        `Provide account ID or email.`
+      );
     }
+
+    const accountDetails = await prisma.account.findUnique({ where: { id, email } });
+    if (!accountDetails) {
+      throw new Error(`Account not found.`);
+    } 
+
+    return accountDetails;
+
   }
 
   public static updateAccount();
