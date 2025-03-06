@@ -3,6 +3,7 @@
 config.json
 .idea
 .DS_Store
+finance-budgeting-app.iml
 
 # Logs
 logs
