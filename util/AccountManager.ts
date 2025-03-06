@@ -84,5 +84,26 @@ export default class AccountManager {
     });
   }
 
-  public static deleteAccount();
+  // delete account
+  public static async deleteAccount(accountId: string) {
+    if (!accountId) {
+      throw new Error('Provide account ID.');
+    }
+
+    // Check if account exists
+    const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
+    if (!existingAccount) {
+      throw new Error('Account not found.');
+    }
+
+    // Delete related data
+    await prisma.budget.deleteMany({ where: { accountId } });
+    await prisma.goal.deleteMany({ where: { accountId } });
+    await prisma.recurringTransactions.deleteMany({ where: {accountId } });
+    await prisma.transactions.deleteMany({ where: {accountId } });
+
+    // Delete the account
+    return prisma.account.de
+
+  };
 }
