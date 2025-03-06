@@ -103,7 +103,6 @@ export default class AccountManager {
     await prisma.transactions.deleteMany({ where: {accountId } });
 
     // Delete the account
-    return prisma.account.de
-
+    return prisma.account.delete({ where: {accountId } });
   };
 }
