@@ -1,7 +1,7 @@
 import { PrismaDBClient as prisma } from "../index";
 import SecurityManager from "./SecurityManager";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+// const JWT_SECRET = process.env.JWT_SECRET;
 
 export interface AccountDetails {
   id?: string;
@@ -58,7 +58,7 @@ export default class AccountManager {
   public static async updateAccount(account: AccountDetails) {
     const { id, username, email, name, password } = account;
 
-    // Make sure account id is provided 
+    // Make sure account id is provided
     if (!id) {
       throw new Error(`Provide account ID.`);
     }
@@ -70,7 +70,7 @@ export default class AccountManager {
     }
 
     // Prepare the data to update
-    const updateData: AccountDetails = {name, username, email, password};
+    const updateData: AccountDetails = { name, username, email, password };
 
     // Hash password if changing password
     if (password) {
@@ -87,22 +87,22 @@ export default class AccountManager {
   // delete account
   public static async deleteAccount(accountId: string) {
     if (!accountId) {
-      throw new Error('Provide account ID.');
+      throw new Error("Provide account ID.");
     }
 
     // Check if account exists
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
     if (!existingAccount) {
-      throw new Error('Account not found.');
+      throw new Error("Account not found.");
     }
 
     // Delete related data
     await prisma.budget.deleteMany({ where: { accountId } });
     await prisma.goal.deleteMany({ where: { accountId } });
-    await prisma.recurringTransactions.deleteMany({ where: {accountId } });
-    await prisma.transactions.deleteMany({ where: {accountId } });
+    await prisma.recurringTransaction.deleteMany({ where: { accountId } });
+    await prisma.transaction.deleteMany({ where: { accountId } });
 
     // Delete the account
-    return prisma.account.delete({ where: {accountId } });
-  };
+    return prisma.account.delete({ where: { id: accountId } });
+  }
 }
