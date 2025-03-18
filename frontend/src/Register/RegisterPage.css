@@ -1,0 +1,141 @@
+:root {
+    --default-font-family: -apple-system, Zain;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--default-font-family);
+  }
+  
+  .main-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgb(68,58,216);
+    background: linear-gradient(90deg, rgba(68,58,216,1) 0%, rgba(54,46,172,1) 97%);
+    z-index: -1;
+  }
+  
+  .rectangle {
+    position: absolute;
+    width: 550px;
+    height: 719px;
+    right: 10%;
+    background: rgba(239, 240, 248, 0.8);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .create-account {
+    margin-top: 60px;
+    margin-bottom: 20px;
+    color: #000000;
+    font-size: 38px;
+    font-weight: 400;
+    text-align: center;
+  }
+  
+  .form-register {
+    width: 400px;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .label {
+    color: #1e1e1e;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  .input {
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .register-button {
+    height: 48px;
+    margin-top: 10px;
+    background: #2c2c2c;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .register-button:hover {
+    background: #444;
+  }
+  
+  .login-container {
+    position: absolute;
+    bottom: 80px;
+    right: 80px;
+  }
+  
+  .login-button {
+    width: 120px;
+    height: 48px;
+    background: #2c2c2c;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .login-button:hover {
+    background: #444;
+  }
+  
+  .welcome-container {
+    position: absolute;
+    left: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .welcome-to {
+    color: #ffffff;
+    font-size: 80px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.2;
+  }
+  
+  .finovators {
+    color: #ffffff;
+    font-size: 80px;
+    font-weight: 500;
+    margin: 0;
+  }
