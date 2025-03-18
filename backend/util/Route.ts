@@ -1,5 +1,11 @@
 import { Router, Response } from "express";
 
+export interface HTTPResponseError {
+  code: number;
+  text_code: keyof typeof Route.prototype.constants.messages;
+  message?: Error | string;
+}
+
 export default class Route {
   public conf: { path: string; deprecated?: boolean; maintenance?: boolean };
 
@@ -47,7 +53,7 @@ export default class Route {
     });
   }
 
-  public handleError(error: Error, res: Response) {
+  public handleServerError(error: Error, res: Response) {
     res.status(500).json({
       code: this.constants.codes.SERVER_ERROR,
       message: this.constants.messages.SERVER_ERROR,
