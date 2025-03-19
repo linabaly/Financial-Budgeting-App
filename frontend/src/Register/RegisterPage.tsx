@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = () => {
     if (!email || !password || !repeatPassword) {
@@ -69,8 +71,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="login-container">
-          <button className="login-button">
-            Log In
+          <button className="login-button" onClick={() => navigate("/")}>
+          Log In
           </button>
         </div>
       </div>

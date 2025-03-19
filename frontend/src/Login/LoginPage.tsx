@@ -1,10 +1,11 @@
 import { useState } from "react";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 
 export default function LoginPage() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Hook to handle navigation
 
 
   const handleSignIn = () => {
@@ -59,7 +60,7 @@ export default function LoginPage() {
         </div>
 
         <div className="signup-container">
-          <button className="signup-button">
+          <button className="signup-button" onClick={() => navigate("/register")}>
             Sign Up
           </button>
         </div>
