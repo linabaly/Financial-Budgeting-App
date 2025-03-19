@@ -14,6 +14,7 @@ export default function LoginPage() {
       return;
     }
     console.log("Signing in with:", { login, password });
+    navigate("/Dashboard"); // Navigate to dashboard
   };
 
 

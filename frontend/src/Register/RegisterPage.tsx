@@ -18,6 +18,7 @@ export default function RegisterPage() {
       return;
     }
     console.log("Registering with:", { email, password });
+    navigate("/Dashboard");
   };
 
   return (
