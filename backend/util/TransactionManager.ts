@@ -229,11 +229,6 @@ export default class TransactionManager {
    * @param filters Optional filters for transactions to include in summary
    * @returns Summary statistics object
    */
-
-
-  
-
-
   public static async getTransactionSummary(filters: TransactionFilters = {}): Promise<TransactionSummary> {
     try {
       // Get transactions based on filters (get all matching transactions)
@@ -255,8 +250,18 @@ export default class TransactionManager {
       });
       
       // Process each transaction
-      transactions.forEach((transaction: TransactionDetails) => {
-        const amount = Number(transaction.amount);
+      transactions.forEach((transaction: any) => {
+        // Fix: Safely convert amount to number, handling Prisma Decimal type
+        const amount = typeof transaction.amount === 'object' && transaction.amount !== null
+          ? parseFloat(transaction.amount.toString())
+          : typeof transaction.amount === 'string'
+            ? parseFloat(transaction.amount)
+            : Number(transaction.amount);
+        
+        if (isNaN(amount)) {
+          console.warn(`Skipping transaction with invalid amount: ${transaction.id}`);
+          return; // Skip this transaction
+        }
         
         // Update totals based on transaction type
         if (transaction.type === TransactionType.INCOME) {
@@ -269,9 +274,9 @@ export default class TransactionManager {
         
         // Update category summary
         if (transaction.type === TransactionType.INCOME) {
-          summary.categorySummary[transaction.category] += amount;
+          summary.categorySummary[transaction.category as Category] += amount;
         } else {
-          summary.categorySummary[transaction.category] -= amount;
+          summary.categorySummary[transaction.category as Category] += amount; // Note: we're adding the amount here
         }
         
         // Update monthly breakdown
@@ -299,9 +304,6 @@ export default class TransactionManager {
       throw error;
     }
   }
-
-
-
 
   /**
    * Gets transactions by account ID
