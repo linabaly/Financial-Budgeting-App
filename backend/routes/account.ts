@@ -1,0 +1,104 @@
+import AccountManager, { AccountDetails } from "../util/AccountManager";
+import SecurityManager from "../util/SecurityManager";
+import Route from "../util/Route";
+import { PrismaDBClient } from "../index";
+
+export default class AccountRoute extends Route {
+  constructor() {
+    super("/account");
+  }
+
+  public bind() {
+    this.router.post("/login", async (req, res) => {
+      if (!req.body.email || !req.body.password) {
+        return this.handleError(
+          {
+            text_code: this.constants.messages.CLIENT_ERROR[0],
+            status: 403,
+            message: this.constants.messages.CLIENT_ERROR[1],
+          },
+          res
+        );
+      }
+      const passedCreds = {
+        email: req.body.email,
+        cleartextPassword: req.body.password,
+      };
+      const account = await PrismaDBClient.account.findUnique({
+        where: { email: passedCreds.email },
+      });
+      if (!account) {
+        return this.handleError(
+          {
+            text_code: this.constants.messages.UNAUTHORIZED[0],
+            status: 403,
+            message: this.constants.messages.UNAUTHORIZED[1],
+          },
+          res
+        );
+      }
+      if (
+        !(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword))
+      ) {
+        return this.handleError(
+          {
+            text_code: this.constants.messages.UNAUTHORIZED[0],
+            status: 403,
+            message: this.constants.messages.UNAUTHORIZED[1],
+          },
+          res
+        );
+      }
+      try {
+        const token = SecurityManager.generateToken({ id: account.id, name: account.name });
+        res.status(200).json({
+          email: account.email,
+          token,
+        });
+        return;
+      } catch (error) {
+        this.handleServerError(error as Error, res);
+        return;
+      }
+    });
+    this.router.post("/create", async (req, res) => {
+      if (!req.body.email || !req.body.password || !req.body.name) {
+        return this.handleError(
+          {
+            text_code: this.constants.messages.CLIENT_ERROR[0],
+            status: 400,
+            message: this.constants.messages.CLIENT_ERROR[1],
+          },
+          res
+        );
+      }
+      const accountDetails = {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+      };
+      if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } })) {
+        return this.handleError(
+          {
+            text_code: this.constants.messages.PERMISSION_DENIED[0],
+            status: 403,
+            message: this.constants.messages.PERMISSION_DENIED[1],
+          },
+          res
+        );
+      }
+      try {
+        const account = await AccountManager.createAccount({
+          email: accountDetails.email,
+          name: accountDetails.name,
+          password: await SecurityManager.hashPassword(accountDetails.password),
+        });
+        res.status(200).json(account);
+        return;
+      } catch (error) {
+        this.handleServerError(error as Error, res);
+        return;
+      }
+    });
+  }
+}
