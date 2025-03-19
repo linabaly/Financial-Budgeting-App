@@ -36,7 +36,7 @@ export default class SecurityManager {
   public static generateToken(user: { id: string; name: string }): string {
     return jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, {
       expiresIn: "1h",
-      algorithm: "HS256",
+      algorithm: "HS384",
     });
   }
 
