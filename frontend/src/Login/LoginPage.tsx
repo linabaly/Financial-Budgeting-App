@@ -56,7 +56,7 @@ export default function LoginPage() {
           </button>
           
           <div className="forgot-password">
-            <a href="#" className="forgot-link">Forgot password?</a>
+            <a href="/reset-password" className="forgot-link">Forgot password?</a>
           </div>
         </div>
 
