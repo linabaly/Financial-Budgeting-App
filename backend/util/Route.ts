@@ -1,8 +1,9 @@
 import { Router, Response } from "express";
 
 export interface HTTPResponseError {
-  code: number;
-  text_code: keyof typeof Route.prototype.constants.messages;
+  status: number;
+  code?: number;
+  text_code: keyof typeof Route.prototype.constants.messages | string;
   message?: Error | string;
 }
 
@@ -57,6 +58,15 @@ export default class Route {
     res.status(500).json({
       code: this.constants.codes.SERVER_ERROR,
       message: this.constants.messages.SERVER_ERROR,
+    });
+    console.error(error);
+  }
+
+  public handleError(error: HTTPResponseError, res: Response) {
+    res.status(error.status).json({
+      // code: error.code,
+      text_code: error.text_code,
+      message: error.message,
     });
     console.error(error);
   }
