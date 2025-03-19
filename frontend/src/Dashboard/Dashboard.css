@@ -5,7 +5,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Zain', sans-serif;
 }
 
 body {
@@ -30,7 +30,7 @@ body {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #4b6cb7, #182848);
+  background: linear-gradient(90deg, rgba(68, 58, 216, 1) 0%, rgba(54, 46, 172, 1) 97%);
   opacity: 0.3;
   z-index: -1;
 }
@@ -43,7 +43,7 @@ body {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #4b6cb7, #182848);
+  background: linear-gradient(90deg, rgba(68, 58, 216, 1) 0%, rgba(54, 46, 172, 1) 97%);
   opacity: 0.3;
   z-index: -1;
 }
@@ -75,7 +75,7 @@ body {
   border: none;
   padding: 0.5rem 1rem;
   color: #fff;
-  font-size: 0.7rem;
+  font-size: 1.5rem;
   border-radius: 4px;
   background-color: #000;
   cursor: pointer;
@@ -84,6 +84,10 @@ body {
 
 .nav-button.active {
   background-color: #3040C4;
+}
+
+.nav-button:hover {
+  background-color: #5d7ec9;
 }
 
 .profile-icon {
@@ -114,7 +118,7 @@ body {
 }
 
 .greeting-section h1 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 600;
 }
 
@@ -141,19 +145,19 @@ body {
 }
 
 .label {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #aaa;
   margin-bottom: 0.5rem;
 }
 
 .balance-amount {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
 }
 
 .balance-growth {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #2ecc71;
 }
 
@@ -189,7 +193,7 @@ body {
 }
 
 .chart-amount {
-  font-size: 1.25rem;
+  font-size: 1.8rem;
   font-weight: 600;
 }
 
@@ -239,7 +243,7 @@ body {
 }
 
 .legend-label {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #aaa;
 }
 
@@ -260,7 +264,7 @@ body {
 }
 
 .section-header {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: #fff;
@@ -292,7 +296,7 @@ body {
 }
 
 .insight-text {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #ddd;
 }
 
@@ -303,12 +307,12 @@ body {
 }
 
 .savings-goal {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
 .current-savings {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #2ecc71;
 }
 
@@ -317,7 +321,7 @@ body {
 }
 
 .progress-label {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #aaa;
   margin-top: 0.25rem;
   text-align: right;
@@ -330,7 +334,7 @@ body {
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   margin-top: 0.5rem;
 }
 
@@ -352,7 +356,7 @@ body {
 }
 
 .payment-service {
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   flex-grow: 1;
 }
 
@@ -361,13 +365,13 @@ body {
 }
 
 .payment-amount {
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #ff6b6b;
 }
 
 .payment-date {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #aaa;
 }
 
@@ -393,7 +397,7 @@ body {
 }
 
 .alert-message {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #ddd;
 }
 
@@ -412,7 +416,7 @@ body {
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 500;
   transition: background-color 0.3s;
 }
@@ -423,7 +427,7 @@ body {
 
 /* Footer */
 .footer {
-  background-color: #151515;
+  background-color: rgba(255, 255, 255, 0.4);
   padding: 2rem;
   margin-top: 2rem;
 }
@@ -436,7 +440,7 @@ body {
 }
 
 .footer-tagline h2 {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 400;
   font-family: Zain;
   margin-bottom: 0.25rem;
@@ -444,7 +448,7 @@ body {
 }
 
 .footer-tagline h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #fff;
 }
@@ -463,11 +467,11 @@ body {
 .footer-column a {
   color: #fff;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .contact-info {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   color: #aaa;
   margin-bottom: 0.5rem;
 }
@@ -486,7 +490,7 @@ body {
   justify-content: center;
   border-radius: 50%;
   background-color: #333;
-  font-size: 1.25rem;
+  font-size: 2rem;
   color: #fff;
 }
 
