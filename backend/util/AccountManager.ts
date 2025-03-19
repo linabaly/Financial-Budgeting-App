@@ -1,14 +1,15 @@
 import { PrismaDBClient as prisma } from "../index";
 import SecurityManager from "./SecurityManager";
+import { v4 as uuid } from "uuid";
 
 // const JWT_SECRET = process.env.JWT_SECRET;
 
 export interface AccountDetails {
   id?: string;
   // username: string;
-  password: string;
-  email: string;
-  name: string;
+  password?: string;
+  email?: string;
+  name?: string;
   createdAt?: Date;
   budgets?: [];
   goals?: [];
@@ -22,6 +23,11 @@ export default class AccountManager {
    * @param account An object representing the "AccountDetails" interface.
    */
   public static async createAccount(account: AccountDetails) {
+    if (!account.email || !account.name || !account.password || !account.email) {
+      throw new Error(
+        "account.email, account.name, account.password, and account.email are all required fields."
+      );
+    }
     // Check if email already exists
     const existingAccount = await prisma.account.findUnique({ where: { id: account.id } });
     if (existingAccount) {
@@ -30,12 +36,21 @@ export default class AccountManager {
       );
     }
 
-    // Hash password
-    account.password = await SecurityManager.hashPassword(account.password);
+    const query = {
+      email: account.email,
+      name: account.name,
+      password: await SecurityManager.hashPassword(account.password),
+      id: account.id ?? uuid(),
+      createdAt: new Date(),
+      budgets: [],
+      goals: [],
+      recurringTransactions: [],
+      transactions: [],
+    };
 
     // Create account
     return prisma.account.create({
-      data: account,
+      data: query,
     });
   }
 
@@ -70,7 +85,7 @@ export default class AccountManager {
     }
 
     // Prepare the data to update
-    const updateData: AccountDetails = { name, email, password };
+    const updateData = { name, email, password };
 
     // Hash password if changing password
     if (password) {
