@@ -16,10 +16,9 @@ export enum Category {
   INCOME = "INCOME",
 }
 
-
 export interface TransactionDetails {
   id?: string;
-  amount: number | string; // Handle Decimal type
+  amount: number | string; // TODO Handle Decimal type
   descriptor: string;
   type: TransactionType;
   category: Category;
@@ -45,11 +44,14 @@ export interface TransactionSummary {
   totalExpenses: number;
   netAmount: number;
   categorySummary: Record<Category, number>;
-  monthlyBreakdown: Record<string, {
-    income: number;
-    expenses: number;
-    net: number;
-  }>;
+  monthlyBreakdown: Record<
+    string,
+    {
+      income: number;
+      expenses: number;
+      net: number;
+    }
+  >;
 }
 
 /**
@@ -66,17 +68,17 @@ export default class TransactionManager {
     try {
       // Validate transaction data
       this.validateTransactionData(transaction);
-      
+
       // Create transaction
       return prisma.transaction.create({
         data: {
           ...transaction,
           // Default currency if not provided
-          currency: transaction.currency || "USD"
-        }
+          currency: transaction.currency || "USD",
+        },
       });
     } catch (error) {
-      console.error('Error creating transaction:', error);
+      console.error("Error creating transaction:", error);
       throw error;
     }
   }
@@ -89,20 +91,20 @@ export default class TransactionManager {
   public static async getTransaction(transactionId: string) {
     try {
       if (!transactionId) {
-        throw new Error('Transaction ID is required');
+        throw new Error("Transaction ID is required");
       }
 
       const transaction = await prisma.transaction.findUnique({
-        where: { id: transactionId }
+        where: { id: transactionId },
       });
-      
+
       if (!transaction) {
         throw new Error(`Transaction with ID ${transactionId} not found`);
       }
-      
+
       return transaction;
     } catch (error) {
-      console.error('Error retrieving transaction:', error);
+      console.error("Error retrieving transaction:", error);
       throw error;
     }
   }
@@ -116,42 +118,42 @@ export default class TransactionManager {
    * @returns Array of transaction objects
    */
   public static async getTransactions(
-    filters: TransactionFilters = {}, 
-    limit: number = 100, 
+    filters: TransactionFilters = {},
+    limit: number = 100,
     skip: number = 0,
-    orderBy: { field: string, direction: 'asc' | 'desc' } = { field: 'postedAt', direction: 'desc' }
+    orderBy: { field: string; direction: "asc" | "desc" } = { field: "postedAt", direction: "desc" }
   ) {
     try {
       // Build where clause based on filters
       const where: any = {};
-      
+
       if (filters.accountId) where.accountId = filters.accountId;
       if (filters.category) where.category = filters.category;
       if (filters.type) where.type = filters.type;
-      
+
       // Date range filtering
       if (filters.startDate || filters.endDate) {
         where.postedAt = {};
         if (filters.startDate) where.postedAt.gte = filters.startDate;
         if (filters.endDate) where.postedAt.lte = filters.endDate;
       }
-      
+
       // Amount range filtering
       if (filters.minAmount !== undefined || filters.maxAmount !== undefined) {
         where.amount = {};
         if (filters.minAmount !== undefined) where.amount.gte = filters.minAmount;
         if (filters.maxAmount !== undefined) where.amount.lte = filters.maxAmount;
       }
-      
+
       // Execute query with pagination and sorting
       return prisma.transaction.findMany({
         where,
         orderBy: { [orderBy.field]: orderBy.direction },
         skip,
-        take: limit
+        take: limit,
       });
     } catch (error) {
-      console.error('Error retrieving transactions:', error);
+      console.error("Error retrieving transactions:", error);
       throw error;
     }
   }
@@ -163,33 +165,33 @@ export default class TransactionManager {
    * @returns The updated transaction
    */
   public static async updateTransaction(
-    transactionId: string, 
+    transactionId: string,
     updateData: Partial<TransactionDetails>
   ) {
     try {
       if (!transactionId) {
-        throw new Error('Transaction ID is required');
+        throw new Error("Transaction ID is required");
       }
 
       // Check if transaction exists
       const existingTransaction = await prisma.transaction.findUnique({
-        where: { id: transactionId }
+        where: { id: transactionId },
       });
-      
+
       if (!existingTransaction) {
         throw new Error(`Transaction with ID ${transactionId} not found`);
       }
-      
+
       // Prevent updating immutable fields
       const { id, createdAt, ...dataToUpdate } = updateData;
-      
+
       // Update transaction
       return prisma.transaction.update({
         where: { id: transactionId },
-        data: dataToUpdate
+        data: dataToUpdate,
       });
     } catch (error) {
-      console.error('Error updating transaction:', error);
+      console.error("Error updating transaction:", error);
       throw error;
     }
   }
@@ -202,24 +204,24 @@ export default class TransactionManager {
   public static async deleteTransaction(transactionId: string) {
     try {
       if (!transactionId) {
-        throw new Error('Transaction ID is required');
+        throw new Error("Transaction ID is required");
       }
 
       // Check if transaction exists
       const existingTransaction = await prisma.transaction.findUnique({
-        where: { id: transactionId }
+        where: { id: transactionId },
       });
-      
+
       if (!existingTransaction) {
         throw new Error(`Transaction with ID ${transactionId} not found`);
       }
-      
+
       // Delete transaction
       return prisma.transaction.delete({
-        where: { id: transactionId }
+        where: { id: transactionId },
       });
     } catch (error) {
-      console.error('Error deleting transaction:', error);
+      console.error("Error deleting transaction:", error);
       throw error;
     }
   }
@@ -230,15 +232,13 @@ export default class TransactionManager {
    * @returns Summary statistics object
    */
 
-
-  
-
-
-  public static async getTransactionSummary(filters: TransactionFilters = {}): Promise<TransactionSummary> {
+  public static async getTransactionSummary(
+    filters: TransactionFilters = {}
+  ): Promise<TransactionSummary> {
     try {
       // Get transactions based on filters (get all matching transactions)
       const transactions = await this.getTransactions(filters, 1000);
-      
+
       // Initialize summary object with empty category summaries
       const summary: TransactionSummary = {
         totalTransactions: transactions.length,
@@ -246,18 +246,18 @@ export default class TransactionManager {
         totalExpenses: 0,
         netAmount: 0,
         categorySummary: {} as Record<Category, number>,
-        monthlyBreakdown: {}
+        monthlyBreakdown: {},
       };
-      
+
       // Initialize all categories with zero
-      Object.values(Category).forEach(category => {
+      Object.values(Category).forEach((category) => {
         summary.categorySummary[category] = 0;
       });
-      
+
       // Process each transaction
       transactions.forEach((transaction: TransactionDetails) => {
         const amount = Number(transaction.amount);
-        
+
         // Update totals based on transaction type
         if (transaction.type === TransactionType.INCOME) {
           summary.totalIncome += amount;
@@ -266,24 +266,24 @@ export default class TransactionManager {
           summary.totalExpenses += amount;
           summary.netAmount -= amount;
         }
-        
+
         // Update category summary
         if (transaction.type === TransactionType.INCOME) {
           summary.categorySummary[transaction.category] += amount;
         } else {
           summary.categorySummary[transaction.category] -= amount;
         }
-        
+
         // Update monthly breakdown
         const month = transaction.postedAt.toISOString().substring(0, 7); // Format: YYYY-MM
         if (!summary.monthlyBreakdown[month]) {
           summary.monthlyBreakdown[month] = {
             income: 0,
             expenses: 0,
-            net: 0
+            net: 0,
           };
         }
-        
+
         if (transaction.type === TransactionType.INCOME) {
           summary.monthlyBreakdown[month].income += amount;
           summary.monthlyBreakdown[month].net += amount;
@@ -292,16 +292,13 @@ export default class TransactionManager {
           summary.monthlyBreakdown[month].net -= amount;
         }
       });
-      
+
       return summary;
     } catch (error) {
-      console.error('Error generating transaction summary:', error);
+      console.error("Error generating transaction summary:", error);
       throw error;
     }
   }
-
-
-
 
   /**
    * Gets transactions by account ID
@@ -311,14 +308,14 @@ export default class TransactionManager {
   public static async getTransactionsByAccount(accountId: string) {
     try {
       if (!accountId) {
-        throw new Error('Account ID is required');
+        throw new Error("Account ID is required");
       }
 
       return prisma.transaction.findMany({
-        where: { accountId }
+        where: { accountId },
       });
     } catch (error) {
-      console.error('Error retrieving transactions for account:', error);
+      console.error("Error retrieving transactions for account:", error);
       throw error;
     }
   }
@@ -336,7 +333,7 @@ export default class TransactionManager {
 
       return prisma.transaction.findMany({ where });
     } catch (error) {
-      console.error('Error retrieving transactions by category:', error);
+      console.error("Error retrieving transactions by category:", error);
       throw error;
     }
   }
@@ -350,22 +347,22 @@ export default class TransactionManager {
     try {
       // Validate all transactions
       transactions.forEach(this.validateTransactionData);
-      
+
       // Create all transactions
       const createdTransactions = await prisma.$transaction(
-        transactions.map(transaction => 
+        transactions.map((transaction) =>
           prisma.transaction.create({
             data: {
               ...transaction,
-              currency: transaction.currency || "USD"
-            }
+              currency: transaction.currency || "USD",
+            },
           })
         )
       );
-      
+
       return createdTransactions;
     } catch (error) {
-      console.error('Error bulk creating transactions:', error);
+      console.error("Error bulk creating transactions:", error);
       throw error;
     }
   }
@@ -378,16 +375,16 @@ export default class TransactionManager {
   public static async deleteAccountTransactions(accountId: string) {
     try {
       if (!accountId) {
-        throw new Error('Account ID is required');
+        throw new Error("Account ID is required");
       }
 
       const result = await prisma.transaction.deleteMany({
-        where: { accountId }
+        where: { accountId },
       });
-      
+
       return result.count;
     } catch (error) {
-      console.error('Error deleting account transactions:', error);
+      console.error("Error deleting account transactions:", error);
       throw error;
     }
   }
@@ -399,26 +396,30 @@ export default class TransactionManager {
    * @param limit Maximum number of transactions to return
    * @returns Array of recent transactions
    */
-  public static async getRecentTransactions(accountId?: string, days: number = 30, limit: number = 10) {
+  public static async getRecentTransactions(
+    accountId?: string,
+    days: number = 30,
+    limit: number = 10
+  ) {
     try {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
-      
+
       const where: any = {
         postedAt: {
-          gte: startDate
-        }
+          gte: startDate,
+        },
       };
-      
+
       if (accountId) where.accountId = accountId;
-      
+
       return prisma.transaction.findMany({
         where,
-        orderBy: { postedAt: 'desc' },
-        take: limit
+        orderBy: { postedAt: "desc" },
+        take: limit,
       });
     } catch (error) {
-      console.error('Error retrieving recent transactions:', error);
+      console.error("Error retrieving recent transactions:", error);
       throw error;
     }
   }
@@ -431,36 +432,46 @@ export default class TransactionManager {
   private static validateTransactionData(transaction: TransactionDetails): void {
     // Required fields
     const requiredFields: (keyof TransactionDetails)[] = [
-      'amount', 'descriptor', 'type', 'category', 'postedAt', 'accountId'
+      "amount",
+      "descriptor",
+      "type",
+      "category",
+      "postedAt",
+      "accountId",
     ];
-    
+
     for (const field of requiredFields) {
       if (transaction[field] === undefined || transaction[field] === null) {
         throw new Error(`Missing required field: ${field}`);
       }
     }
-    
+
     // Validate amount is a valid number
     if (
-      (typeof transaction.amount === 'string' && isNaN(parseFloat(transaction.amount))) ||
-      (typeof transaction.amount === 'number' && isNaN(transaction.amount))
+      (typeof transaction.amount === "string" && isNaN(parseFloat(transaction.amount))) ||
+      (typeof transaction.amount === "number" && isNaN(transaction.amount))
     ) {
-      throw new Error('Transaction amount must be a valid number');
+      throw new Error("Transaction amount must be a valid number");
     }
-    
+
     // Validate transaction type exists in enum
     if (!Object.values(TransactionType).includes(transaction.type)) {
-      throw new Error(`Invalid transaction type. Must be one of: ${Object.values(TransactionType).join(', ')}`);
+      throw new Error(
+        `Invalid transaction type. Must be one of: ${Object.values(TransactionType).join(", ")}`
+      );
     }
-    
+
     // Validate category exists in enum
     if (!Object.values(Category).includes(transaction.category)) {
-      throw new Error(`Invalid category. Must be one of: ${Object.values(Category).join(', ')}`);
+      throw new Error(`Invalid category. Must be one of: ${Object.values(Category).join(", ")}`);
     }
-    
+
     // Validate date is a valid date
-    if (!(transaction.postedAt instanceof Date) && isNaN(new Date(transaction.postedAt).getTime())) {
-      throw new Error('Invalid transaction date');
+    if (
+      !(transaction.postedAt instanceof Date) &&
+      isNaN(new Date(transaction.postedAt).getTime())
+    ) {
+      throw new Error("Invalid transaction date");
     }
   }
 }
