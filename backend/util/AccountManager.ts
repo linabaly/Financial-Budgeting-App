@@ -5,7 +5,7 @@ import SecurityManager from "./SecurityManager";
 
 export interface AccountDetails {
   id?: string;
-  username: string;
+  // username: string;
   password: string;
   email: string;
   name: string;
@@ -56,7 +56,7 @@ export default class AccountManager {
 
   // Update Account
   public static async updateAccount(account: AccountDetails) {
-    const { id, username, email, name, password } = account;
+    const { id, email, name, password } = account;
 
     // Make sure account id is provided
     if (!id) {
@@ -70,7 +70,7 @@ export default class AccountManager {
     }
 
     // Prepare the data to update
-    const updateData: AccountDetails = { name, username, email, password };
+    const updateData: AccountDetails = { name, email, password };
 
     // Hash password if changing password
     if (password) {
