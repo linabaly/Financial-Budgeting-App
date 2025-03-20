@@ -54,7 +54,7 @@ export default class Collection<V> extends Map<string, V> {
    * @param replace Whether to replace an existing object with the same key
    * @return The existing or newly created object
    */
-  add(key: string, value: V, replace: boolean = false): V {
+  add(key: string, value: V, replace: boolean = false): V | undefined | null {
     if (this.has(key) && !replace) {
       return this.get(key);
     }
@@ -69,7 +69,8 @@ export default class Collection<V> extends Map<string, V> {
    * @param func A function that takes an object and returns something
    * @return The first matching object, or `null` if no match
    */
-  find(func: Function): V {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  find(func: Function): V | null {
     for (const item of this.values()) {
       if (func(item)) return item;
     }
@@ -129,7 +130,7 @@ export default class Collection<V> extends Map<string, V> {
    * @param key The key of the object
    * @returns The removed object, or `null` if nothing was removed
    */
-  remove(key: string): V {
+  remove(key: string): V | null {
     const item = this.get(key);
     if (!item) {
       return null;
@@ -142,7 +143,7 @@ export default class Collection<V> extends Map<string, V> {
    * Get a random object from the Collection
    * @returns The random object or `null` if empty
    */
-  random(): V {
+  random(): V | null {
     if (!this.size) {
       return null;
     }

@@ -16,7 +16,7 @@ export default class Route {
   public router: Router;
 
   constructor(server: Server, path?: string) {
-    this.conf = { path: path ?? "/account" };
+    this.conf = { path: path ?? "" };
     this.server = server;
     this.router = Router();
   }

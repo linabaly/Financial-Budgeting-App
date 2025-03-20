@@ -45,7 +45,6 @@ export default class Server {
       this.routes.add(route.conf.path, route);
       this.app.use(route.conf.path, route.router);
     }
-    this.app.listen(this.port);
   }
 
   public init() {

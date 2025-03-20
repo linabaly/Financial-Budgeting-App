@@ -30,6 +30,8 @@ async function main() {
     Number(process.env.WEB_SERVER_PORT) || 3000,
     path.join(__dirname, "routes")
   );
+  MainServer.listen(Number(process.env.WEB_SERVER_PORT) || 3000);
+  console.info(`Server listening on port ${process.env.WEB_SERVER_PORT || 3000}`);
 
   // ExpressApplication.listen(process.env.WEB_SERVER_PORT || 3000, () => {
   //   console.info(

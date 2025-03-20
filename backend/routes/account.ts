@@ -7,6 +7,7 @@ import { Server } from "../util";
 export default class AccountRoute extends Route {
   constructor(server: Server) {
     super(server);
+    this.conf.path = "/account";
     this.server = server;
   }
 

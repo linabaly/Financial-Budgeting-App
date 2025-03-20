@@ -27,7 +27,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
-    "test": ""
+    "test": "",
+    "run": "npx ts-node index.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
