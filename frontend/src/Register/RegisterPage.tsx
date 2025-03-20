@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
+import { API_BASE_URL } from "../config";
+
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -8,13 +10,25 @@ export default function RegisterPage() {
   const [repeatPassword, setRepeatPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!email || !password || !repeatPassword) {
       alert("Please fill in all fields.");
       return;
     }
     if (password !== repeatPassword) {
       alert("Passwords do not match.");
+      return;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),  
+    }); 
+    if (!response.ok) {
+      alert("Failed to register. Please try again.");
       return;
     }
     console.log("Registering with:", { email, password });
