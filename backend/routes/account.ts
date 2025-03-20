@@ -2,10 +2,12 @@ import AccountManager, { AccountDetails } from "../util/AccountManager";
 import SecurityManager from "../util/SecurityManager";
 import Route from "../util/Route";
 import { PrismaDBClient } from "../index";
+import { Server } from "../util";
 
 export default class AccountRoute extends Route {
-  constructor() {
-    super("/account");
+  constructor(server: Server) {
+    super(server);
+    this.server = server;
   }
 
   public bind() {
@@ -24,6 +26,7 @@ export default class AccountRoute extends Route {
         email: req.body.email,
         cleartextPassword: req.body.password,
       };
+
       const account = await PrismaDBClient.account.findUnique({
         where: { email: passedCreds.email },
       });
@@ -74,10 +77,13 @@ export default class AccountRoute extends Route {
       }
       const accountDetails = {
         email: req.body.email,
-        password: req.body.password,
+        password: req.body.password.trim(),
         name: req.body.name,
       };
       if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } })) {
+        // TODO: remove testing commands
+        // await PrismaDBClient.account.delete({ where: { email: accountDetails.email } });
+        // return res.sendStatus(202);
         return this.handleError(
           {
             text_code: this.constants.messages.PERMISSION_DENIED[0],
@@ -91,7 +97,7 @@ export default class AccountRoute extends Route {
         const account = await AccountManager.createAccount({
           email: accountDetails.email,
           name: accountDetails.name,
-          password: await SecurityManager.hashPassword(accountDetails.password),
+          password: accountDetails.password,
         });
         res.status(200).json(account);
         return;

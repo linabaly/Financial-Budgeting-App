@@ -1,4 +1,5 @@
 import { Router, Response } from "express";
+import { Server } from ".";
 
 export interface HTTPResponseError {
   status: number;
@@ -10,10 +11,13 @@ export interface HTTPResponseError {
 export default class Route {
   public conf: { path: string; deprecated?: boolean; maintenance?: boolean };
 
+  public server: Server;
+
   public router: Router;
 
-  constructor(path: string) {
-    this.conf = { path };
+  constructor(server: Server, path?: string) {
+    this.conf = { path: path ?? "/account" };
+    this.server = server;
     this.router = Router();
   }
 

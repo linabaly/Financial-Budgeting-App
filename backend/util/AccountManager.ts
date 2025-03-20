@@ -29,7 +29,7 @@ export default class AccountManager {
       );
     }
     // Check if email already exists
-    const existingAccount = await prisma.account.findUnique({ where: { id: account.id } });
+    const existingAccount = await prisma.account.findUnique({ where: { id: account.id, email: account.email } });
     if (existingAccount) {
       throw new Error(
         `Account with ID ${account.id} already exists, cannot create a new account for this user.`
@@ -42,10 +42,6 @@ export default class AccountManager {
       password: await SecurityManager.hashPassword(account.password),
       id: account.id ?? uuid(),
       createdAt: new Date(),
-      budgets: [],
-      goals: [],
-      recurringTransactions: [],
-      transactions: [],
     };
 
     // Create account

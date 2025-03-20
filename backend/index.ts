@@ -1,10 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { Server } from "./util";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import * as path from "node:path";
 
-export let ExpressApplication: express.Application;
+// export let ExpressApplication: express.Application;
+export let MainServer: Server;
 export let PrismaDBClient: PrismaClient;
 
 function setupExpressApplication(): express.Application {
@@ -21,14 +24,18 @@ function setupPrismaClient() {
 }
 
 async function main() {
-  ExpressApplication = setupExpressApplication();
+  // ExpressApplication = setupExpressApplication();
   PrismaDBClient = setupPrismaClient();
+  MainServer = new Server(
+    Number(process.env.WEB_SERVER_PORT) || 3000,
+    path.join(__dirname, "routes")
+  );
 
-  ExpressApplication.listen(process.env.WEB_SERVER_PORT || 3000, () => {
-    console.info(
-      `Server is now running on ${process.env.WEB_SERVER_BASE_URL || "https://localhost"}:${process.env.WEB_SERVER_PORT || 3000}`
-    );
-  });
+  // ExpressApplication.listen(process.env.WEB_SERVER_PORT || 3000, () => {
+  //   console.info(
+  //     `Server is now running on ${process.env.WEB_SERVER_BASE_URL || "https://localhost"}:${process.env.WEB_SERVER_PORT || 3000}`
+  //   );
+  // });
 }
 
 main();
