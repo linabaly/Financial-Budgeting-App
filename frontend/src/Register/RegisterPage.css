@@ -80,7 +80,7 @@
   }
   
   .register-button {
-    height: 48px;
+    height: 30px;
     margin-top: 10px;
     background: #2c2c2c;
     color: #ffffff;
@@ -97,13 +97,13 @@
   
   .login-container {
     position: absolute;
-    bottom: 80px;
+    bottom: 25px;
     right: 80px;
   }
   
   .login-button {
     width: 120px;
-    height: 48px;
+    height: 38px;
     background: #2c2c2c;
     color: #ffffff;
     border: none;

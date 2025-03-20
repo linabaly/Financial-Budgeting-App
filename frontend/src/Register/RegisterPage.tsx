@@ -8,6 +8,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -20,17 +21,17 @@ export default function RegisterPage() {
       return;
     }
     
-    const response = await fetch(`${API_BASE_URL}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),  
-    }); 
-    if (!response.ok) {
-      alert("Failed to register. Please try again.");
-      return;
-    }
+    // const response = await fetch(`${API_BASE_URL}/account/create`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ name, email, password }),  
+    // }); 
+    // if (!response.ok) {
+    //   alert("Failed to register. Please try again.");
+    //   return;
+    // }
     console.log("Registering with:", { email, password });
     navigate("/Dashboard");
   };
@@ -50,6 +51,19 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="input-field">
+            <label className="label" htmlFor="email">Name</label>
+            <input
+              type="name"
+              id="name"
+              className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
               required
             />
           </div>
