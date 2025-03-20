@@ -4,17 +4,18 @@ import RegisterPage from "./Register/RegisterPage";
 import DashboardPage from "./Dashboard/Dashboard";
 import ResetPassPage from "./ResetPassword/ResetPassPage";
 
+
 function App() {
 
   return (
     <>
-      {/* Navigation Links */}
+      {/* Navigation Links
       <nav>
         <Link to="/" className="nav-link">Login</Link>
         <Link to="/register" className="nav-link">Register</Link>
         <Link to="/dashboard" className="nav-link">Dashboard</Link>
         <Link to="/reset-password" className="nav-link">Reset Password</Link>
-      </nav>
+      </nav> */}
 
       {/* Routes for Pages */}
       <Routes>
