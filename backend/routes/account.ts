@@ -55,6 +55,7 @@ export default class AccountRoute extends Route {
       }
       try {
         const token = SecurityManager.generateToken({ id: account.id, name: account.name });
+        console.info(`Logged into account ${account.email} with token ${token}`);
         res.status(200).json({
           email: account.email,
           token,
@@ -65,6 +66,7 @@ export default class AccountRoute extends Route {
         return;
       }
     });
+
     this.router.post("/create", async (req, res) => {
       if (!req.body.email || !req.body.password || !req.body.name) {
         return this.handleError(
@@ -100,6 +102,7 @@ export default class AccountRoute extends Route {
           name: accountDetails.name,
           password: accountDetails.password,
         });
+        console.info(account);
         res.status(200).json(account);
         return;
       } catch (error) {
