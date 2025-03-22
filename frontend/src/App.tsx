@@ -3,26 +3,20 @@ import LoginPage from "./Login/LoginPage";
 import RegisterPage from "./Register/RegisterPage";
 import DashboardPage from "./Dashboard/Dashboard";
 import ResetPassPage from "./ResetPassword/ResetPassPage";
-
+import BudgetInsights from "./BudgetInsights/BudgetInsights";
+import Transactions from "./Transactions/Transactions"; // Add this import
 
 function App() {
-
   return (
     <>
-      {/* Navigation Links
-      <nav>
-        <Link to="/" className="nav-link">Login</Link>
-        <Link to="/register" className="nav-link">Register</Link>
-        <Link to="/dashboard" className="nav-link">Dashboard</Link>
-        <Link to="/reset-password" className="nav-link">Reset Password</Link>
-      </nav> */}
-
       {/* Routes for Pages */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/reset-password" element={<ResetPassPage />} />
+        <Route path="/insights" element={<BudgetInsights />} />
+        <Route path="/transactions" element={<Transactions />} /> {/* Add this route */}
       </Routes>
     </>
   )
