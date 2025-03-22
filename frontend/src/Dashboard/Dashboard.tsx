@@ -16,12 +16,17 @@ const Dashboard: React.FC = () => {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showSavingsModal, setShowSavingsModal] = useState(false);
+  
+  // State for savings amount - initialize with default value
+  const [currentSavings, setCurrentSavings] = useState(4500);
 
   // Handle closing all modals
   const closeAllModals = () => {
     setShowTransactionModal(false);
     setShowBudgetModal(false);
     setShowGoalModal(false);
+    setShowSavingsModal(false);
   };
 
   // Example form submission handlers
@@ -77,6 +82,37 @@ const Dashboard: React.FC = () => {
     setShowGoalModal(false);
   };
 
+  // Handler for savings form submission
+  const handleSavingsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    // Get the new savings amount from the form
+    const amount = formData.get('amount');
+    const newAmount = amount ? parseFloat(amount.toString()) : 0;
+    
+    // Create savings data object for potential API submission
+    const savingsData = {
+      amount: newAmount,
+      savingsType: formData.get('savingsType'),
+      date: formData.get('date'),
+      notes: formData.get('notes')
+    };
+    
+    // Log the submitted data
+    console.log('Savings data submitted:', savingsData);
+    
+    // Update the state with the new amount
+    if (newAmount > 0) {
+      setCurrentSavings(newAmount);
+    }
+    
+    // Show success message and close modal
+    alert('Savings updated successfully!');
+    setShowSavingsModal(false);
+  };
+
   return (
     <div className="app">
       <Header />
@@ -127,7 +163,11 @@ const Dashboard: React.FC = () => {
           <div className="right-column">
             <div className="insights-container">
               <SmartInsights />
-              <SavingsProgress />
+              {/* Pass the current savings value and update handler to SavingsProgress */}
+              <SavingsProgress 
+                currentSavings={currentSavings} 
+                onUpdateClick={() => setShowSavingsModal(true)} 
+              />
               <RecurringPayments />
               <ExpenseAlerts />
             </div>
@@ -345,6 +385,80 @@ const Dashboard: React.FC = () => {
                     </button>
                     <button type="submit" className="submit-btn">
                       Save Goal
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Savings Modal */}
+        {showSavingsModal && (
+          <div className="modal-overlay" onClick={closeAllModals}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Update Savings</h2>
+                <button className="close-button" onClick={closeAllModals}>×</button>
+              </div>
+              <div className="modal-content">
+                <form className="modal-form" onSubmit={handleSavingsSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="savings-amount">Savings Amount</label>
+                    <input 
+                      type="number" 
+                      id="savings-amount" 
+                      name="amount"
+                      placeholder="0.00" 
+                      step="0.01"
+                      min="0"
+                      defaultValue={currentSavings}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="savings-type">Savings Type</label>
+                    <select id="savings-type" name="savingsType" required>
+                      <option value="emergency" selected>Emergency Fund</option>
+                      <option value="retirement">Retirement</option>
+                      <option value="vacation">Vacation</option>
+                      <option value="education">Education</option>
+                      <option value="house">House Down Payment</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="savings-date">Date</label>
+                    <input 
+                      type="date" 
+                      id="savings-date" 
+                      name="date"
+                      defaultValue={new Date().toISOString().split('T')[0]}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="savings-notes">Notes</label>
+                    <textarea 
+                      id="savings-notes" 
+                      name="notes"
+                      placeholder="Add any additional details about your savings update..."
+                    ></textarea>
+                  </div>
+                  
+                  <div className="form-actions">
+                    <button 
+                      type="button" 
+                      className="cancel-btn"
+                      onClick={closeAllModals}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="submit-btn">
+                      Update Savings
                     </button>
                   </div>
                 </form>
