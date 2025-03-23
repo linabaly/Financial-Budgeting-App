@@ -5,6 +5,7 @@ import DashboardPage from "./Dashboard/Dashboard";
 import ResetPassPage from "./ResetPassword/ResetPassPage";
 import BudgetInsights from "./BudgetInsights/BudgetInsights";
 import Transactions from "./Transactions/Transactions"; // Add this import
+import ProfilePage from './Profile/ProfilePage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassPage />} />
         <Route path="/insights" element={<BudgetInsights />} />
         <Route path="/transactions" element={<Transactions />} /> {/* Add this route */}
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </>
   )

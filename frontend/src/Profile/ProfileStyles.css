@@ -1,0 +1,283 @@
+/* Global Profile Page Styling */
+.profile-page {
+    background-color: #121212;
+    color: #fff;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .profile-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  
+  /* Sidebar Styling */
+  .profile-sidebar {
+    background-color: #222;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .profile-back-button {
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+    z-index: 10;
+  }
+  
+  .profile-back-button button {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-back-button button:hover {
+    color: #3498db;
+  }
+  
+  .profile-back-button button svg {
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-back-button button:hover svg {
+    transform: translateX(-3px);
+  }
+  
+  /* Avatar Styling */
+  .profile-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .profile-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #333;
+    margin-bottom: 1rem;
+  }
+  
+  .avatar-upload {
+    background-color: #3498db;
+    border-radius: 30px;
+    padding: 10px 20px;
+    text-align: center;
+  }
+  
+  .avatar-upload label {
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  /* Navigation Styling */
+  .profile-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+  
+  .profile-nav button {
+    background-color: transparent;
+    color: #aaa;
+    border: none;
+    padding: 12px 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-nav button.active,
+  .profile-nav button:hover {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  /* Content Area */
+  .profile-content {
+    padding: 2rem;
+    background-color: #1e1e1e;
+  }
+  
+  /* Form Styling */
+  .info-grid,
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group.full-width {
+    grid-column: span 2;
+  }
+  
+  .form-group label {
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    background-color: #222;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  /* Save Button */
+  .save-button {
+    background: linear-gradient(90deg, #3498db, #9b59b6);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .save-button:hover {
+    transform: translateY(-3px);
+  }
+  
+  /* Toggle Switch */
+  .toggle-switch {
+    width: 50px;
+    height: 24px;
+    background-color: #333;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .toggle-switch.active {
+    background-color: #3498db;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+  }
+  
+  .toggle-switch.active .toggle-slider {
+    transform: translateX(26px);
+  }
+  
+  /* Financial Goals */
+  .financial-goals .goal-card {
+    background-color: #222;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .goal-progress {
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+  }
+  
+  .goal-progress .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #9b59b6);
+  }
+  
+  .goal-details {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+  
+  .delete-goal {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .profile-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .add-goal-button {
+    background: linear-gradient(90deg, #3498db, #9b59b6);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .add-goal-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  }
+  
+  .add-goal-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  .add-goal-button:disabled {
+    background: linear-gradient(90deg, #555, #666);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
