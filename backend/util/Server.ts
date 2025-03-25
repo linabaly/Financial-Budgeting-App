@@ -5,6 +5,9 @@ import { Server as HTTPServer } from "http";
 import { Collection, Route } from ".";
 import cookieParser from "cookie-parser";
 
+/**
+ * @author Matthew R
+ */
 export default class Server {
   public app: express.Application;
 
@@ -25,7 +28,7 @@ export default class Server {
     this.parse = parse;
 
     this.init();
-    this.loadRoutes();
+    this.loadRoutes().catch((error) => console.error(error));
   }
 
   public async loadRoutes() {
