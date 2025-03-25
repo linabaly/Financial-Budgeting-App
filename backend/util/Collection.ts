@@ -3,7 +3,7 @@
  */
 export default class Collection<V> extends Map<string, V> {
   // @ts-expect-error Issue with typing.
-  baseObject: new (...args: any[]) => V;
+  baseObject: new (...args: never[]) => V;
 
   /**
    * Creates an instance of Collection
