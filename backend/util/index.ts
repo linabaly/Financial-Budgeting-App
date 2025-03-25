@@ -1,3 +1,6 @@
+/**
+ * @author Matthew R
+ */
 export { default as AccountManager } from "./AccountManager";
 export { default as Collection } from "./Collection";
 export { default as Route } from "./Route";
