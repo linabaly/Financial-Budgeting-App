@@ -1,6 +1,9 @@
 import { Router, Response } from "express";
 import { Server } from ".";
 
+/**
+ * @author Matthew R
+ */
 export interface HTTPResponseError {
   status: number;
   code?: number;
@@ -8,6 +11,9 @@ export interface HTTPResponseError {
   message?: Error | string;
 }
 
+/**
+ * @author Matthew R
+ */
 export default class Route {
   public conf: { path: string; deprecated?: boolean; maintenance?: boolean };
 
