@@ -58,7 +58,7 @@ export default class AccountManager {
    * @author Yana Y
    * @param account An object containing the ID and/or email to query by
    */
-  public static async getAccount(account: { id?: string, email?: string }) {
+  public static async getAccount(account: { id?: string; email?: string }) {
     const { id, email } = account;
     if (!id && !email) {
       throw new Error(`Provide account ID or email.`);
