@@ -6,10 +6,14 @@ dotenv.config(); // Load environment variables
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
+/**
+ * @author Jacob D
+ */
 export default class SecurityManager {
   /**
    * Hashes a password using Argon2.
    * Ensures compliance with security best practices by using a strong hashing algorithm.
+   * @author Jacob D
    * @param {string} password - Plaintext password.
    * @returns {Promise<string>} - Securely hashed password.
    */
@@ -19,6 +23,7 @@ export default class SecurityManager {
 
   /**
    * Verifies if a password matches a hashed password.
+   * @author Jacob D
    * @param {string} hashedPassword - Stored hashed password.
    * @param {string} password - Provided plaintext password.
    * @returns {Promise<boolean>} - True if passwords match, else false.
@@ -30,6 +35,7 @@ export default class SecurityManager {
   /**
    * Generates a JWT token for a user.
    * Ensures security by using HS256 algorithm and an expiration time.
+   * @author Jacob D
    * @param {Object} user - Contains user ID and name.
    * @returns {string} - JWT token valid for 1 hour.
    */
@@ -43,6 +49,7 @@ export default class SecurityManager {
   /**
    * Verifies and decodes a JWT token.
    * Ensures that only valid tokens are used for authentication.
+   * @author Jaocb D
    * @param {string} token - JWT token to verify.
    * @returns {Object | null} - Decoded token if valid, else null.
    */
