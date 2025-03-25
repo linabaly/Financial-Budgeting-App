@@ -5,8 +5,8 @@ import React, {
   FormEvent 
 } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ResetPassPage.css";
 import { API_BASE_URL } from "../config";
+import "./ResetPassPage.css";
 
 /**
  * Interface for password reset form data
@@ -415,7 +415,7 @@ const ResetPassPage: React.FC = () => {
         <div className="brand-wrapper">
           <h1 className="welcome-to">Welcome to</h1>
           <h2 className="finovators">Finovators!</h2>
-          <p className="brand-tagline">Your partner in financial innovation</p>
+          <p className="brand-tagline">Track, Manage, Thrive</p>
         </div>
       </div>
     </div>

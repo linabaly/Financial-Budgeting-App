@@ -591,3 +591,100 @@ body {
     border: 2px solid #000;
   }
 }
+
+/* Modify the main container to add spacing while maintaining structure */
+.main-container {
+  padding: 2rem 0; /* Add padding top and bottom */
+  height: auto; /* Allow content to determine height */
+  min-height: 90vh; /* Set minimum height slightly less than viewport */
+}
+
+/* Keep the reset card positioning but set a max-height */
+.reset-card {
+  max-height: 90vh; /* Limit maximum height */
+  overflow-y: auto; /* Add scrolling if content exceeds height */
+  margin: auto; /* Center vertically in the space */
+  top: 2rem; /* Add a small top margin */
+  bottom: 0;
+  right: 10%;
+  /* Position remains absolute as in original */
+}
+
+/* Make spacing between sections more compact */
+.reset-title {
+  margin-top: 0.75rem; /* Reduce top margin */
+}
+
+.reset-subtitle {
+  margin-bottom: 1.5rem; /* Reduce bottom margin */
+}
+
+.reset-form {
+  gap: 1.25rem; /* Slightly reduce the gap between form elements */
+  margin-bottom: 1.5rem; /* Reduce bottom margin */
+}
+
+/* Reduce requirements box spacing */
+.password-requirements {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Add some extra responsive adjustments */
+@media (max-height: 700px) {
+  .reset-card {
+    padding: 1.5rem;
+  }
+  
+  .reset-form {
+    gap: 1rem;
+  }
+}
+
+/* Modify the reset card to extend more toward the bottom */
+.reset-card {
+  /* Keep the original positioning */
+  position: absolute;
+  width: 480px;
+  right: 10%;
+
+  /* Adjust the vertical sizing */
+  margin-bottom: 0.5rem; /* Create space at the bottom */
+  padding-bottom: 3rem; /* Add more padding at the bottom */
+  
+  /* Keep the rest of the styling */
+  background: var(--secondary-background);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 20px 50px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  transition: transform var(--transition-speed) ease;
+  animation: fadeIn 0.6s forwards;
+}
+
+/* Adjust the main container to accommodate the extended box */
+.main-container {
+  height: auto;
+  min-height: 95vh; /* Increase from 90vh to 95vh */
+  padding: 1.5rem 0; /* Reduce top/bottom padding */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* Make sure there's room at the bottom in responsive view */
+@media (max-width: 900px) {
+  .reset-card {
+    position: relative;
+    margin-bottom: 3rem;
+  }
+
+}

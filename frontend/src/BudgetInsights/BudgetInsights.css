@@ -400,12 +400,14 @@
 }
 
 .insights-header h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, #fff, #aaa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff, #aaa);
+  -webkit-background-clip: text;
+  background-clip: text; /* Standard property for compatibility */
+  -webkit-text-fill-color: transparent;
 }
+
 
 /* Gradient Underline */
 .insights-header::after {
