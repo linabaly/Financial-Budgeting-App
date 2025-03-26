@@ -623,12 +623,20 @@ body {
 
 .register-card {
   /* Adjust vertical positioning */
-  margin-top: 8rem;     /* Creates space at the top */
-  margin-bottom: 8rem;  /* Creates space at the bottom */
+  margin-top: 5rem;     /* Creates space at the top */
+  margin-bottom: 0rem;  /* Creates space at the bottom */
   
   /* Increase bottom padding to extend the card more toward the bottom */
-  padding-top: 2rem;
+  padding-top: 1rem;
   padding-bottom: 5rem; /* More padding at the bottom stretches the card downward */
   padding-left: 2.5rem;
   padding-right: 2.5rem;
 }
+
+/* Adjust the main container to accommodate the extended box */
+.main-container {
+  height: auto;         /* Allow content to determine height */
+  min-height: 95vh;     /* Use slightly less than full viewport height */
+  padding: 1.5rem 0;    /* Add padding top and bottom to create space */
+}
+

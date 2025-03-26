@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import "./RegisterPage.css";
 
-// Type definition for password reset form
-interface PasswordResetData {
+// Type definition for registration form
+interface RegistrationForm {
   email: string;
+  name: string;
   password: string;
   repeatPassword: string;
 }
@@ -20,64 +21,33 @@ enum PasswordStrength {
   VeryStrong = 5
 }
 
-// Validation function for password reset
-const validatePasswordReset = (data: PasswordResetData) => {
+// Validation utility functions
+const validateRegistration = (form: RegistrationForm): string[] => {
   const errors: string[] = [];
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!data.email.trim()) {
-    errors.push('Email is required');
-  } else if (!emailRegex.test(data.email)) {
-    errors.push('Invalid email format');
+  if (!form.email.trim()) {
+    errors.push("Email is required");
+  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+    errors.push("Please enter a valid email address");
   }
 
-  // Password validation rules
-  const passwordValidationRules = [
-    { 
-      test: (pw: string) => pw.length >= 8, 
-      message: 'Password must be at least 8 characters long' 
-    },
-    { 
-      test: (pw: string) => /[A-Z]/.test(pw), 
-      message: 'Password must contain an uppercase letter' 
-    },
-    { 
-      test: (pw: string) => /[a-z]/.test(pw), 
-      message: 'Password must contain a lowercase letter' 
-    },
-    { 
-      test: (pw: string) => /[0-9]/.test(pw), 
-      message: 'Password must contain a number' 
-    },
-    { 
-      test: (pw: string) => /[!@#$%^&*(),.?":{}|<>]/.test(pw), 
-      message: 'Password must contain a special character' 
-    }
-  ];
-
-  // Password presence and strength check
-  if (!data.password.trim()) {
-    errors.push('New password is required');
-  } else {
-    passwordValidationRules.forEach(rule => {
-      if (!rule.test(data.password)) {
-        errors.push(rule.message);
-      }
-    });
+  if (!form.name.trim()) {
+    errors.push("Name is required");
   }
 
-  // Password confirmation
-  if (!data.repeatPassword.trim()) {
-    errors.push('Please confirm your new password');
-  } else if (data.password !== data.repeatPassword) {
-    errors.push('Passwords do not match');
+  if (!form.password.trim()) {
+    errors.push("Password is required");
+  } else if (form.password.length < 6) {
+    errors.push("Password must be at least 6 characters long");
   }
 
-  return {
-    isValid: errors.length === 0,
-    errors
-  };
+  if (!form.repeatPassword.trim()) {
+    errors.push("Please confirm your password");
+  } else if (form.password !== form.repeatPassword) {
+    errors.push("Passwords do not match");
+  }
+
+  return errors;
 };
 
 // Check password strength
@@ -120,10 +90,11 @@ const getStrengthDescription = (strength: PasswordStrength): string => {
   }
 };
 
-export default function ResetPassPage() {
-  // State management
-  const [formData, setFormData] = useState<PasswordResetData>({
+export default function RegisterPage() {
+  // State management with more robust typing
+  const [formData, setFormData] = useState<RegistrationForm>({
     email: "",
+    name: "",
     password: "",
     repeatPassword: ""
   });
@@ -132,7 +103,6 @@ export default function ResetPassPage() {
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.None);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState(false);
 
   const navigate = useNavigate();
 
@@ -160,21 +130,17 @@ export default function ResetPassPage() {
     setShowRepeatPassword(prev => !prev);
   }, []);
 
-  // Password requirement check functions
-  const hasMinLength = useCallback((password: string) => password.length >= 8, []);
-  const hasUppercase = useCallback((password: string) => /[A-Z]/.test(password), []);
-  const hasLowercase = useCallback((password: string) => /[a-z]/.test(password), []);
-  const hasNumber = useCallback((password: string) => /[0-9]/.test(password), []);
-  const hasSpecialChar = useCallback((password: string) => /[!@#$%^&*(),.?":{}|<>]/.test(password), []);
-
-  // Handle reset password
-  const handleResetPassword = useCallback(async (e: FormEvent) => {
+  // Handle registration
+  const handleRegister = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     
-    // Validate form data
-    const { isValid, errors: validationErrors } = validatePasswordReset(formData);
+    // Reset previous errors
+    setErrors([]);
     
-    if (!isValid) {
+    // Validate form data
+    const validationErrors = validateRegistration(formData);
+    
+    if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
@@ -186,39 +152,36 @@ export default function ResetPassPage() {
       // Simulated API call
       // In a real app, uncomment the fetch code
       /*
-      const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
+      const response = await fetch(`${API_BASE_URL}/account/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-          email: formData.email,
+          name: formData.name, 
+          email: formData.email, 
           password: formData.password 
         }),  
       }); 
       
       if (!response.ok) {
-        throw new Error("Failed to reset password");
+        throw new Error("Failed to register");
       }
       */
       
       // Simulated delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log("Resetting password for:", { 
+      console.log("Registering with:", { 
         email: formData.email, 
+        name: formData.name, 
         password: formData.password 
       });
       
-      // Show success message
-      setResetSuccess(true);
-      
-      // Redirect after 2 seconds
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      // Navigate to dashboard on successful registration
+      navigate("/Dashboard");
     } catch (error) {
-      setErrors(["Password reset failed. Please try again."]);
+      setErrors(["Registration failed. Please try again."]);
     } finally {
       setIsLoading(false);
     }
@@ -227,21 +190,10 @@ export default function ResetPassPage() {
   return (
     <div className="main-container">
       <div className="background" />
-      <div className="reset-card">
-        <h2 className="reset-title">Reset Your Password</h2>
-        <p className="reset-subtitle">Create a new secure password for your account</p>
+      <div className="register-card">
+        <h2 className="register-title">Create Your Account</h2>
+        <p className="register-subtitle">Join Finovators and start your journey</p>
         
-        {/* Success message */}
-        {resetSuccess && (
-          <div className="success-container">
-            <svg className="success-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-              <path d="M7 13L10 16L17 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <p>Password reset successful! Redirecting to login...</p>
-          </div>
-        )}
-
         {/* Error Display */}
         {errors.length > 0 && (
           <div 
@@ -261,7 +213,7 @@ export default function ResetPassPage() {
           </div>
         )}
 
-        <form className="reset-form" onSubmit={handleResetPassword} noValidate>
+        <form className="register-form" onSubmit={handleRegister} noValidate>
           <div className="form-group">
             <label 
               htmlFor="email" 
@@ -290,10 +242,36 @@ export default function ResetPassPage() {
 
           <div className="form-group">
             <label 
+              htmlFor="name" 
+              className="form-label"
+            >
+              Full Name
+            </label>
+            <div className="input-wrapper">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" />
+              </svg>
+              <input
+                type="text"
+                id="name"
+                className="form-input"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+                aria-required="true"
+                aria-invalid={errors.some(e => e.includes('name'))}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label 
               htmlFor="password" 
               className="form-label"
             >
-              New Password
+              Password
             </label>
             <div className="input-wrapper">
               <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -306,7 +284,7 @@ export default function ResetPassPage() {
                 className="form-input"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Create a new password"
+                placeholder="Create a password"
                 required
                 aria-required="true"
                 aria-invalid={errors.some(e => e.includes('Password must') || e.includes('Password is'))}
@@ -339,48 +317,26 @@ export default function ResetPassPage() {
             )}
           </div>
 
-          {/* Password Requirements */}
-          <div className="password-requirements">
-            <h4 className="requirements-title">Password must contain:</h4>
-            <ul className="requirements-list">
-              <li className={hasMinLength(formData.password) ? "requirement-met" : ""}>
-                At least 8 characters
-              </li>
-              <li className={hasUppercase(formData.password) ? "requirement-met" : ""}>
-                Uppercase letter
-              </li>
-              <li className={hasLowercase(formData.password) ? "requirement-met" : ""}>
-                Lowercase letter
-              </li>
-              <li className={hasNumber(formData.password) ? "requirement-met" : ""}>
-                Number
-              </li>
-              <li className={hasSpecialChar(formData.password) ? "requirement-met" : ""}>
-                Special character
-              </li>
-            </ul>
-          </div>
-
           <div className="form-group">
             <label 
               htmlFor="repeatPassword" 
               className="form-label"
             >
-              Confirm New Password
-              </label>
-<div className="input-wrapper">
-  <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
-    <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="2" />
-    <path d="M12 15L12 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-  </svg>
+              Confirm Password
+            </label>
+            <div className="input-wrapper">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
+                <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="2" />
+                <path d="M12 15L12 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
               <input
                 type={showRepeatPassword ? "text" : "password"}
                 id="repeatPassword"
                 className="form-input"
                 value={formData.repeatPassword}
                 onChange={handleInputChange}
-                placeholder="Confirm your new password"
+                placeholder="Confirm your password"
                 required
                 aria-required="true"
                 aria-invalid={errors.some(e => e.includes('match') || e.includes('confirm'))}
@@ -409,7 +365,7 @@ export default function ResetPassPage() {
 
           <button 
             type="submit" 
-            className="reset-button" 
+            className="register-button" 
             disabled={isLoading}
           >
             {isLoading ? (
@@ -417,21 +373,21 @@ export default function ResetPassPage() {
                 <svg className="spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="62.83" strokeDashoffset="0" />
                 </svg>
-                Resetting Password...
+                Creating Account...
               </>
-            ) : 'Reset Password'}
+            ) : 'Create Account'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p className="login-prompt">Remember your password?</p>
+          <p className="login-prompt">Already have an account?</p>
           <button 
             type="button" 
             className="login-button" 
             onClick={() => navigate("/")}
-            aria-label="Return to login page"
+            aria-label="Log in to your account"
           >
-            Return to Login
+            Log In
           </button>
         </div>
       </div>
