@@ -22,9 +22,10 @@
     font-weight: 600;
     background: linear-gradient(90deg, #fff, #aaa);
     -webkit-background-clip: text;
+    background-clip: text; /* Standard property for compatibility */
     -webkit-text-fill-color: transparent;
     position: relative;
-  }
+  }  
   
   .transactions-header h1::after {
     content: '';

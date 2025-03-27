@@ -2,23 +2,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import './BudgetInsights.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
-import { generateExpensePieChart, generateMonthlyComparisonChart } from './utils/insightChartUtils';
+import { generateEnhancedPieChart, generateMonthlyComparisonChart } from './utils/insightChartUtils';
 
 // Define the expense data structure
 interface ExpenseCategory {
+  id: string;
   category: string;
   value: number;
   color: string;
   percentage: number;
-  type: 'needs' | 'wants' | 'savings'; // Categorization for 50-30-20 rule
+  type: 'needs' | 'wants' | 'savings';
 }
 
 // Sample expense data with categorization for 50-30-20 rule
 const expenseData: ExpenseCategory[] = [
-  { category: 'Rent', value: 1500, color: '#e74c3c', percentage: 48.8, type: 'needs' },
-  { category: 'Groceries', value: 600, color: '#2ecc71', percentage: 24.3, type: 'needs' },
-  { category: 'Entertainment', value: 200, color: '#e57373', percentage: 12.3, type: 'wants' },
-  { category: 'Utilities', value: 300, color: '#2ed8c7', percentage: 14.6, type: 'needs' },
+  { id: 'rent', category: 'Rent', value: 1500, color: '#e74c3c', percentage: 48.8, type: 'needs' },
+  { id: 'groceries', category: 'Groceries', value: 600, color: '#2ecc71', percentage: 24.3, type: 'needs' },
+  { id: 'entertainment', category: 'Entertainment', value: 200, color: '#e57373', percentage: 12.3, type: 'wants' },
+  { id: 'utilities', category: 'Utilities', value: 300, color: '#2ed8c7', percentage: 14.6, type: 'needs' },
 ];
 
 // Additional data - monthly income for 50-30-20 calculations
@@ -34,7 +35,8 @@ const BudgetInsights: React.FC = () => {
   useEffect(() => {
     // Initialize charts when component mounts
     if (pieChartRef.current) {
-      generateExpensePieChart(pieChartRef);
+      generateEnhancedPieChart(pieChartRef.current, expenseData);
+
     }
     
     if (barChartRef.current) {
@@ -44,7 +46,8 @@ const BudgetInsights: React.FC = () => {
     // Handle resize events
     const handleResize = () => {
       if (pieChartRef.current) {
-        generateExpensePieChart(pieChartRef);
+        generateEnhancedPieChart(pieChartRef.current, expenseData);
+
       }
       
       if (barChartRef.current) {

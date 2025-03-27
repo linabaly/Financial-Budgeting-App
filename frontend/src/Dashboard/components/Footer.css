@@ -64,11 +64,12 @@
     font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(90deg, #3498db, #9b59b6);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
     letter-spacing: -0.5px;
-  }
+  }  
   
   .logo-tagline {
     font-size: 1.2rem;

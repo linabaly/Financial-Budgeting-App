@@ -530,3 +530,113 @@ body {
     border: 2px solid #000;
   }
 }
+
+/* Modify the main container to add spacing */
+.main-container {
+  height: auto; /* Change from 100vh to auto */
+  min-height: 95vh; /* Use slightly less than full viewport height */
+  padding: 1.5rem 0; /* Add padding top and bottom */
+}
+
+/* Adjust the register card to have better spacing */
+.register-card {
+  /* Keep the absolute positioning */
+  position: absolute;
+  right: 10%;
+  width: 450px;
+  
+  /* Add spacing adjustments */
+  max-height: 95vh; /* Limit height to prevent full-screen stretching */
+  overflow-y: auto; /* Enable scrolling if content is too tall */
+  
+  /* Increase bottom padding to extend the card more toward bottom */
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  
+  /* Add some margin at the bottom */
+  margin-bottom: 2rem;
+  
+  /* Keep the rest of styling */
+  background: var(--secondary-background);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 20px 50px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  transition: transform var(--transition-speed) ease;
+  animation: fadeIn 0.6s forwards;
+}
+
+/* Adjust vertical spacing of form elements */
+.register-title {
+  margin-top: 0.75rem; /* Reduce top margin */
+}
+
+.register-subtitle {
+  margin-bottom: 1.5rem; /* Reduce bottom margin */
+}
+
+.register-form {
+  gap: 1.25rem; /* Slightly reduce the gap between form elements */
+  margin-bottom: 1.5rem; /* Reduce bottom margin */
+}
+
+/* Adjust footer spacing */
+.auth-footer {
+  margin-top: 1.5rem; /* Add more space above footer */
+  padding-top: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .register-card {
+    position: relative;
+    margin-bottom: 3rem;
+    right: auto;
+  }
+  
+  .main-container {
+    padding-bottom: 2rem;
+  }
+  
+  /* Hide welcome container if needed */
+  .welcome-container {
+    display: none;
+  }
+}
+
+@media (max-height: 700px) {
+  .register-card {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+  
+  .register-form {
+    gap: 1rem;
+  }
+}
+
+.register-card {
+  /* Adjust vertical positioning */
+  margin-top: 5rem;     /* Creates space at the top */
+  margin-bottom: 0rem;  /* Creates space at the bottom */
+  
+  /* Increase bottom padding to extend the card more toward the bottom */
+  padding-top: 1rem;
+  padding-bottom: 5rem; /* More padding at the bottom stretches the card downward */
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+/* Adjust the main container to accommodate the extended box */
+.main-container {
+  height: auto;         /* Allow content to determine height */
+  min-height: 95vh;     /* Use slightly less than full viewport height */
+  padding: 1.5rem 0;    /* Add padding top and bottom to create space */
+}
+

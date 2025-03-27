@@ -1,17 +1,32 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom"; // Import BrowserRouter
-import App from "./App.tsx"; // Import App component
+import App from "./App.tsx";
+import './index.css'
 
-// import './index.css'
-// import App from './App.tsx'
-//import RegisterPage from './Register/RegisterPage.tsx'
-//import LoginPage from './Login/LoginPage.tsx'
+// Error handling for root rendering
+const rootElement = document.getElementById('root');
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>
+if (!rootElement) {
+  throw new Error('Failed to find the root element');
+}
+
+const root = createRoot(rootElement);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
+
+// Optional: Add global error handler
+window.addEventListener('error', (event) => {
+  console.error('Uncaught error:', event.error);
+  // Optionally send error to logging service
+});
+
+// Optional: Add unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // Optionally send error to logging service
+});
+

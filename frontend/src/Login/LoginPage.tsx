@@ -228,7 +228,7 @@ export default function LoginPage() {
         <div className="brand-wrapper">
           <h1 className="welcome-to">Welcome to</h1>
           <h2 className="finovators">Finovators!</h2>
-          <p className="brand-tagline">Your partner in financial innovation</p>
+          <p className="brand-tagline">Track, Manage, Thrive</p>
         </div>
       </div>
     </div>

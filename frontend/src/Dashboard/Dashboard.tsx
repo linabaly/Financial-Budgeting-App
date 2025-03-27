@@ -17,8 +17,7 @@ const Dashboard: React.FC = () => {
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showSavingsModal, setShowSavingsModal] = useState(false);
-  
-  // State for savings amount - initialize with default value
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [currentSavings, setCurrentSavings] = useState(4500);
 
   // Handle closing all modals
@@ -121,27 +120,13 @@ const Dashboard: React.FC = () => {
         <div className="greeting-section">
           <div>
             <h1>Hello, <span className="rainbow-name">Alex</span>!</h1>
-            <div className="greeting-date">Saturday, March 22, 2025</div>
-          </div>
-          
-          <div className="quick-actions">
-            <div className="action-button" onClick={() => setShowTransactionModal(true)}>
-              <div className="action-icon">
-                💰
-              </div>
-              <div className="action-text">Add Transaction</div>
-            </div>
-            <div className="action-button" onClick={() => setShowBudgetModal(true)}>
-              <div className="action-icon">
-                📊
-              </div>
-              <div className="action-text">Set Budget</div>
-            </div>
-            <div className="action-button" onClick={() => setShowGoalModal(true)}>
-              <div className="action-icon">
-                🎯
-              </div>
-              <div className="action-text">Add Goal</div>
+            <div className="greeting-date">
+              {currentDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })}
             </div>
           </div>
         </div>
@@ -156,23 +141,22 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="analytics-section">
-          <div className="left-column">
-            <IncomeExpenseChart />
-          </div>
-          <div className="right-column">
-            <div className="insights-container">
-              <SmartInsights />
-              {/* Pass the current savings value and update handler to SavingsProgress */}
-              <SavingsProgress 
-                currentSavings={currentSavings} 
-                onUpdateClick={() => setShowSavingsModal(true)} 
-              />
-              <RecurringPayments />
-              <ExpenseAlerts />
-            </div>
-          </div>
-        </div>
+        <div className="analytics-container">
+  <div className="analytics-section">
+    <div className="income-expense-chart-container">
+      <IncomeExpenseChart />
+    </div>
+    <div className="insights-container">
+      <SmartInsights />
+      <SavingsProgress 
+        currentSavings={currentSavings} 
+        onUpdateClick={() => setShowSavingsModal(true)} 
+      />
+      <RecurringPayments />
+      <ExpenseAlerts />
+    </div>
+  </div>
+</div>
         
         {/* Transaction Modal */}
         {showTransactionModal && (
