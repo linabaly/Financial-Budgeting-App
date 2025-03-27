@@ -56,6 +56,11 @@ export default class AccountRoute extends Route {
       try {
         const token = SecurityManager.generateToken({ id: account.id, name: account.name });
         console.info(`Logged into account ${account.email} with token ${token}`);
+        res.cookie("token", token, {
+          httpOnly: true,
+          sameSite: "lax",
+          maxAge: 3600000,
+        });
         res.status(200).json({
           email: account.email,
           token,
