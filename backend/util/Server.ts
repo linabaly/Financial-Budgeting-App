@@ -59,6 +59,9 @@ export default class Server {
     this.app.set("trust proxy", "loopback");
     this.app.use(
       helmet({
+        crossOriginResourcePolicy: {
+          policy: "cross-origin",
+        },
         hsts: false,
         hidePoweredBy: false,
         contentSecurityPolicy: {
