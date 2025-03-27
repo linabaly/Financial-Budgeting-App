@@ -130,15 +130,6 @@ body {
   margin: 0;
 }
 
-.rainbow-name {
-  background: linear-gradient(90deg, #3498db, #9b59b6);
-  -webkit-background-clip: text;
-  background-clip: text; /* Standard property for compatibility */
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-}
-
-
 .greeting-date {
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.6);
