@@ -53,9 +53,9 @@ export default class SecurityManager {
    * @param {string} token - JWT token to verify.
    * @returns {Object | null} - Decoded token if valid, else null.
    */
-  public static verifyToken(token: string): object | null {
+  public static verifyToken(token: string): { id: string; name: string } | null {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: string; name: string };
       if (typeof decoded === "object") {
         return decoded;
       }
