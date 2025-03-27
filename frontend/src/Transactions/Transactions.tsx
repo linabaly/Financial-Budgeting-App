@@ -3,10 +3,10 @@ import './Transactions.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
 
-// Sample transaction data
+// Sample transaction data with properly formatted amounts
 const initialTransactions = [
   { id: '#T1234', name: 'Groceries', date: '2025-03-15', amount: '$120.45', category: 'Food' },
-  { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1500.00', category: 'Housing' },
+  { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1,500.00', category: 'Housing' },
   { id: '#T1236', name: 'Electricity Bill', date: '2025-03-05', amount: '$85.20', category: 'Utilities' },
   { id: '#T1237', name: 'Internet Bill', date: '2025-03-03', amount: '$65.99', category: 'Utilities' },
   { id: '#T1238', name: 'Gym Membership', date: '2025-03-01', amount: '$50.00', category: 'Health' },
@@ -43,9 +43,15 @@ const Transactions: React.FC = () => {
     name: '',
     amount: '',
     category: 'Food'
-
-    
   });
+  
+  // Helper function to format currency
+  const formatCurrency = (amount: number): string => {
+    return amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
   
   // Filter transactions by search term and category
   const filteredTransactions = transactions.filter(transaction => {
@@ -60,11 +66,23 @@ const Transactions: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
   
-  // Apply sorting
+  // Apply sorting with fixed amount sorting
   const sortedTransactions = React.useMemo(() => {
     let sortableTransactions = [...filteredTransactions];
     if (sortConfig !== null) {
       sortableTransactions.sort((a, b) => {
+        // Special handling for amount column to sort numerically
+        if (sortConfig.key === 'amount') {
+          // Extract numeric values from amounts (remove $ and commas)
+          const amountA = parseFloat(a.amount.replace(/[$,]/g, ''));
+          const amountB = parseFloat(b.amount.replace(/[$,]/g, ''));
+          
+          return sortConfig.direction === 'ascending' 
+            ? amountA - amountB 
+            : amountB - amountA;
+        }
+        
+        // For other columns, sort as before
         if (a[sortConfig.key as keyof typeof a] < b[sortConfig.key as keyof typeof b]) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
@@ -112,12 +130,13 @@ const Transactions: React.FC = () => {
   const handleAddTransaction = () => {
     const newId = `#T${Math.floor(1000 + Math.random() * 9000)}`;
     const today = new Date().toISOString().split('T')[0];
+    const formattedAmount = formatCurrency(parseFloat(newTransaction.amount));
     
     const transactionToAdd = {
       id: newId,
       name: newTransaction.name,
       date: today,
-      amount: `$${parseFloat(newTransaction.amount).toFixed(2)}`,
+      amount: `$${formattedAmount}`,
       category: newTransaction.category
     };
     
@@ -125,6 +144,11 @@ const Transactions: React.FC = () => {
     setNewTransaction({ name: '', amount: '', category: 'Food' });
     setIsNewTransactionOpen(false);
   };
+
+  // Check if form is valid
+  const isFormValid = newTransaction.name.trim() !== '' && 
+                      newTransaction.amount.trim() !== '' && 
+                      parseFloat(newTransaction.amount) > 0;
 
   return (
     <div className="app">
@@ -153,6 +177,7 @@ const Transactions: React.FC = () => {
                   value={newTransaction.name} 
                   onChange={(e) => setNewTransaction({...newTransaction, name: e.target.value})}
                   placeholder="e.g. Grocery Shopping"
+                  required
                 />
               </div>
               <div className="form-group">
@@ -164,6 +189,7 @@ const Transactions: React.FC = () => {
                   placeholder="0.00"
                   step="0.01"
                   min="0"
+                  required
                 />
               </div>
               <div className="form-group">
@@ -179,20 +205,20 @@ const Transactions: React.FC = () => {
               </div>
             </div>
             <div className="form-actions">
-  <button 
-    className="submit-btn" 
-    onClick={handleAddTransaction}
-    disabled={!newTransaction.name || !newTransaction.amount}
-  >
-    Add Transaction
-  </button>
-  <button 
-    className="cancel-btn"
-    onClick={() => setIsNewTransactionOpen(false)}
-  >
-    Cancel
-  </button>
-</div>
+              <button 
+                className="submit-btn" 
+                onClick={handleAddTransaction}
+                disabled={!isFormValid}
+              >
+                Add Transaction
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={() => setIsNewTransactionOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
         

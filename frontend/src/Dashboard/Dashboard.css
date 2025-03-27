@@ -206,6 +206,7 @@ body {
   z-index: 1000;
 }
 
+/* Remove purple background from modal content */
 .modal {
   background-color: #222;
   border-radius: 8px;
@@ -214,6 +215,55 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Target the specific element with the dark background */
+/* Target the modal-content and remove any padding */
+.modal-content {
+  padding: 0 !important;
+  background-color: #222 !important;
+}
+
+/* Target the form directly */
+.modal-form {
+  background-color: #222 !important;
+  padding: 1rem;
+}
+
+/* Remove any background from form groups */
+.form-group {
+  background-color: transparent !important;
+}
+
+/* Override the Submit button color */
+.submit-btn {
+  background-color: #6c5ce7 !important;
+}
+
+/* This will target any potential container inside the modal */
+.modal-body {
+  background-color: #222 !important;
+  padding: 1rem;
+}
+
+/* Remove any nested containers with backgrounds */
+.savings-modal-content,
+.modal-inner-container,
+.savings-form-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure form elements have consistent backgrounds */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background-color: #333;
+  border: 1px solid #444;
+  color: #fff;
 }
 
 .modal-header {
@@ -242,15 +292,26 @@ body {
   color: #fff;
 }
 
-.modal-content {
-  padding: 1rem;
+/* Form Styles */
+.modal .submit-btn,
+.modal button[type="submit"],
+.modal .update-savings-btn {
+  background-color: #6c5ce7 !important;
+}
+/* Ensure form elements directly connect with the modal background */
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-/* Form Styles */
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Update the button color */
+.modal .submit-btn,
+.modal button[type="submit"],
+.modal .update-savings-btn,
+button[type="submit"] {
+  background-color: #6c5ce7 !important;
+  background: #6c5ce7 !important;
+  color: #fff;
+  border: none;
 }
 
 .form-group {
@@ -262,17 +323,6 @@ body {
 .form-group label {
   font-weight: 500;
   color: #ccc;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #444;
-  background-color: #333;
-  color: #fff;
-  font-size: 1rem;
 }
 
 .form-group textarea {
@@ -529,7 +579,7 @@ body {
 }
 
 .savings-button {
-  background-color: #3040C4;
+  background-color: #6c5ce7 !important; /* Using !important to prevent overrides */
   border: none;
   padding: 0.5rem;
   color: #fff;
@@ -537,6 +587,16 @@ body {
   cursor: pointer;
   font-size: 1.2rem;
   margin-top: 0.5rem;
+}
+
+/* Keep hover effects minimal - only shadow, no color change */
+.savings-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.savings-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(108, 92, 231, 0.2);
 }
 
 .payment-item {
@@ -827,4 +887,37 @@ body {
   overflow: visible !important;
   height: 100% !important;
   min-height: 300px;
+}
+
+/* Target the form container that's not extending fully */
+.modal-content > div,
+.modal-content > form,
+.modal-content > *:first-child {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background-color: #222 !important;
+}
+
+/* Make sure the modal content has no padding */
+.modal-content {
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+/* Make the form take full width */
+.modal-form {
+  width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Remove any border radius from the bottom of the modal content area */
+.modal-content > *:first-child {
+  border-bottom-left-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
 }

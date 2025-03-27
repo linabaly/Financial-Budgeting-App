@@ -34,8 +34,8 @@
     left: 0;
     width: 80px;
     height: 3px;
-    background: linear-gradient(90deg, #3498db, transparent);
-  }
+    background: linear-gradient(90deg, #6c5ce7, transparent);
+}
   
   .add-transaction-btn {
     transform-origin: center right;
@@ -180,13 +180,13 @@
   .transactions-table-container {
     flex: 1;
     overflow: auto;
-    max-height: 500px;
+    max-height: 85vh; /* Changed to viewport height units for better responsiveness */
     border-radius: 12px;
-    padding: 0;
+    padding: 0 0 8px 0; /* Added bottom padding */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     background-color: #222;
     position: relative;
-  }
+}
   
   .transactions-table {
     width: 100%;
@@ -331,15 +331,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* Increased from 36px */
+    height: 48px; /* Increased from 36px */
     border-radius: 50%;
     background-color: #333;
     border: none;
     color: #fff;
     cursor: pointer;
     transition: all 0.2s ease;
-  }
+    font-size: 1.2rem; /* Added to make the arrow icon larger */
+}
   
   .pagination-button:hover:not(:disabled) {
     background-color: #444;
@@ -371,21 +372,21 @@
 }
 
 .fab-add-transaction::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(
-        90deg, 
-        #3498db, 
-        #9b59b6, 
-        #e74c3c, 
-        #f39c12
-    );
-    z-index: -1;
-    border-radius: 34px;
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+      90deg, 
+      #6c5ce7, 
+      #8e44ad, 
+      #6c5ce7, 
+      #8e44ad
+  );
+  z-index: -1;
+  border-radius: 34px;
 }
 
 .fab-add-transaction::after {
@@ -471,9 +472,9 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #3498db, #9b59b6);
+    background: linear-gradient(90deg, #6c5ce7, #8e44ad);
     z-index: 1;
-  }
+}
   
   /* Responsive */
   @media (max-width: 992px) {
@@ -513,3 +514,26 @@
       justify-content: center;
     }
   }
+
+  /* Base styles for disabled submit button */
+.form-actions .submit-btn:disabled {
+  background: #555 !important; /* Gray background when disabled */
+  color: #aaa !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Styles for enabled submit button */
+.form-actions .submit-btn:not(:disabled) {
+  background: linear-gradient(90deg, #6c5ce7, #6c5ce7) !important; /* Purple gradient when enabled */
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3) !important;
+}
+
+/* Hover effect for enabled button */
+.form-actions .submit-btn:not(:disabled):hover {
+  background: linear-gradient(90deg, #6c5ce7, #6c5ce7) !important; /* Reverse gradient on hover */
+  box-shadow: 0 6px 15px rgba(108, 92, 231, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
