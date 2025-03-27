@@ -151,7 +151,7 @@ export default function RegisterPage() {
     try {
       // Simulated API call
       // In a real app, uncomment the fetch code
-      /*
+      
       const response = await fetch(`${API_BASE_URL}/account/create`, {
         method: "POST",
         headers: {
@@ -163,11 +163,11 @@ export default function RegisterPage() {
           password: formData.password 
         }),  
       }); 
-      
+      console.log(response)
       if (!response.ok) {
         throw new Error("Failed to register");
       }
-      */
+      
       
       // Simulated delay
       await new Promise(resolve => setTimeout(resolve, 1000));
