@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import cors from "cors";
 import { Server as HTTPServer } from "http";
 import { Collection, Route } from ".";
 import cookieParser from "cookie-parser";
@@ -57,6 +58,11 @@ export default class Server {
       this.app.use(cookieParser());
     }
     this.app.set("trust proxy", "loopback");
+    this.app.use(
+      cors({
+        origin: "*",
+      })
+    );
     this.app.use(
       helmet({
         crossOriginResourcePolicy: {
