@@ -25,10 +25,15 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  // Logo click handler to navigate to dashboard
+  const handleLogoClick = () => {
+    navigate('/dashboard');
+  };
+  
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
-        <div className="logo-container">
+        <div className="logo-container" onClick={handleLogoClick}>
           <div className="logo">
             <span className="logo-text">Finovators</span>
           </div>

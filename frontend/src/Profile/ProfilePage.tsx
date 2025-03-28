@@ -1,15 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ProfileHeader from './ProfileHeader';
+import { motion, AnimatePresence } from 'framer-motion';
 import PersonalInfo from './PersonalInfo';
 import AccountSettings from './AccountSettings';
 import SecuritySettings from './SecuritySettings';
 import NotificationPreferences from './NotificationPreferences';
 import FinancialGoals from './FinancialGoals';
 import './ProfileStyles.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { useNotification } from './contexts/NotificationContext';
 
-const ProfilePage: React.FC = () => {
+import { 
+  faUser, 
+  faCog, 
+  faShieldAlt, 
+  faBell, 
+  faChartLine 
+} from '@fortawesome/free-solid-svg-icons';
+
+// Function to get the icon for each section
+const getIconForSectionFA = (section: string) => {
+  switch(section) {
+    case 'personal': return faUser;
+    case 'account': return faCog;
+    case 'security': return faShieldAlt;
+    case 'notifications': return faBell;
+    case 'goals': return faChartLine;
+    default: return faUser;
+  }
+};
+
+interface ProfilePageProps {
+  // Add any props if needed
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = () => {
   const [activeSection, setActiveSection] = useState('personal');
+  const { showNotification, simulateLoading, isLoading } = useNotification();
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -17,99 +45,110 @@ const ProfilePage: React.FC = () => {
     navigate(-1);
   };
 
+  const handleSaveAction = (message: string) => {
+    simulateLoading(() => {
+      showNotification(message);
+    });
+  };
+
   const renderActiveSection = () => {
     switch(activeSection) {
       case 'personal':
-        return <PersonalInfo />;
+        return <PersonalInfo onSave={() => handleSaveAction('Personal information updated!')} />;
       case 'account':
-        return <AccountSettings />;
+        return <AccountSettings onSave={() => handleSaveAction('Account settings updated!')} />;
       case 'security':
-        return <SecuritySettings />;
+        return <SecuritySettings onSave={() => handleSaveAction('Security settings updated!')} />;
       case 'notifications':
-        return <NotificationPreferences />;
+        return <NotificationPreferences onSave={() => handleSaveAction('Notification preferences updated!')} />;
       case 'goals':
-        return <FinancialGoals />;
+        return <FinancialGoals onSave={() => handleSaveAction('Financial goals updated!')} />;
       default:
-        return <PersonalInfo />;
+        return <PersonalInfo onSave={() => handleSaveAction('Personal information updated!')} />;
     }
   };
 
   return (
     <div className="profile-page">
       <div className="profile-back-button">
-        <button onClick={handleGoBack}>
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
+        <motion.button 
+          onClick={handleGoBack}
+          whileHover={{ x: -5 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FontAwesomeIcon icon="arrow-left" />
           Back
-        </button>
+        </motion.button>
       </div>
+      
       <div className="profile-container">
-        <div className="profile-sidebar">
+        <motion.div 
+          className="profile-sidebar"
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
           <div className="profile-avatar">
-            <img 
-              src="/default-avatar.png" 
-              alt="Profile" 
-            />
-            <div className="avatar-upload">
-              <input 
-                type="file" 
-                id="avatar-upload" 
-                accept="image/*" 
-                style={{display: 'none'}} 
+            <div className="avatar-wrapper">
+              <img 
+                src="/default-avatar.png" 
+                alt="Profile" 
+                onError={(e) => {
+                  // Fallback if image doesn't exist
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150';
+                }}
               />
-              <label htmlFor="avatar-upload">
-                Change Photo
-              </label>
+              <div className="avatar-overlay">
+                <label htmlFor="avatar-upload">
+                  <FontAwesomeIcon icon="camera" />
+                </label>
+                <input 
+                  type="file" 
+                  id="avatar-upload" 
+                  accept="image/*" 
+                  style={{display: 'none'}} 
+                />
+              </div>
             </div>
+            <h3>Alex Johnson</h3>
+            <p>Software Engineer</p>
           </div>
+          
           <nav className="profile-nav">
-            <button 
-              className={activeSection === 'personal' ? 'active' : ''}
-              onClick={() => setActiveSection('personal')}
-            >
-              Personal Info
-            </button>
-            <button 
-              className={activeSection === 'account' ? 'active' : ''}
-              onClick={() => setActiveSection('account')}
-            >
-              Account Settings
-            </button>
-            <button 
-              className={activeSection === 'security' ? 'active' : ''}
-              onClick={() => setActiveSection('security')}
-            >
-              Security
-            </button>
-            <button 
-              className={activeSection === 'notifications' ? 'active' : ''}
-              onClick={() => setActiveSection('notifications')}
-            >
-              Notifications
-            </button>
-            <button 
-              className={activeSection === 'goals' ? 'active' : ''}
-              onClick={() => setActiveSection('goals')}
-            >
-              Financial Goals
-            </button>
+            {['personal', 'account', 'security', 'notifications', 'goals'].map((section) => (
+              <motion.button 
+                key={section}
+                className={activeSection === section ? 'active' : ''}
+                onClick={() => setActiveSection(section)}
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FontAwesomeIcon icon={getIconForSectionFA(section)} />
+                {section.charAt(0).toUpperCase() + section.slice(1)}
+              </motion.button>
+            ))}
           </nav>
-        </div>
-        <div className="profile-content">
-          {renderActiveSection()}
-        </div>
+        </motion.div>
+        
+        <motion.div 
+          className="profile-content"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="content-section"
+            >
+              {renderActiveSection()}
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );

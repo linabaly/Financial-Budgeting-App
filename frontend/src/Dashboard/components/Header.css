@@ -259,3 +259,95 @@
     }
   }
   
+  .logo-container {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logo-text {
+    position: relative;
+  }
+  
+  .logo-text::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #fff;
+    transition: width 0.3s ease;
+  }
+  
+  .logo-container:hover .logo-text::after {
+    width: 100%;
+  }
+
+  /* Header Content Layout */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Ensure profile icon is at the end */
+.navigation .profile-icon {
+  margin-left: 1rem;
+}
+
+.header-content {
+  justify-content: space-between !important;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.logo-container {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding-left: 0rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    padding-left: 0.75rem;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem;
+  }
+}

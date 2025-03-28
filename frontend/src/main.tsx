@@ -2,6 +2,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from "./App.tsx";
 import './index.css'
+import { NotificationProvider } from './Profile/contexts/NotificationContext.tsx';
 
 // Error handling for root rendering
 const rootElement = document.getElementById('root');
@@ -12,9 +13,12 @@ if (!rootElement) {
 
 const root = createRoot(rootElement);
 
+// Add NotificationProvider to wrap your App
 root.render(
   <React.StrictMode>
-    <App />
+    <NotificationProvider>
+      <App />
+    </NotificationProvider>
   </React.StrictMode>
 );
 
@@ -29,4 +33,3 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
   // Optionally send error to logging service
 });
-

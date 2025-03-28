@@ -632,3 +632,660 @@ text {
   stroke-width: 0.5px;
   stroke-linejoin: round;
 }
+
+/* Add page fade-in animation */
+.insights-content {
+  animation: pageReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes pageReveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Add header reveal animation */
+.insights-header {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: headerReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s;
+}
+
+@keyframes headerReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhance gradient flow animation */
+@keyframes gradientFlow {
+  0% { background-position: 0% 0; }
+  50% { background-position: 200% 0; }
+  100% { background-position: 400% 0; }
+}
+
+/* Add staggered card reveal animations */
+.summary-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.summary-card:nth-child(1) { animation-delay: 0.4s; }
+.summary-card:nth-child(2) { animation-delay: 0.5s; }
+.summary-card:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes cardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  70% {
+    transform: translateY(-5px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Amount number counter animation */
+.amount {
+  opacity: 0;
+  animation: countUpReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.summary-card:nth-child(1) .amount { animation-delay: 0.7s; }
+.summary-card:nth-child(2) .amount { animation-delay: 0.8s; }
+.summary-card:nth-child(3) .amount { animation-delay: 0.9s; }
+
+@keyframes countUpReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Chart container animations */
+.chart-container {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: containerReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.8s;
+}
+
+@keyframes containerReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pie chart wrapper animation */
+.pie-chart-wrapper {
+  opacity: 0;
+  animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1s;
+}
+
+@keyframes chartReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Legend items staggered reveal */
+.legend-item {
+  opacity: 0;
+  transform: translateX(-10px);
+  animation: legendItemReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.legend-item:nth-child(1) { animation-delay: 1.1s; }
+.legend-item:nth-child(2) { animation-delay: 1.2s; }
+.legend-item:nth-child(3) { animation-delay: 1.3s; }
+.legend-item:nth-child(4) { animation-delay: 1.4s; }
+.legend-item:nth-child(5) { animation-delay: 1.5s; }
+
+@keyframes legendItemReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Bottom container animation */
+.bottom-container {
+  opacity: 0;
+  animation: bottomReveal 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.3s;
+}
+
+@keyframes bottomReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Generate button animation */
+.generate-btn {
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
+}
+
+@keyframes buttonReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Add button ripple effect */
+.generate-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+  z-index: 0;
+}
+
+.generate-btn:active::before {
+  width: 300%;
+  height: 300%;
+}
+
+/* Enhanced report content animations */
+.report-content h1 { 
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.1s; 
+}
+.report-content h2 { 
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s; 
+}
+.report-content h3 { 
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s; 
+}
+.report-content p { 
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.7s; 
+}
+
+/* Bar chart animation */
+.bar-chart-wrapper {
+  opacity: 0;
+  animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.2s;
+}
+
+/* Enhance spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add glow pulse to insights header */
+.insights-header h3 {
+  animation: textGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Accessibility consideration */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Adjust mobile animations */
+@media (max-width: 768px) {
+  .insights-summary,
+  .chart-container,
+  .bottom-container {
+    animation-delay: 0.4s;
+  }
+  
+  .summary-card:nth-child(n),
+  .legend-item:nth-child(n) {
+    animation-delay: 0.5s;
+  }
+}
+
+/* Enhanced Interactive Elements for Budget Insights */
+
+/* Interactive 3D Card Effect */
+.summary-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.summary-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
+}
+
+.summary-inner {
+  transition: all 0.4s ease;
+}
+
+.summary-card:hover .summary-inner {
+  transform: translateZ(20px);
+  box-shadow: 0 0 30px rgba(108, 92, 231, 0.2);
+}
+
+/* Interactive pie chart with slice highlight */
+.pie-chart-wrapper {
+  cursor: pointer;
+}
+
+.pie-chart-wrapper svg g path {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform-origin: center;
+}
+
+.pie-chart-wrapper svg g path:hover {
+  transform: scale(1.05) translateX(3px) translateY(-3px);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+}
+
+/* Enhanced interactive legend items */
+.legend-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.legend-item:hover {
+  background-color: rgba(108, 92, 231, 0.2);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  transform: translateX(8px);
+}
+
+.legend-color {
+  transition: all 0.3s ease;
+}
+
+.legend-item:hover .legend-color {
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Interactive chart containers */
+.chart-container {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-container:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.chart-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 70%, rgba(108, 92, 231, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.chart-container:hover::after {
+  opacity: 1;
+}
+
+/* Interactive category details */
+.category-details {
+  transition: all 0.4s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.category-details:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+.category-details::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(to bottom, #6c5ce7, #8e44ad);
+  transition: height 0.3s ease;
+}
+
+.category-details:hover::before {
+  height: 100%;
+}
+
+/* Enhanced button interactions */
+.generate-btn {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+  z-index: 0;
+}
+
+.generate-btn:active::before {
+  width: 300%;
+  height: 300%;
+}
+
+.generate-btn:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
+}
+
+/* Interactive insights header with hover effect */
+.insights-header {
+  position: relative;
+  cursor: pointer;
+}
+
+.insights-header h3 {
+  transition: all 0.3s ease;
+}
+
+.insights-header:hover h3 {
+  text-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
+  letter-spacing: 0.5px;
+}
+
+/* Interactive report container with scroll indicator */
+.report-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.report-container:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.report-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: linear-gradient(to top, rgba(30, 30, 30, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.report-container:hover::after {
+  opacity: 1;
+}
+
+/* Floating animation for the amount in summary cards */
+.summary-card:hover .amount {
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Remove black box behind pie chart and fix hover issues */
+
+/* Remove black background from pie chart wrapper */
+.pie-chart-wrapper {
+  background-color: transparent;
+  box-shadow: none;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Make pie slices pop out less when hovered */
+.pie-chart-wrapper svg g path:hover {
+  transform: scale(1.02) translateX(1px) translateY(-1px);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+/* Fix summary card to ensure $ amounts remain visible on hover */
+.summary-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.summary-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
+}
+
+.summary-inner {
+  transition: all 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.summary-card:hover .summary-inner {
+  transform: translateZ(10px);
+}
+
+/* Ensure text remains visible during hover */
+.summary-inner h3,
+.amount {
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Ensure the amount stays visible */
+.summary-card:hover .amount {
+  animation: none;
+  transform: translateZ(5px);
+  text-shadow: 0 0 10px rgba(108, 92, 231, 0.4);
+}
+
+.summary-card:hover .summary-inner h3 {
+  transform: translateZ(5px);
+  color: #fff;
+}
+
+/* Make pie chart container transparent */
+.pie-chart-container .chart-container {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.pie-chart-container .chart-container:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Remove the after effect on chart container */
+.chart-container::after {
+  display: none;
+}
+
+/* Fix issues with pie chart hover effects and dollar amount visibility */
+
+/* Remove hover animations from pie chart container */
+.chart-container,
+.pie-chart-wrapper {
+  transition: none;
+}
+
+.chart-container:hover,
+.pie-chart-wrapper:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Disable any background effect on hover */
+.chart-container::after,
+.pie-chart-wrapper::after {
+  display: none;
+}
+
+/* Fix $ amount visibility in summary cards */
+.summary-card,
+.summary-inner,
+.amount,
+.summary-inner h3 {
+  transform-style: flat;
+  backface-visibility: visible;
+}
+
+.summary-card:hover .amount,
+.summary-card:hover .summary-inner h3 {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  animation: none;
+}
+
+/* Ensure text remains visible and doesn't get affected by 3D transforms */
+.summary-inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Remove any 3D transform effects that might cause text to disappear */
+.summary-card:hover {
+  transform: translateY(-5px);
+  transform-style: flat;
+}
+
+.summary-card:hover .summary-inner {
+  transform: none;
+}
+
+/* Remove dark background from pie chart areas */
+.pie-chart-wrapper {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Fix issues with pie chart circle size and dollar amount visibility */
+
+/* Make the circles around $ amounts bigger */
+.summary-inner {
+  width: 160px;  /* Increase from 140px */
+  height: 160px; /* Increase from 140px */
+  padding: 1.2rem;
+}
+
+/* Fix $ amount disappearing after hover */
+.amount {
+  transition: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.summary-card,
+.summary-inner,
+.summary-inner h3 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: flat;
+  backface-visibility: visible;
+}
+
+/* Ensure no animations or transforms affect the text visibility */
+.summary-card:hover .amount,
+.summary-card:hover .summary-inner h3,
+.summary-card .amount,
+.summary-card .summary-inner h3 {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Remove any 3D or complex transforms */
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card:hover .summary-inner {
+  transform: none;
+}
+
+/* Remove dark background from pie chart areas */
+.pie-chart-wrapper {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
