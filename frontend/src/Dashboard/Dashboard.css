@@ -1839,3 +1839,15 @@ body {
     word-break: break-word !important;
   }
 }
+
+/* Hide persistent notification bar */
+.save-notification,
+.notification-bar,
+.status-message,
+.success-message,
+.toast-notification,
+.changes-saved-notification {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
