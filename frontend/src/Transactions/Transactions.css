@@ -1341,3 +1341,81 @@
     transform: translateY(0);
   }
 }
+
+/* Extended Transaction Box */
+.transactions-table-container {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  background-color: #222;
+  position: relative;
+  overflow: hidden;
+  max-height: none;
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+/* Add a gradient border effect */
+.transactions-table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6c5ce7, #8e44ad, #6c5ce7);
+  z-index: 1;
+  background-size: 200% 100%;
+  animation: gradientMove 6s linear infinite;
+}
+
+/* Add internal padding for better spacing */
+.transactions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 10px;
+}
+
+/* Improve table header styling */
+.transactions-table th {
+  position: sticky;
+  top: 0;
+  background-color: #1a1a1a;
+  color: #aaa;
+  text-align: left;
+  padding: 1.2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #333;
+  user-select: none;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve table cell padding and spacing */
+.transactions-table td {
+  padding: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 1rem;
+}
+
+/* Hide the eyeball icon over the amount */
+.amount-display .icon-eye,  /* Common class for eye icons */
+.amount-display .visibility-toggle,  /* Another common class for visibility toggles */
+.amount-field .visibility-icon,  /* If it's inside an amount field */
+.balance-container .visibility-control,  /* If it's in a balance container */
+[class*="eye"],  /* Target any class containing "eye" */
+[class*="visibility"] {  /* Target any class containing "visibility" */
+  display: none !important;  /* Force hide with !important */
+  opacity: 0 !important;  /* Ensure it's invisible */
+  pointer-events: none !important;  /* Prevent any interaction with it */
+}
+
+/* If the eyeball is an ::after or ::before pseudo-element */
+.amount-display::after,
+.amount-display::before,
+.balance-wrapper::after,
+.balance-wrapper::before {
+  display: none !important;
+}
