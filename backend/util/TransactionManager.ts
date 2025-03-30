@@ -55,6 +55,10 @@ export interface TransactionSummary {
   >;
 }
 
+/**
+ * This class provides static utility functions for managing trans
+ * @author Matthew R
+ */
 export default class TransactionManager {
   /**
    * This method returns a single unique transaction based on its ID.
