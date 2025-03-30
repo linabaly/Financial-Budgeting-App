@@ -41,12 +41,11 @@ const Footer: React.FC = () => {
         <div className="footer-top">
           <div className="footer-branding">
             <div className="footer-logo">
-              <div className="logo-text">Finovators</div>
-              <div className="logo-tagline">Track, Manage, Thrive</div>
+              <h1 className="logo-text">Finovators</h1>
+              <div className="logo-tagline">Track, Manage, Thrive with us</div>
             </div>
             
             <div className="newsletter-signup">
-              <h4>Get Financial Tips</h4>
               {subscribed ? (
                 <div className="subscribe-success">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -57,45 +56,29 @@ const Footer: React.FC = () => {
                 </div>
               ) : (
                 <form className="newsletter-form" onSubmit={handleSubscribe}>
-                  <input 
-                    type="email" 
-                    placeholder="Your email address"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    required
-                  />
-                  <button type="submit" className="subscribe-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="22" y1="2" x2="11" y2="13"></line>
-                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                  </button>
-                </form>
+  <input 
+    type="email" 
+    placeholder="Your email address"
+    value={emailInput}
+    onChange={(e) => setEmailInput(e.target.value)}
+    required
+  />
+  <button type="submit" className="subscribe-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"></line>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+    </svg>
+  </button>
+</form>
               )}
             </div>
           </div>
           
           <div className="footer-nav">
-            <div className="footer-column">
-              <h4>Company</h4>
-              <button className="footer-link" onClick={() => openModal('about')}>About Us</button>
-              <button className="footer-link" onClick={() => openModal('careers')}>Careers</button>
-              <button className="footer-link" onClick={() => openModal('press')}>Press</button>
-            </div>
-            
-            <div className="footer-column">
-              <h4>Support</h4>
-              <button className="footer-link" onClick={() => openModal('faqs')}>FAQs</button>
-              <button className="footer-link" onClick={() => openModal('help')}>Help Center</button>
-              <button className="footer-link" onClick={() => openModal('contact')}>Contact</button>
-            </div>
-            
-            <div className="footer-column">
-              <h4>Legal</h4>
-              <button className="footer-link" onClick={() => openModal('privacy')}>Privacy Policy</button>
-              <button className="footer-link" onClick={() => openModal('terms')}>Terms of Service</button>
-              <button className="footer-link" onClick={() => openModal('legal')}>Legal & Compliance</button>
-            </div>
+            <button className="footer-link" onClick={() => openModal('about')}>About Us</button>
+            <button className="footer-link" onClick={() => openModal('faqs')}>FAQs</button>
+            <button className="footer-link" onClick={() => openModal('privacy')}>Privacy Policy</button>
+            <button className="footer-link" onClick={() => openModal('legal')}>Legal & Compliance</button>
           </div>
         </div>
         
@@ -109,17 +92,16 @@ const Footer: React.FC = () => {
           <div className="contact-info">
             <div className="contact-item">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span>+1 234 567 89 00</span>
+            </div>
+            <div className="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
               <span>contact@finovators.com</span>
-            </div>
-            
-            <div className="contact-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-              </svg>
-              <span>+1 234 567 89 00</span>
             </div>
           </div>
           
@@ -127,11 +109,6 @@ const Footer: React.FC = () => {
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-link">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-              </svg>
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
               </svg>
             </a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
@@ -169,117 +146,31 @@ const Footer: React.FC = () => {
                 <h2>About Finovators</h2>
                 <div className="about-section">
                   <h3>Our Mission</h3>
-                  <p>At Finovators, we believe everyone deserves financial clarity and control. Our mission is to empower individuals with intuitive tools and insights that transform complex financial data into actionable decisions.</p>
+                  <p>At Finovators, we believe everyone deserves financial clarity and control. Our mission is to empower individuals and businesses with intuitive tools and actionable insights that transform complex financial data into confident decisions. We're committed to making sophisticated financial technology accessible to all.</p>
                   
                   <h3>Our Story</h3>
-                  <p>Founded in 2022 by a team of financial experts and technology innovators, Finovators was born from a shared frustration with the complexity of personal finance. We recognized that while there were plenty of budgeting tools available, few offered the simplicity, intelligence, and personalization that everyday people need.</p>
+                  <p>Founded in 2022 by a team of financial experts and technology innovators, Finovators was born from a shared frustration with the overwhelming complexity of personal and small business finance. What began as a simple expense tracking tool has evolved into a comprehensive financial management platform serving over 500,000 users worldwide.</p>
                   
-                  <p>What began as a simple expense tracker has evolved into a comprehensive financial management platform used by over 500,000 people worldwide.</p>
+                  <p>Our founders, Sarah Chen and Michael Rodriguez, met while working at a leading financial institution where they observed firsthand how traditional banking solutions often failed to address the real needs of everyday people. They assembled a diverse team of engineers, designers, and financial analysts united by a vision to democratize financial management.</p>
                   
                   <h3>Our Approach</h3>
-                  <p>We take a human-centered approach to financial technology. Rather than overwhelming you with complex charts and jargon, we focus on delivering meaningful insights in plain language, supported by intuitive visuals that anyone can understand.</p>
+                  <p>We take a human-centered approach to financial technology. Rather than overwhelming you with complex charts and financial jargon, we focus on delivering meaningful insights in plain language, supported by intuitive visualizations that anyone can understand.</p>
+                  
+                  <p>Our AI-powered platform continuously learns from user behavior to provide increasingly personalized recommendations, helping you make better financial decisions without requiring you to become a financial expert yourself.</p>
                   
                   <h3>Our Values</h3>
                   <ul className="values-list">
-                    <li><strong>Transparency:</strong> We believe in complete transparency in our operations and pricing.</li>
-                    <li><strong>Privacy:</strong> Your financial data is yours. We employ bank-level security and never sell your information.</li>
-                    <li><strong>Inclusivity:</strong> We design our products to serve everyone, regardless of financial expertise.</li>
-                    <li><strong>Innovation:</strong> We constantly push the boundaries of what financial technology can do.</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-            
-            {/* Careers Modal */}
-            {showModal === 'careers' && (
-              <div className="modal-body">
-                <h2>Careers at Finovators</h2>
-                <p className="career-intro">Join our team of passionate innovators who are reshaping how people manage their finances.</p>
-                
-                <div className="careers-section">
-                  <h3>Why Work With Us</h3>
-                  <ul className="benefits-list">
-                    <li>Competitive salary and equity options</li>
-                    <li>Flexible remote work policy</li>
-                    <li>Comprehensive health, dental, and vision benefits</li>
-                    <li>Generous paid time off and parental leave</li>
-                    <li>Professional development stipend</li>
-                    <li>401(k) matching program</li>
-                    <li>Regular team retreats and events</li>
+                    <li><strong>Transparency:</strong> We believe in complete transparency in our operations, pricing, and how we handle your data. No hidden fees, no surprises.</li>
+                    <li><strong>Privacy:</strong> Your financial data is yours. We employ bank-level security measures and never sell your information to third parties.</li>
+                    <li><strong>Inclusivity:</strong> We design our products to serve everyone, regardless of financial expertise, background, or circumstances.</li>
+                    <li><strong>Innovation:</strong> We constantly push the boundaries of what financial technology can do, integrating cutting-edge AI and machine learning to deliver smarter insights.</li>
+                    <li><strong>Support:</strong> We provide responsive, knowledgeable support because we understand that financial management can sometimes be stressful.</li>
                   </ul>
                   
-                  <h3>Open Positions</h3>
-                  <div className="job-listings">
-                    <div className="job-card">
-                      <h4>Senior Frontend Developer</h4>
-                      <p>We're looking for an experienced frontend developer who is passionate about creating intuitive user interfaces and responsive designs.</p>
-                      <span className="job-location">Remote (US)</span>
-                    </div>
-                    
-                    <div className="job-card">
-                      <h4>Data Scientist</h4>
-                      <p>Help us create powerful financial insights and predictions using machine learning and statistical analysis.</p>
-                      <span className="job-location">New York, NY</span>
-                    </div>
-                    
-                    <div className="job-card">
-                      <h4>Product Manager</h4>
-                      <p>Lead the development of new features from conception to launch, working closely with our design and engineering teams.</p>
-                      <span className="job-location">Remote (Worldwide)</span>
-                    </div>
-                  </div>
+                  <h3>Our Impact</h3>
+                  <p>Beyond our commercial offerings, Finovators is committed to improving financial literacy globally. Through our Finovators Foundation, we've partnered with educational institutions to provide free financial education resources to underserved communities.</p>
                   
-                  <p className="careers-cta">Don't see a role that fits your skills? We're always looking for talented individuals. Send your resume to <a href="mailto:careers@finovators.com">careers@finovators.com</a>.</p>
-                </div>
-              </div>
-            )}
-            
-            {/* Press Modal */}
-            {showModal === 'press' && (
-              <div className="modal-body">
-                <h2>Press & Media</h2>
-                <div className="press-section">
-                  <h3>Media Inquiries</h3>
-                  <p>For press inquiries or interview requests, please contact our media relations team at <a href="mailto:press@finovators.com">press@finovators.com</a>.</p>
-                  
-                  <h3>Press Releases</h3>
-                  <div className="press-releases">
-                    <div className="press-item">
-                      <h4>Finovators Launches AI-Powered Savings Feature</h4>
-                      <p className="press-date">March 15, 2025</p>
-                      <p>Finovators today announced the launch of its new AI-powered savings feature, which helps users automatically optimize their savings based on spending patterns and financial goals.</p>
-                    </div>
-                    
-                    <div className="press-item">
-                      <h4>Finovators Secures $12M in Series A Funding</h4>
-                      <p className="press-date">January 10, 2025</p>
-                      <p>Finovators, the innovative personal finance platform, has secured $12 million in Series A funding led by Benchmark Capital with participation from several angel investors.</p>
-                    </div>
-                    
-                    <div className="press-item">
-                      <h4>Finovators Reaches 500,000 User Milestone</h4>
-                      <p className="press-date">November 22, 2024</p>
-                      <p>Finovators today announced that it has reached 500,000 active users, representing 200% growth year-over-year.</p>
-                    </div>
-                  </div>
-                  
-                  <h3>In The News</h3>
-                  <div className="news-mentions">
-                    <div className="news-item">
-                      <h4>"The Future of Personal Finance"</h4>
-                      <p className="news-source">Financial Times, February 2025</p>
-                    </div>
-                    
-                    <div className="news-item">
-                      <h4>"10 Fintech Startups to Watch in 2025"</h4>
-                      <p className="news-source">TechCrunch, January 2025</p>
-                    </div>
-                    
-                    <div className="news-item">
-                      <h4>"How Finovators is Making Budgeting Accessible to Everyone"</h4>
-                      <p className="news-source">Forbes, December 2024</p>
-                    </div>
-                  </div>
+                  <p>Our Financial Futures program has reached over 50,000 high school students, equipping the next generation with essential money management skills they'll use throughout their lives.</p>
                 </div>
               </div>
             )}
@@ -291,215 +182,63 @@ const Footer: React.FC = () => {
                 <div className="accordion">
                   <div className={`accordion-item ${activeAccordion === 0 ? 'active' : ''}`}>
                     <div className="accordion-header" onClick={() => toggleAccordion(0)}>
-                      <h3>How do I reset my password?</h3>
+                      <h3>How do I get started with Finovators?</h3>
                       <span className="accordion-icon">{activeAccordion === 0 ? '−' : '+'}</span>
                     </div>
                     <div className="accordion-content">
-                      <p>To reset your password, click on the "Forgot Password" link on the login page. Enter the email address associated with your account, and we'll send you instructions to create a new password. For security reasons, the reset link expires after 24 hours.</p>
+                      <p>Getting started with Finovators is simple. Visit our website or download our mobile app from the App Store or Google Play Store. Create an account using your email address, then follow the guided setup process. You'll be prompted to connect your financial accounts securely through our bank-level encrypted system. Once connected, Finovators will automatically categorize your transactions and begin generating personalized insights. The entire setup process typically takes less than 10 minutes, and our support team is available to assist if you encounter any issues.</p>
                     </div>
                   </div>
                   
                   <div className={`accordion-item ${activeAccordion === 1 ? 'active' : ''}`}>
                     <div className="accordion-header" onClick={() => toggleAccordion(1)}>
-                      <h3>How do I add a new transaction?</h3>
+                      <h3>How secure is my financial information?</h3>
                       <span className="accordion-icon">{activeAccordion === 1 ? '−' : '+'}</span>
                     </div>
                     <div className="accordion-content">
-                      <p>To add a new transaction, navigate to the Transactions page by clicking "Transactions" in the main navigation. Then click the "+ Add Transaction" button in the top right corner. Fill in the transaction details including amount, category, date, and description, then click "Save." Your new transaction will appear in your transaction list and be reflected in your dashboard analytics.</p>
+                      <p>Your security is our top priority. We implement multiple layers of protection: 256-bit bank-level encryption for all data transmission and storage, biometric authentication options on mobile devices, and continuous monitoring for suspicious activities. We're SOC 2 Type II certified and comply with PCI DSS standards. We never store your banking credentials directly; instead, we use secure token-based access through trusted financial API providers like Plaid and Yodlee. Additionally, we offer two-factor authentication and automatically log you out after periods of inactivity. Our security team regularly conducts penetration testing and works with independent auditors to ensure we maintain the highest security standards.</p>
                     </div>
                   </div>
                   
-<div className={`accordion-item ${activeAccordion === 2 ? 'active' : ''}`}>
-  <div className="accordion-header" onClick={() => toggleAccordion(2)}>
-    <h3>How can I categorize my expenses?</h3>
-    <span className="accordion-icon">{activeAccordion === 2 ? '−' : '+'}</span>
-  </div>
-  <div className="accordion-content">
-    <p>
-      Finovators offers two ways to categorize expenses. You can either select from our default categories when adding a transaction (Housing, Food, Transportation, etc.), or create custom categories by going to Settings &gt; Categories &gt; Add New. Our AI system also learns from your transactions and can automatically categorize similar expenses in the future.
-    </p>
-  </div>
-</div>
-
-                  
-                  <div className={`accordion-item ${activeAccordion === 3 ? 'active' : ''}`}>
-                    <div className="accordion-header" onClick={() => toggleAccordion(3)}>
-                      <h3>Can I export my financial data?</h3>
-                      <span className="accordion-icon">{activeAccordion === 3 ? '−' : '+'}</span>
+                  <div className={`accordion-item ${activeAccordion === 2 ? 'active' : ''}`}>
+                    <div className="accordion-header" onClick={() => toggleAccordion(2)}>
+                      <h3>What types of financial accounts can I connect?</h3>
+                      <span className="accordion-icon">{activeAccordion === 2 ? '−' : '+'}</span>
                     </div>
                     <div className="accordion-content">
-                      <p>Yes, you can export your financial data in CSV or PDF format. Go to your Dashboard and click on the "Export" button in the top right corner. Select your preferred format and date range, and the file will be generated for download. This is useful for tax preparation or if you want to analyze your data in another program.</p>
+                      <p>Finovators supports a wide range of financial accounts. You can connect checking and savings accounts, credit cards, investment portfolios (including 401(k)s, IRAs, and brokerage accounts), loans (student, auto, personal, and mortgages), and even cryptocurrency wallets. We integrate with over 15,000 financial institutions across North America and Europe, covering major banks, credit unions, and fintech platforms. If you have an account that's not automatically recognized, our support team can usually add support for it within 2-3 business days. For business users, we also support connection to accounting software like QuickBooks and Xero, as well as payment platforms like Stripe and PayPal.</p>
                     </div>
                   </div>
+                  
+                  <div className={`accordion-item ${activeAccordion === 3 ? 'active' : ''}`}>
+  <div className="accordion-header" onClick={() => toggleAccordion(3)}>
+    <h3>Can I create custom categories for my expenses?</h3>
+    <span className="accordion-icon">{activeAccordion === 3 ? '−' : '+'}</span>
+  </div>
+  <div className="accordion-content">
+    <p>Yes, Finovators offers complete customization of your expense categories. While we provide a comprehensive set of default categories (Housing, Food, Transportation, Entertainment, etc.), you can easily create custom categories that better reflect your personal or business spending patterns. To create a custom category, go to Settings &gt; Categories &gt; Add New. You can name your category, assign it a color and icon, and even set up rules for automatic categorization based on transaction descriptions, vendors, or amounts. You can also create nested subcategories for more detailed tracking (e.g., Entertainment &gt; Streaming Services &gt; Netflix). The platform allows for unlimited custom categories, and all your historical transactions can be recategorized with just a few clicks.</p>
+  </div>
+</div>
                   
                   <div className={`accordion-item ${activeAccordion === 4 ? 'active' : ''}`}>
                     <div className="accordion-header" onClick={() => toggleAccordion(4)}>
-                      <h3>How secure is my financial information?</h3>
+                      <h3>How are my subscription services tracked?</h3>
                       <span className="accordion-icon">{activeAccordion === 4 ? '−' : '+'}</span>
                     </div>
                     <div className="accordion-content">
-                      <p>Your security is our top priority. We use bank-level 256-bit encryption for all data transmission and storage. Our platform is SOC 2 Type II certified, and we regularly undergo security audits. We never store your bank credentials directly; instead, we use secure token-based access through trusted financial API providers. Additionally, we offer two-factor authentication as an extra layer of protection for your account.</p>
+                      <p>Our Subscription Tracker automatically identifies recurring payments across all your connected accounts. Using advanced pattern recognition, it detects subscription services even when they charge variable amounts or on irregular schedules. In the Subscriptions dashboard, you'll see a comprehensive view of all your subscriptions, including monthly cost, total annual expenditure, usage trends, and smart recommendations for potential savings. You'll receive timely alerts before renewal dates, notifications about price increases, and suggestions for similar services at better rates. The system can also detect potentially forgotten or unused subscriptions based on your engagement patterns and spending history, helping you eliminate waste without sacrificing the services you value.</p>
                     </div>
                   </div>
                   
                   <div className={`accordion-item ${activeAccordion === 5 ? 'active' : ''}`}>
                     <div className="accordion-header" onClick={() => toggleAccordion(5)}>
-                      <h3>Is Finovators available on mobile devices?</h3>
+                      <h3>What kind of reports and insights can I expect?</h3>
                       <span className="accordion-icon">{activeAccordion === 5 ? '−' : '+'}</span>
                     </div>
                     <div className="accordion-content">
-                      <p>Yes, Finovators is available as a mobile app for both iOS and Android devices. You can download the app from the Apple App Store or Google Play Store. Our mobile app offers the same features as the web version, with the added convenience of on-the-go access and the ability to capture receipts with your phone's camera.</p>
+                      <p>Finovators provides a rich array of reports and AI-powered insights. Our standard reports include monthly spending breakdowns, income vs. expenses, savings rate tracking, net worth calculations, and investment performance analysis. Beyond these basics, our AI engine delivers personalized insights tailored to your financial situation and goals. These might include cash flow predictions, spending anomaly detection, proactive budget adjustment recommendations, potential tax saving opportunities, and debt reduction strategies. Premium subscribers receive additional advanced reports such as retirement readiness projections, what-if scenario modeling, and comprehensive tax planning tools. All reports can be customized, saved as favorites, scheduled for regular delivery to your email, and exported in multiple formats for your records or for sharing with financial advisors.</p>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Help Center Modal */}
-            {showModal === 'help' && (
-              <div className="modal-body">
-                <h2>Help Center</h2>
-                <div className="help-section">
-                  <h3>Getting Started</h3>
-                  <div className="help-topics">
-                    <div className="help-topic">
-                      <h4>Creating Your Account</h4>
-                      <p>Learn how to sign up, set up your profile, and customize your dashboard preferences.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Connecting Your Accounts</h4>
-                      <p>Step-by-step instructions for securely linking your bank accounts, credit cards, and investments.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Setting Up Your Budget</h4>
-                      <p>How to create personalized budget categories and set spending limits that work for you.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                  </div>
-                  
-                  <h3>Using Finovators</h3>
-                  <div className="help-topics">
-                    <div className="help-topic">
-                      <h4>Tracking Expenses</h4>
-                      <p>Everything you need to know about recording, categorizing, and managing your expenses.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Managing Recurring Payments</h4>
-                      <p>How to set up, edit, and track your recurring bills and subscriptions.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Setting Financial Goals</h4>
-                      <p>Learn to create, track, and achieve your savings goals and debt reduction targets.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                  </div>
-                  
-                  <h3>Troubleshooting</h3>
-                  <div className="help-topics">
-                    <div className="help-topic">
-                      <h4>Account Sync Issues</h4>
-                      <p>Solutions for common problems with connecting or updating your financial accounts.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Missing or Duplicate Transactions</h4>
-                      <p>How to identify and fix issues with transaction data.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                    
-                    <div className="help-topic">
-                      <h4>Login Problems</h4>
-                      <p>Steps to resolve password issues, account access, and two-factor authentication.</p>
-                      <button className="help-link">Read Guide</button>
-                    </div>
-                  </div>
-                  
-                  <div className="help-cta">
-                    <p>Still need help? Our support team is available 24/7.</p>
-                    <button className="contact-support-btn">Contact Support</button>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Contact Modal */}
-            {showModal === 'contact' && (
-              <div className="modal-body">
-                <h2>Contact Us</h2>
-                <div className="contact-section">
-                  <div className="contact-options">
-                    <div className="contact-option">
-                      <div className="contact-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                          <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                      </div>
-                      <h3>Email Support</h3>
-                      <p>For general inquiries and account support:</p>
-                      <a href="mailto:support@finovators.com" className="contact-link">support@finovators.com</a>
-                    </div>
-                    
-                    <div className="contact-option">
-                      <div className="contact-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                        </svg>
-                      </div>
-                      <h3>Live Chat</h3>
-                      <p>Chat with our support team in real-time:</p>
-                      <button className="start-chat-btn">Start Chat</button>
-                      <p className="support-hours">Available Monday-Friday, 9am-9pm EST</p>
-                    </div>
-                    
-                    <div className="contact-option">
-                      <div className="contact-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                        </svg>
-                      </div>
-                      <h3>Phone Support</h3>
-                      <p>For urgent issues or complex questions:</p>
-                      <a href="tel:+18001234567" className="contact-link">+1 (800) 123-4567</a>
-<p className="support-hours">Available 24/7 for urgent issues</p>
-                    </div>
-                  </div>
-                  
-                  <form className="contact-form">
-                    <h3>Send us a message</h3>
-                    <div className="form-group">
-                      <label htmlFor="name">Name</label>
-                      <input type="text" id="name" placeholder="Your name" />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="email">Email</label>
-                      <input type="email" id="email" placeholder="Your email address" />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="subject">Subject</label>
-                      <select id="subject">
-                        <option value="">Select a subject</option>
-                        <option value="support">Technical Support</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="billing">Billing Inquiry</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="message">Message</label>
-                      <textarea id="message" rows={4} placeholder="How can we help you?"></textarea>
-                    </div>
-                    <button type="submit" className="submit-btn">Send Message</button>
-                  </form>
                 </div>
               </div>
             )}
@@ -512,17 +251,19 @@ const Footer: React.FC = () => {
                 
                 <div className="policy-section">
                   <h3>Introduction</h3>
-                  <p>At Finovators, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our financial management platform. Please read this policy carefully to understand our practices regarding your personal data.</p>
+                  <p>At Finovators, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our financial management platform. Please read this policy carefully to understand our practices regarding your personal data and how we will treat it.</p>
                 </div>
                 
                 <div className="policy-section">
                   <h3>Information We Collect</h3>
                   <p>We collect several types of information from and about users of our platform:</p>
                   <ul className="policy-list">
-                    <li><strong>Personal Information:</strong> This includes identifiers such as your name, email address, phone number, and postal address.</li>
-                    <li><strong>Financial Information:</strong> When you connect your financial accounts, we collect transaction data, account balances, and other financial information needed to provide our services.</li>
-                    <li><strong>Usage Data:</strong> We collect information about how you interact with our platform, including features used, time spent, and actions taken.</li>
-                    <li><strong>Device Information:</strong> This includes your IP address, browser type, operating system, and other technical details.</li>
+                    <li><strong>Personal Information:</strong> This includes identifiers such as your name, email address, phone number, date of birth, and postal address. We collect this information during account creation and when you update your profile.</li>
+                    <li><strong>Financial Information:</strong> When you connect your financial accounts, we collect transaction data, account balances, account numbers, and other financial information needed to provide our services. This may include your income sources, spending patterns, assets, liabilities, and investment holdings.</li>
+                    <li><strong>Usage Data:</strong> We collect information about how you interact with our platform, including features used, time spent on various pages, frequency of use, click patterns, preferences settings, and actions taken within the application.</li>
+                    <li><strong>Device Information:</strong> This includes your IP address, browser type, operating system, device identifiers, mobile network information, and other technical details about the devices you use to access our service.</li>
+                    <li><strong>Location Data:</strong> With your permission, we may collect precise or approximate location data from your mobile device to provide location-based services such as finding nearby ATMs or bank branches.</li>
+                    <li><strong>Communications:</strong> If you contact our support team, we retain those communications to help solve your issues and improve our services.</li>
                   </ul>
                 </div>
                 
@@ -530,13 +271,14 @@ const Footer: React.FC = () => {
                   <h3>How We Use Your Information</h3>
                   <p>We use the information we collect to:</p>
                   <ul className="policy-list">
-                    <li>Provide, maintain, and improve our services</li>
-                    <li>Process transactions and manage your accounts</li>
-                    <li>Generate personalized financial insights and recommendations</li>
-                    <li>Communicate with you about your account, updates, and new features</li>
-                    <li>Respond to your inquiries and support requests</li>
-                    <li>Protect against fraudulent or unauthorized activity</li>
-                    <li>Comply with legal obligations</li>
+                    <li>Provide, maintain, and improve our services, including to develop new features and functionality</li>
+                    <li>Process transactions and manage your accounts, including synchronizing your financial data with third-party financial institutions</li>
+                    <li>Generate personalized financial insights, recommendations, and alerts based on your financial behavior and goals</li>
+                    <li>Communicate with you about your account, updates, security alerts, and new features</li>
+                    <li>Respond to your inquiries, support requests, feedback, and questions</li>
+                    <li>Protect against fraudulent, unauthorized, or illegal activity on our platform</li>
+                    <li>Analyze usage patterns to improve user experience and optimize our service performance</li>
+                    <li>Comply with legal obligations, including responding to lawful requests from public authorities</li>
                   </ul>
                 </div>
                 
@@ -544,9 +286,11 @@ const Footer: React.FC = () => {
                   <h3>Information Sharing</h3>
                   <p>We do not sell your personal information. We may share certain information with:</p>
                   <ul className="policy-list">
-                    <li><strong>Service Providers:</strong> Third-party vendors who help us operate our platform and provide services</li>
-                    <li><strong>Financial Partners:</strong> Financial institutions necessary to connect your accounts and process transactions</li>
-                    <li><strong>Legal Authorities:</strong> When required by law or to protect our rights and the safety of our users</li>
+                    <li><strong>Service Providers:</strong> Third-party vendors who help us operate our platform and provide services to you. These providers are contractually obligated to use your information only for providing services to us and in accordance with this Privacy Policy.</li>
+                    <li><strong>Financial Partners:</strong> Financial institutions and data aggregators necessary to connect your accounts and process transactions. These partners only receive the information needed to provide their specific service.</li>
+                    <li><strong>With Your Consent:</strong> We may share information with third parties when you explicitly consent to such sharing, such as when you choose to share financial reports with a financial advisor.</li>
+                    <li><strong>Legal Requirements:</strong> When required by law, legal process, litigation, or governmental authorities. We may also disclose information about you if we determine that disclosure is necessary to protect the rights, property, or safety of our users or others.</li>
+                    <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, reorganization, sale of assets, or bankruptcy, your information may be transferred or sold as part of that transaction, but only to the extent permitted by law.</li>
                   </ul>
                 </div>
                 
@@ -554,11 +298,14 @@ const Footer: React.FC = () => {
                   <h3>Data Security</h3>
                   <p>We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. Our security practices include:</p>
                   <ul className="policy-list">
-                    <li>256-bit encryption for data transmission and storage</li>
-                    <li>Regular security audits and vulnerability testing</li>
-                    <li>Employee access controls and security training</li>
-                    <li>Physical and electronic safeguards for our systems</li>
+                    <li>256-bit encryption for data transmission and storage, the same level used by major financial institutions</li>
+                    <li>Regular security audits, vulnerability testing, and penetration testing by independent security experts</li>
+                    <li>Employee access controls, background checks, and comprehensive security training</li>
+                    <li>Multi-factor authentication and biometric verification options for account access</li>
+                    <li>Physical, electronic, and procedural safeguards for our systems and facilities</li>
+                    <li>Continuous monitoring for suspicious activities and automated threat detection</li>
                   </ul>
+                  <p>While we implement these safeguards, no system is 100% secure. We encourage you to take steps to protect your account, such as using strong passwords and enabling two-factor authentication.</p>
                 </div>
                 
                 <div className="policy-section">
@@ -570,66 +317,30 @@ const Footer: React.FC = () => {
                     <li>Deleting your information</li>
                     <li>Restricting or objecting to certain processing activities</li>
                     <li>Requesting portability of your information</li>
+                    <li>Withdrawing consent when processing is based on consent</li>
+                    <li>Opting out of certain data sharing practices</li>
                   </ul>
-                  <p>To exercise these rights, please contact us at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a>.</p>
-                </div>
-              </div>
-            )}
-            
-            {/* Terms of Service Modal */}
-            {showModal === 'terms' && (
-              <div className="modal-body">
-                <h2>Terms of Service</h2>
-                <p className="modal-date">Last updated: March 22, 2025</p>
-                
-                <div className="policy-section">
-                  <h3>Acceptance of Terms</h3>
-                  <p>By accessing or using Finovators, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
+                  <p>To exercise these rights, please contact us at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or visit the Privacy Settings section in your account. We will respond to all legitimate requests within 30 days.</p>
                 </div>
                 
                 <div className="policy-section">
-                  <h3>Description of Services</h3>
-                  <p>Finovators provides a personal financial management platform that allows users to track expenses, create budgets, set financial goals, and gain insights into their financial habits. Our services may include:</p>
-                  <ul className="policy-list">
-                    <li>Connecting to financial accounts to import transaction data</li>
-                    <li>Categorizing and analyzing spending patterns</li>
-                    <li>Creating personalized budgets and savings goals</li>
-                    <li>Generating financial insights and recommendations</li>
-                    <li>Visualizing financial data through charts and reports</li>
-                  </ul>
+                  <h3>Data Retention</h3>
+                  <p>We retain your personal information for as long as your account is active or as needed to provide you services, comply with legal obligations, resolve disputes, and enforce our agreements. If you wish to delete your account, certain information may remain in our records after account deletion as required or permitted by law.</p>
                 </div>
                 
                 <div className="policy-section">
-                  <h3>Account Registration</h3>
-                  <p>To use our services, you must create an account. You agree to provide accurate and complete information during registration and to keep your credentials secure. You are responsible for all activities that occur under your account.</p>
+                  <h3>Children's Privacy</h3>
+                  <p>Our services are not intended for children under the age of 18, and we do not knowingly collect data from children under 18. If we learn that we have collected personal information from a child under 18, we will take steps to delete that information as quickly as possible.</p>
                 </div>
                 
                 <div className="policy-section">
-                  <h3>User Responsibilities</h3>
-                  <p>As a user of Finovators, you agree to:</p>
-                  <ul className="policy-list">
-                    <li>Use our services for lawful purposes only</li>
-                    <li>Provide accurate information about your finances</li>
-                    <li>Maintain the confidentiality of your account credentials</li>
-                    <li>Not attempt to gain unauthorized access to any part of our platform</li>
-                    <li>Not use the platform to engage in fraudulent or deceptive activities</li>
-                    <li>Not interfere with the proper operation of our services</li>
-                  </ul>
+                  <h3>Changes to This Policy</h3>
+                  <p>We may update this Privacy Policy from time to time. If we make material changes, we will notify you through the platform or by email prior to the changes becoming effective. We encourage you to review this Privacy Policy periodically for the latest information on our privacy practices.</p>
                 </div>
                 
                 <div className="policy-section">
-                  <h3>Intellectual Property</h3>
-                  <p>All content, features, and functionality of the Finovators platform, including text, graphics, logos, icons, and software, are the exclusive property of Finovators or its licensors and are protected by copyright, trademark, and other intellectual property laws.</p>
-                </div>
-                
-                <div className="policy-section">
-                  <h3>Limitation of Liability</h3>
-                  <p>To the maximum extent permitted by law, Finovators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of our services. Finovators is not responsible for the accuracy of financial information provided by third-party financial institutions.</p>
-                </div>
-                
-                <div className="policy-section">
-                  <h3>Modifications to the Service</h3>
-                  <p>We reserve the right to modify, suspend, or discontinue any part of our services at any time without notice. We may also update these Terms of Service periodically. Continued use of the platform after changes constitutes acceptance of the modified terms.</p>
+                  <h3>Contact Us</h3>
+                  <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact our Data Protection Officer at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or by mail at Finovators Privacy Office, 100 Financial Plaza, Suite 500, San Francisco, CA 94103.</p>
                 </div>
               </div>
             )}
@@ -642,10 +353,13 @@ const Footer: React.FC = () => {
                   <h3>Regulatory Compliance</h3>
                   <p>Finovators is committed to complying with all applicable laws and regulations. Our platform adheres to the following regulatory frameworks:</p>
                   <ul className="legal-list">
-                    <li><strong>General Data Protection Regulation (GDPR):</strong> We comply with GDPR requirements for users in the European Economic Area, providing rights to access, correct, and delete personal data.</li>
-                    <li><strong>California Consumer Privacy Act (CCPA):</strong> For California residents, we honor rights regarding personal information as specified by the CCPA.</li>
-                    <li><strong>Financial Industry Regulatory Authority (FINRA):</strong> While not directly regulated by FINRA, we follow industry best practices for financial data handling.</li>
-                    <li><strong>Electronic Fund Transfer Act (EFTA):</strong> We comply with regulations concerning electronic money transfers and related consumer protections.</li>
+                    <li><strong>General Data Protection Regulation (GDPR):</strong> For users in the European Economic Area, we comply with GDPR requirements governing personal data collection, processing, and storage. This includes providing rights to access, correct, delete, restrict processing of, and port personal data.</li>
+                    <li><strong>California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA):</strong> For California residents, we honor rights regarding personal information as specified by these laws, including the right to know what personal information is collected, the right to delete personal information, the right to opt-out of the sale of personal information, and the right to non-discrimination for exercising these rights.</li>
+                    <li><strong>Financial Industry Regulatory Authority (FINRA):</strong> While not directly regulated by FINRA, we adhere to industry best practices for financial data handling, reporting, and disclosures. Our advisory team includes FINRA-licensed professionals who ensure our platform meets relevant standards.</li>
+                    <li><strong>Electronic Fund Transfer Act (EFTA) and Regulation E:</strong> We comply with regulations concerning electronic money transfers, error resolution procedures, and related consumer protections when facilitating connections to financial accounts.</li>
+                    <li><strong>Gramm-Leach-Bliley Act (GLBA):</strong> As a financial service provider, we follow GLBA regulations regarding the collection, disclosure, and protection of consumers' nonpublic personal information, including our obligation to notify you about our information-sharing practices.</li>
+                    <li><strong>Consumer Financial Protection Bureau (CFPB) Guidelines:</strong> We adhere to CFPB standards for financial data access, consumer disclosures, and ethical practices in the provision of financial services technology.</li>
+                    <li><strong>State-Specific Financial Regulations:</strong> We maintain compliance with state-level financial regulations across the United States, including money transmitter laws, data breach notification requirements, and specific data protection regulations.</li>
                   </ul>
                 </div>
                 
@@ -653,10 +367,13 @@ const Footer: React.FC = () => {
                   <h3>Security Standards</h3>
                   <p>We maintain the highest industry-standard security protocols:</p>
                   <ul className="legal-list">
-                    <li><strong>SOC 2 Type II Certification:</strong> We undergo regular audits to ensure our systems meet stringent security, availability, and confidentiality standards.</li>
-                    <li><strong>PCI DSS Compliance:</strong> For any payment-related functions, we adhere to Payment Card Industry Data Security Standards.</li>
-                    <li><strong>AES-256 Encryption:</strong> All sensitive data is protected using advanced encryption standards both in transit and at rest.</li>
-                    <li><strong>Multi-Factor Authentication:</strong> Additional security layers are available to protect account access.</li>
+                    <li><strong>SOC 2 Type II Certification:</strong> We undergo regular audits by independent third parties to ensure our systems meet stringent security, availability, processing integrity, confidentiality, and privacy standards.</li>
+                    <li><strong>PCI DSS Compliance:</strong> For any payment-related functions, we adhere to Payment Card Industry Data Security Standards, ensuring that cardholder data is processed, stored, and transmitted with maximum security.</li>
+                    <li><strong>NIST Cybersecurity Framework:</strong> Our security practices follow the National Institute of Standards and Technology Cybersecurity Framework, implementing comprehensive protection, detection, and response measures.</li>
+                    <li><strong>ISO/IEC 27001:2013:</strong> Our information security management system is aligned with this international standard, ensuring systematic management of sensitive company and customer information.</li>
+                    <li><strong>AES-256 Encryption:</strong> All sensitive data is protected using Advanced Encryption Standard with 256-bit keys, both in transit and at rest, ensuring your financial information remains secure.</li>
+                    <li><strong>Multi-Factor Authentication:</strong> Additional security layers are available and encouraged to protect account access, including biometric verification, one-time passcodes, and hardware security keys.</li>
+                    <li><strong>Security Bug Bounty Program:</strong> We collaborate with the security research community through a responsible disclosure program, rewarding identified vulnerabilities to continuously strengthen our security posture.</li>
                   </ul>
                 </div>
                 
@@ -664,32 +381,60 @@ const Footer: React.FC = () => {
                   <h3>Disclaimer</h3>
                   <p>Finovators is a financial management tool designed to help you track and analyze your personal finances. Important disclaimers:</p>
                   <ul className="legal-list">
-                    <li>We are not a financial institution, investment advisor, or credit counselor.</li>
-                    <li>Our platform does not provide financial, investment, or tax advice.</li>
-                    <li>Insights and recommendations are generated based on your data and general financial principles, not personalized professional advice.</li>
-                    <li>You should consult with qualified financial professionals before making significant financial decisions.</li>
-                    <li>While we strive for accuracy, we cannot guarantee that all information is error-free.</li>
+                    <li>We are not a financial institution, investment advisor, or credit counselor. While our platform provides financial insights and recommendations, these should not be considered as professional financial advice.</li>
+                    <li>Our platform does not provide tax, legal, or accounting advice. Any tax-related features are for informational purposes only and should not be relied upon for tax preparation or filing purposes.</li>
+                    <li>Insights and recommendations are generated based on your data and general financial principles. They may not account for all aspects of your personal financial situation and should be evaluated against your specific circumstances and goals.</li>
+                    <li>Past performance is not indicative of future results. Any investment projections, market analyses, or similar information provided through our platform are for illustrative purposes only.</li>
+                    <li>While we strive for accuracy in our data aggregation and analysis, we cannot guarantee that all information is error-free. Financial data from third-party sources should be verified with the original source.</li>
+                    <li>You should consult with qualified financial, tax, legal, or accounting professionals before making significant financial decisions or implementing strategies suggested by our platform.</li>
                   </ul>
                 </div>
                 
                 <div className="policy-section">
                   <h3>Third-Party Services</h3>
-                  <p>Our platform integrates with various third-party services, including financial institutions. These entities have their own terms of service and privacy policies that govern the data shared with them.</p>
-                  <p>When you connect your financial accounts, you are authorizing Finovators to access your account information in accordance with the terms of our service and the respective financial institution&apos;s policies.</p>
+                  <p>Our platform integrates with various third-party services, including financial institutions, payment processors, and data aggregators. These entities have their own terms of service and privacy policies that govern the data shared with them.</p>
+                  <p>When you connect your financial accounts, you are authorizing Finovators to access your account information in accordance with the terms of our service and the respective financial institution's policies. You may need to provide authentication credentials directly to these third parties for account verification purposes.</p>
+                  <p>While we carefully select our integration partners and hold them to high security standards, we are not responsible for the privacy practices, content, or policies of these third parties. We encourage you to review the privacy policies and terms of service of any financial institutions or services you connect to our platform.</p>
                 </div>
                 
                 <div className="policy-section">
                   <h3>Intellectual Property</h3>
-                  <p>All intellectual property rights related to the Finovators platform, including software, design, text, graphics, logos, and other content, are owned by Finovators or its licensors. Unauthorized use, reproduction, or distribution of our intellectual property is prohibited.</p>
+                  <p>All intellectual property rights related to the Finovators platform, including software, design, text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, and other content, are owned by Finovators or its licensors.</p>
+                  <p>Our platform and its content are protected by copyright, trademark, trade secret, and other intellectual property laws. Unauthorized use, reproduction, or distribution of our intellectual property is prohibited and may result in civil and criminal penalties.</p>
+                  <p>We grant users a limited, non-exclusive, non-transferable, revocable license to use our platform for personal or internal business purposes in accordance with our Terms of Service. This license does not include the right to copy, modify, distribute, sell, lease, or create derivative works of our platform or its content.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Service Availability and Modifications</h3>
+                  <p>We strive to ensure that our services are available 24/7, but we do not guarantee uninterrupted access to our platform. Temporary service interruptions may occur due to system maintenance, updates, or factors beyond our control.</p>
+                  <p>We reserve the right to modify, suspend, or discontinue any part of our services at any time without notice. This includes the right to impose limits on certain features or restrict access to parts or all of the platform.</p>
+                  <p>We may also update our Terms of Service, Privacy Policy, and other legal documents periodically. Continued use of our platform after such changes constitutes acceptance of the modified terms.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Dispute Resolution</h3>
+                  <p>In the event of any dispute arising from or relating to our services, we encourage users to first contact our customer support team at <a href="mailto:support@finovators.com">support@finovators.com</a> to seek a resolution.</p>
+                  <p>If the matter cannot be resolved directly, depending on the nature of the dispute and your location, resolution may proceed through arbitration, small claims court, or other legal channels as specified in our Terms of Service.</p>
+                  <p>Any legal proceedings arising from the use of our services shall be governed by and construed in accordance with the laws of the State of California, without giving effect to any choice of law or conflict of law provisions.</p>
                 </div>
                 
                 <div className="policy-section">
                   <h3>Contact Information</h3>
                   <p>For legal inquiries or compliance questions, please contact our legal department at <a href="mailto:legal@finovators.com">legal@finovators.com</a>.</p>
+                  
+                  <p>For official notices, correspondence, or legal documents, please send mail to:</p>
+                  <address className="legal-address">
+                    Finovators Legal Department<br />
+                    100 Financial Plaza, Suite 500<br />
+                    San Francisco, CA 94103<br />
+                    United States
+                  </address>
+                  
+                  <p>Our Compliance Officer can be reached directly at <a href="mailto:compliance@finovators.com">compliance@finovators.com</a> or by phone at +1 (800) 123-4567 ext. 2240 during business hours (Monday-Friday, 9am-5pm PT).</p>
                 </div>
               </div>
             )}
-          </div>
+            </div>
         </div>
       )}
     </footer>

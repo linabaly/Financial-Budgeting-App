@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const PersonalInfo: React.FC = () => {
+interface PersonalInfoProps {
+  onSave: () => void;
+}
+
+const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   const [personalInfo, setPersonalInfo] = useState({
     firstName: 'Alex',
     lastName: 'Johnson',
@@ -8,105 +14,154 @@ const PersonalInfo: React.FC = () => {
     phone: '+1 (555) 123-4567',
     address: '123 Finance Street, New York, NY 10001',
     birthday: '1990-05-15',
-    occupation: 'Software Engineer'
+    occupation: 'Software Engineer',
+    bio: 'Finance enthusiast and tech professional with a passion for efficient money management.'
   });
 
+  const handleInputChange = (field: string, value: string) => {
+    setPersonalInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleUpdateInfo = () => {
-    // Implement API call to update personal information
-    console.log('Updating personal info:', personalInfo);
-    alert('Personal information updated successfully!');
+    // Call the onSave function passed from the parent
+    onSave();
   };
 
   return (
-    <div className="personal-info-section">
+    <motion.div 
+      className="personal-info-section"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <h2>Personal Information</h2>
-      <div className="info-grid">
-        <div className="form-group">
+      <div className="form-grid">
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           <label>First Name</label>
           <input 
             type="text" 
             value={personalInfo.firstName}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              firstName: e.target.value
-            })}
+            onChange={(e) => handleInputChange('firstName', e.target.value)}
           />
-        </div>
-        <div className="form-group">
+        </motion.div>
+        
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           <label>Last Name</label>
           <input 
             type="text" 
             value={personalInfo.lastName}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              lastName: e.target.value
-            })}
+            onChange={(e) => handleInputChange('lastName', e.target.value)}
           />
-        </div>
-        <div className="form-group full-width">
+        </motion.div>
+        
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
           <label>Email</label>
           <input 
             type="email" 
             value={personalInfo.email}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              email: e.target.value
-            })}
+            onChange={(e) => handleInputChange('email', e.target.value)}
           />
-        </div>
-        <div className="form-group">
+        </motion.div>
+        
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
           <label>Phone Number</label>
           <input 
             type="tel" 
             value={personalInfo.phone}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              phone: e.target.value
-            })}
+            onChange={(e) => handleInputChange('phone', e.target.value)}
           />
-        </div>
-        <div className="form-group">
-          <label>Birthday</label>
-          <input 
-            type="date" 
-            value={personalInfo.birthday}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              birthday: e.target.value
-            })}
+        </motion.div>
+        
+        <motion.div 
+          className="form-group full-width"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <label>Bio</label>
+          <textarea 
+            value={personalInfo.bio}
+            onChange={(e) => handleInputChange('bio', e.target.value)}
+            rows={4}
           />
-        </div>
-        <div className="form-group">
+        </motion.div>
+        
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
           <label>Occupation</label>
           <input 
             type="text" 
             value={personalInfo.occupation}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              occupation: e.target.value
-            })}
+            onChange={(e) => handleInputChange('occupation', e.target.value)}
           />
-        </div>
-        <div className="form-group full-width">
+        </motion.div>
+        
+        <motion.div 
+          className="form-group"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          <label>Birthday</label>
+          <input 
+            type="date" 
+            value={personalInfo.birthday}
+            onChange={(e) => handleInputChange('birthday', e.target.value)}
+          />
+        </motion.div>
+        
+        <motion.div 
+          className="form-group full-width"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
           <label>Address</label>
           <input 
             type="text" 
             value={personalInfo.address}
-            onChange={(e) => setPersonalInfo({
-              ...personalInfo, 
-              address: e.target.value
-            })}
+            onChange={(e) => handleInputChange('address', e.target.value)}
           />
-        </div>
+        </motion.div>
       </div>
-      <button 
+      
+      <motion.button 
         className="save-button"
         onClick={handleUpdateInfo}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         Save Changes
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 
-export default PersonalInfo;
+export default PersonalInfo;  

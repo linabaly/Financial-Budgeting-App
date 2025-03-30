@@ -49,10 +49,13 @@
     font-size: 1.8rem;
     font-weight: 700;
     background: linear-gradient(90deg, #3498db, #9b59b6);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    color: transparent; /* fallback for non-webkit browsers */
     letter-spacing: -0.5px;
   }
+  
   
   /* Navigation */
   .navigation {
@@ -103,8 +106,9 @@
     bottom: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, #3498db, #9b59b6);
+    background: #6c5ce7; /* Solid purple */
   }
+  
   
   /* Profile Icon */
   .profile-icon {
@@ -254,3 +258,96 @@
       font-size: 1.5rem;
     }
   }
+  
+  .logo-container {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logo-text {
+    position: relative;
+  }
+  
+  .logo-text::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #fff;
+    transition: width 0.3s ease;
+  }
+  
+  .logo-container:hover .logo-text::after {
+    width: 100%;
+  }
+
+  /* Header Content Layout */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Ensure profile icon is at the end */
+.navigation .profile-icon {
+  margin-left: 1rem;
+}
+
+.header-content {
+  justify-content: space-between !important;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.logo-container {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding-left: 0rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    padding-left: 0.75rem;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem;
+  }
+}

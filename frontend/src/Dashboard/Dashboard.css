@@ -130,15 +130,6 @@ body {
   margin: 0;
 }
 
-.rainbow-name {
-  background: linear-gradient(90deg, #3498db, #9b59b6);
-  -webkit-background-clip: text;
-  background-clip: text; /* Standard property for compatibility */
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-}
-
-
 .greeting-date {
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.6);
@@ -215,6 +206,7 @@ body {
   z-index: 1000;
 }
 
+/* Remove purple background from modal content */
 .modal {
   background-color: #222;
   border-radius: 8px;
@@ -223,6 +215,55 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Target the specific element with the dark background */
+/* Target the modal-content and remove any padding */
+.modal-content {
+  padding: 0 !important;
+  background-color: #222 !important;
+}
+
+/* Target the form directly */
+.modal-form {
+  background-color: #222 !important;
+  padding: 1rem;
+}
+
+/* Remove any background from form groups */
+.form-group {
+  background-color: transparent !important;
+}
+
+/* Override the Submit button color */
+.submit-btn {
+  background-color: #6c5ce7 !important;
+}
+
+/* This will target any potential container inside the modal */
+.modal-body {
+  background-color: #222 !important;
+  padding: 1rem;
+}
+
+/* Remove any nested containers with backgrounds */
+.savings-modal-content,
+.modal-inner-container,
+.savings-form-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure form elements have consistent backgrounds */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background-color: #333;
+  border: 1px solid #444;
+  color: #fff;
 }
 
 .modal-header {
@@ -251,15 +292,26 @@ body {
   color: #fff;
 }
 
-.modal-content {
-  padding: 1rem;
+/* Form Styles */
+.modal .submit-btn,
+.modal button[type="submit"],
+.modal .update-savings-btn {
+  background-color: #6c5ce7 !important;
+}
+/* Ensure form elements directly connect with the modal background */
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-/* Form Styles */
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Update the button color */
+.modal .submit-btn,
+.modal button[type="submit"],
+.modal .update-savings-btn,
+button[type="submit"] {
+  background-color: #6c5ce7 !important;
+  background: #6c5ce7 !important;
+  color: #fff;
+  border: none;
 }
 
 .form-group {
@@ -271,17 +323,6 @@ body {
 .form-group label {
   font-weight: 500;
   color: #ccc;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #444;
-  background-color: #333;
-  color: #fff;
-  font-size: 1rem;
 }
 
 .form-group textarea {
@@ -538,7 +579,7 @@ body {
 }
 
 .savings-button {
-  background-color: #3040C4;
+  background-color: #6c5ce7 !important; /* Using !important to prevent overrides */
   border: none;
   padding: 0.5rem;
   color: #fff;
@@ -546,6 +587,16 @@ body {
   cursor: pointer;
   font-size: 1.2rem;
   margin-top: 0.5rem;
+}
+
+/* Keep hover effects minimal - only shadow, no color change */
+.savings-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.savings-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(108, 92, 231, 0.2);
 }
 
 .payment-item {
@@ -836,4 +887,967 @@ body {
   overflow: visible !important;
   height: 100% !important;
   min-height: 300px;
+}
+
+/* Target the form container that's not extending fully */
+.modal-content > div,
+.modal-content > form,
+.modal-content > *:first-child {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background-color: #222 !important;
+}
+
+/* Make sure the modal content has no padding */
+.modal-content {
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+/* Make the form take full width */
+.modal-form {
+  width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Remove any border radius from the bottom of the modal content area */
+.modal-content > *:first-child {
+  border-bottom-left-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
+
+.app::before,
+.app::after {
+  animation: gradientPulse 15s alternate infinite ease-in-out;
+}
+
+.app::before {
+  animation-delay: 0s;
+}
+
+.app::after {
+  animation-delay: 7.5s;
+}
+
+@keyframes gradientPulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
+.app {
+  animation: appReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes appReveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.header {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: headerSlideDown 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.2s;
+}
+
+@keyframes headerSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-button {
+  opacity: 0;
+  animation: navButtonReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.nav-button:nth-child(1) { animation-delay: 0.4s; }
+.nav-button:nth-child(2) { animation-delay: 0.5s; }
+.nav-button:nth-child(3) { animation-delay: 0.6s; }
+.nav-button:nth-child(4) { animation-delay: 0.7s; }
+
+@keyframes navButtonReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-icon {
+  opacity: 0;
+  animation: profileReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.8s;
+}
+
+@keyframes profileReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.main-content {
+  opacity: 0;
+  animation: mainContentFade 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.4s;
+}
+
+@keyframes mainContentFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.greeting-section {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: greetingSlideIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
+}
+
+@keyframes greetingSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.quick-actions .action-button {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: actionButtonPopIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.quick-actions .action-button:nth-child(1) { animation-delay: 0.6s; }
+.quick-actions .action-button:nth-child(2) { animation-delay: 0.7s; }
+.quick-actions .action-button:nth-child(3) { animation-delay: 0.8s; }
+.quick-actions .action-button:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes actionButtonPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  70% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0);
+  animation: modalBackdropFade 0.3s ease-out forwards;
+}
+
+@keyframes modalBackdropFade {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.modal {
+  transform: scale(0.9);
+  opacity: 0;
+  animation: modalPopIn 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.1s;
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close-button:hover {
+  transform: rotate(90deg);
+}
+
+.footer {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: footerSlideUp 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards 2.2s;
+}
+
+@keyframes footerSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Enhanced interactive elements - balanced approach */
+
+/* Action button enhanced hover effects */
+.quick-actions .action-button {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-actions .action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.quick-actions .action-button:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.quick-actions .action-button:hover::before {
+  opacity: 1;
+}
+
+.quick-actions .action-button:active {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Action icon animation */
+.action-icon {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.quick-actions .action-button:hover .action-icon {
+  transform: scale(1.15);
+}
+
+/* Better navigation button effects */
+.nav-button {
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.nav-button:hover::before {
+  transform: translateX(0);
+}
+
+.nav-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.5));
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.nav-button:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.nav-button.active::after {
+  width: 100%;
+  left: 0;
+  background: #fff;
+}
+
+/* Enhanced balance card interactions */
+.total-balance-card {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+}
+
+.total-balance-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+.total-balance-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.total-balance-card:hover::after {
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.3);
+}
+
+.balance-amount, 
+.balance-growth {
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+.total-balance-card:hover .balance-amount {
+  transform: scale(1.05);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.total-balance-card:hover .balance-growth {
+  transform: translateX(5px);
+}
+
+/* Enhanced progress bar effects */
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.progress-bar:hover {
+  transform: scaleY(1.1);
+}
+
+.progress-bar::before {
+  content: '';
+}
+
+/* Progressive enhancement for widgets to pop out from center */
+
+/* Enhanced insights and alert items with center scale effect */
+.insight-item, 
+.alert-item {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.insight-item:hover, 
+.alert-item:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.insight-icon,
+.alert-icon {
+  transition: transform 0.3s ease;
+}
+
+.insight-item:hover .insight-icon,
+.alert-item:hover .alert-icon {
+  transform: scale(1.2);
+}
+
+/* Improved payment items with center pop effect */
+.payment-item {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transform-origin: center;
+}
+
+.payment-item:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.payment-service {
+  transition: transform 0.3s ease;
+}
+
+.payment-item:hover .payment-service {
+  transform: translateX(5px);
+}
+
+.payment-amount {
+  transition: all 0.3s ease;
+}
+
+.payment-item:hover .payment-amount {
+  color: #ff8b8b;
+}
+
+/* Enhanced card sections with center pop effect */
+.smart-insights,
+.savings-progress,
+.recurring-payments,
+.expense-alerts {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.smart-insights:hover,
+.savings-progress:hover,
+.recurring-payments:hover,
+.expense-alerts:hover {
+  transform: scale(1.03);
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.section-header {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6c5ce7, transparent);
+  transition: width 0.3s ease;
+}
+
+.smart-insights:hover .section-header,
+.savings-progress:hover .section-header,
+.recurring-payments:hover .section-header,
+.expense-alerts:hover .section-header {
+  transform: scale(1.05);
+  color: #f8f8f8;
+}
+
+.smart-insights:hover .section-header::after,
+.savings-progress:hover .section-header::after,
+.recurring-payments:hover .section-header::after,
+.expense-alerts:hover .section-header::after {
+  width: 70%;
+}
+
+/* Enhanced chart containers */
+.monthly-chart-container,
+.income-expense-chart-container {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.monthly-chart-container:hover,
+.income-expense-chart-container:hover {
+  transform: scale(1.02);
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard section with subtle hover effect */
+.dashboard-section {
+  transition: all 0.4s ease;
+}
+
+.dashboard-section:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced table rows */
+.transactions-table tbody tr {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.transactions-table tbody tr:hover {
+  transform: scale(1.02);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal animation */
+.modal {
+  animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: center;
+}
+
+@keyframes modalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced modals for focus */
+.modal:focus-within {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(1.01);
+}
+
+/* Savings button with improved interaction */
+.savings-button {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center;
+  position: relative;
+}
+
+.savings-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.savings-button:active {
+  transform: scale(0.95);
+}
+
+/* Header logo pulse effect */
+.logo {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Submit button enhanced effects */
+.submit-btn:not(:disabled) {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:not(:disabled)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.1) 50%, 
+    rgba(255,255,255,0) 100%);
+  transition: left 0.5s ease;
+}
+
+.submit-btn:not(:disabled):hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
+}
+
+.submit-btn:not(:disabled):hover::before {
+  left: 100%;
+}
+
+.submit-btn:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+/* Enhanced table row with data preview */
+.transactions-table tbody tr {
+  position: relative;
+}
+
+.transactions-table tbody tr:hover::after {
+  content: '👁️';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+/* Interactive category filters with pop */
+.category-filter {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center;
+}
+
+.category-filter:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.category-filter.active {
+  transform: scale(1.05);
+}
+
+/* Social icons with hover effect */
+.social-icon {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus improvements */
+:focus-visible {
+  outline: 2px solid #6c5ce7;
+  outline-offset: 2px;
+  transition: outline 0.2s ease;
+}
+
+/* Add pulse animation to important values */
+@keyframes softPulse {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+.balance-amount,
+.chart-amount,
+.payment-amount {
+  animation: softPulse 3s infinite ease-in-out;
+}
+
+/* Subtle hover effects for all interactive elements */
+button,
+a,
+.action-button,
+.insight-item,
+.payment-item,
+.alert-item,
+.category-filter,
+.social-icon {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+
+/* Remove the purple underline from section headers */
+.section-header::after {
+  display: none; /* This removes the underline completely */
+}
+
+/* Make the monthly spending bar pop */
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.progress-bar:hover {
+  transform: scaleY(1.2); /* Increase this value from 1.1 to 1.2 for more "pop" */
+}
+
+.progress {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.progress-bar:hover .progress {
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.6); /* Add glow effect on hover */
+}
+
+/* Prevent graphs from popping by removing their hover transformations */
+.monthly-chart-container:hover,
+.income-expense-chart-container:hover {
+  transform: scale(1); /* Change from 1.02 to 1 to prevent popping */
+  box-shadow: none; /* Remove the shadow that appears on hover */
+}
+
+/* Make only widget boxes pop (not their titles) */
+.smart-insights,
+.savings-progress,
+.recurring-payments,
+.expense-alerts {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.smart-insights:hover,
+.savings-progress:hover,
+.recurring-payments:hover,
+.expense-alerts:hover {
+  transform: scale(1.03);
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Remove section header hover effects */
+.section-header::after {
+  display: none;
+}
+
+.smart-insights:hover .section-header,
+.savings-progress:hover .section-header,
+.recurring-payments:hover .section-header,
+.expense-alerts:hover .section-header {
+  transform: none;
+  color: #fff;
+}
+
+/* Make spending bar pop with enhanced effect */
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.progress-bar:hover {
+  transform: scaleY(1.3);
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+}
+
+.progress {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.progress-bar:hover .progress {
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+  filter: brightness(1.2);
+}
+
+/* Prevent balance amount from popping */
+.balance-amount {
+  animation: none;
+  transition: none;
+}
+
+.total-balance-card:hover .balance-amount {
+  transform: none;
+  text-shadow: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Zain', sans-serif;
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-section {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  background-color: #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-section {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+  .greeting-section h1 {
+    font-size: 2rem;
+  }
+  .quick-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .analytics-section {
+    grid-template-columns: 1fr;
+  }
+  .insights-container {
+    grid-template-columns: 1fr;
+  }
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .greeting-section h1 {
+    font-size: 1.5rem;
+  }
+  .dashboard-section {
+    padding: 1rem;
+  }
+  .quick-actions {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+  .footer-tagline h1 {
+    font-size: 2rem;
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+/* ⚡️ Responsive Fix for Bottom Dashboard Section */
+
+@media (max-width: 1024px) {
+  .analytics-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .insights-container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .insights-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
+
+.insights-container > div {
+  height: auto !important; /* Allow natural height */
+}
+
+@media (max-width: 1024px) {
+  /* 🎯 Clean and consistent widget titles - only on smaller screens */
+
+  .smart-insights .section-header,
+  .savings-progress .section-header,
+  .recurring-payments .section-header,
+  .expense-alerts .section-header {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-align: left;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .expense-alerts .section-header {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4rem !important;
+    text-align: left !important;
+    letter-spacing: 0 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+}
+
+/* Hide persistent notification bar */
+.save-notification,
+.notification-bar,
+.status-message,
+.success-message,
+.toast-notification,
+.changes-saved-notification {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }

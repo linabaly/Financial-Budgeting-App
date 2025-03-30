@@ -1,10 +1,42 @@
 import React, { Suspense, lazy } from "react";
+import { NotificationProvider } from './Profile/contexts/NotificationContext';
 import { 
   Routes, 
   Route, 
   Navigate, 
   BrowserRouter as Router 
 } from "react-router-dom";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { 
+  faUser, 
+  faCog, 
+  faShieldAlt, 
+  faBell, 
+  faChartLine,
+  faCamera,
+  faTimes,
+  faArrowLeft,
+  faChartPie
+} from '@fortawesome/free-solid-svg-icons';
+import { 
+  faGoogle, 
+  faApple 
+} from '@fortawesome/free-brands-svg-icons';
+
+// Add all icons to library
+library.add(
+  faUser, 
+  faCog, 
+  faShieldAlt, 
+  faBell, 
+  faChartLine,
+  faCamera,
+  faTimes,
+  faArrowLeft,
+  faChartPie,
+  faGoogle,
+  faApple
+);
 
 // Lazy load components for improved performance
 const LoginPage = lazy(() => import("./Login/LoginPage"));
@@ -21,6 +53,7 @@ const FinancialGoals = lazy(() => import("./Profile/FinancialGoals"));
 const NotificationPreferences = lazy(() => import("./Profile/NotificationPreferences"));
 const PersonalInfo = lazy(() => import("./Profile/PersonalInfo"));
 const SecuritySettings = lazy(() => import("./Profile/SecuritySettings"));
+const ProfileSettings = lazy(() => import("./Profile/ProfileSettings"));
 
 /**
  * Loading Fallback Component
@@ -90,11 +123,40 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   );
 };
 
+/**
+ * Notification Service
+ * Provides functions for showing loading states and notifications
+ */
+export const showNotification = (message: string) => {
+  const notification = document.getElementById('save-notification');
+  if (notification) {
+    notification.textContent = message;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+};
+
+export const simulateLoading = (callback: () => void, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+  setIsLoading(true);
+  setTimeout(() => {
+    setIsLoading(false);
+    callback();
+  }, 800);
+};
+
 function App() {
   return (
     <Router>
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
+          {/* Global notification container */}
+          <div id="save-notification" className="save-notification">
+            Changes saved successfully!
+          </div>
+          
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
@@ -140,7 +202,11 @@ function App() {
               path="/profile/account-settings"
               element={
                 <ProtectedRoute>
-                  <AccountSettings />
+                  <AccountSettings onSave={() => {
+                    // This would be handled by the component's internal loading state
+                    // and the global notification service
+                    showNotification('Account settings updated successfully!');
+                  }} />
                 </ProtectedRoute>
               }
             />
@@ -148,7 +214,9 @@ function App() {
               path="/profile/financial-goals"
               element={
                 <ProtectedRoute>
-                  <FinancialGoals />
+                  <FinancialGoals onSave={() => {
+                    showNotification('Financial goals updated successfully!');
+                  }} />
                 </ProtectedRoute>
               }
             />
@@ -156,7 +224,9 @@ function App() {
               path="/profile/notification-preferences"
               element={
                 <ProtectedRoute>
-                  <NotificationPreferences />
+                  <NotificationPreferences onSave={() => {
+                    showNotification('Notification preferences updated successfully!');
+                  }} />
                 </ProtectedRoute>
               }
             />
@@ -164,7 +234,9 @@ function App() {
               path="/profile/personal-info"
               element={
                 <ProtectedRoute>
-                  <PersonalInfo />
+                  <PersonalInfo onSave={() => {
+                    showNotification('Personal information updated successfully!');
+                  }} />
                 </ProtectedRoute>
               }
             />
@@ -172,7 +244,19 @@ function App() {
               path="/profile/security-settings"
               element={
                 <ProtectedRoute>
-                  <SecuritySettings />
+                  <SecuritySettings onSave={() => {
+                    showNotification('Security settings updated successfully!');
+                  }} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/profile-settings"
+              element={
+                <ProtectedRoute>
+                  <ProfileSettings onSave={() => {
+                    showNotification('Profile settings updated successfully!');
+                  }} />
                 </ProtectedRoute>
               }
             />

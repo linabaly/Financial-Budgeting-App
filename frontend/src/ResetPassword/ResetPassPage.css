@@ -16,17 +16,13 @@
   --success-color: #2ecc71;
   
   /* Typography */
-  --default-font-family: -apple-system, 'Zain', BlinkMacSystemFont, "Segoe UI", Roboto,
+  --default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFang SC",
     "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei",
     "Source Han Sans CN", sans-serif;
   
   /* Transitions */
   --transition-speed: 0.3s;
-  
-  /* Responsive Typography */
-  --font-size-large: clamp(2.5rem, 8vw, 5rem);
-  --font-size-medium: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 /* Accessibility and Base Styles */
@@ -92,6 +88,7 @@ body {
   backdrop-filter: blur(10px);
   transition: transform var(--transition-speed) ease;
   animation: fadeIn 0.6s forwards;
+  z-index: 10;
 }
 
 @keyframes fadeIn {
@@ -236,35 +233,12 @@ body {
   transition: width var(--transition-speed), background-color var(--transition-speed);
 }
 
-.strength-0::before { 
-  width: 0%; 
-  background-color: #e0e0e0; 
-}
-
-.strength-1::before { 
-  width: 20%; 
-  background-color: #ff4b4b; 
-}
-
-.strength-2::before { 
-  width: 40%; 
-  background-color: #ffa500; 
-}
-
-.strength-3::before { 
-  width: 60%; 
-  background-color: #ffd700; 
-}
-
-.strength-4::before { 
-  width: 80%; 
-  background-color: #2ecc71; 
-}
-
-.strength-5::before { 
-  width: 100%; 
-  background-color: #2ecc71; 
-}
+.strength-0::before { width: 0%; background-color: #e0e0e0; }
+.strength-1::before { width: 20%; background-color: #ff4b4b; }
+.strength-2::before { width: 40%; background-color: #ffa500; }
+.strength-3::before { width: 60%; background-color: #ffd700; }
+.strength-4::before { width: 80%; background-color: #2ecc71; }
+.strength-5::before { width: 100%; background-color: #2ecc71; }
 
 .strength-text {
   color: var(--text-secondary);
@@ -441,59 +415,65 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Welcome Section with Responsive Typography */
-.welcome-container {
-  position: absolute;
-  left: 10%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  animation: slideInLeft 0.8s forwards 0.3s;
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
+/* Brand Wrapper */
 .brand-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
 }
 
+/* FIXED WELCOME CONTAINER - Consistent across pages */
+.welcome-container {
+  position: absolute;
+  top: 50%; /* This controls vertical positioning (50% = middle of screen) */
+  left: 45%; /* This controls horizontal positioning (25% = quarter from left) */
+  transform: translate(-90%, -50%); /* This centers the element both horizontally and vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 550px;
+  z-index: 1;
+  opacity: 1; /* Start visible to fix loading issue */
+}
+
+/* Larger text styles */
 .welcome-to {
   color: var(--text-light);
-  font-size: var(--font-size-medium);
+  font-size: 4.2rem !important;
   font-weight: 300;
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  width: 100%;
+  line-height: 1.2;
 }
 
 .finovators {
   color: var(--text-light);
-  font-size: var(--font-size-large);
+  font-size: 7rem !important;
   font-weight: 800;
   margin-bottom: 1.5rem;
   background: linear-gradient(45deg, #ffffff, #e0e0ff);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  width: 100%;
+  line-height: 1.1;
 }
 
 .brand-tagline {
   color: var(--text-light);
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 2.5rem !important;
+  opacity: 0.95;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 400;
+  width: 100%;
+  line-height: 1.3;
 }
 
 /* Responsive Design */
@@ -503,12 +483,20 @@ body {
     width: 450px;
   }
 
-  .welcome-to {
-    font-size: 2.2rem;
+  .welcome-container {
+    left: 25% !important;
   }
-
+  
+  .welcome-to {
+    font-size: 3.5rem !important;
+  }
+  
   .finovators {
-    font-size: 3rem;
+    font-size: 6rem !important;
+  }
+  
+  .brand-tagline {
+    font-size: 2rem !important;
   }
 }
 
@@ -531,24 +519,28 @@ body {
   }
 
   .welcome-container {
-    position: relative;
-    left: auto;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 2rem;
-    order: 1;
+    position: relative !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 auto 2rem auto !important;
+    order: 1 !important;
+    opacity: 1 !important;
   }
-
+  
   .brand-wrapper {
     align-items: center;
   }
-
+  
   .welcome-to {
-    font-size: 2rem;
+    font-size: 3.2rem !important;
   }
-
+  
   .finovators {
-    font-size: 2.5rem;
+    font-size: 5rem !important;
+  }
+  
+  .brand-tagline {
+    font-size: 1.8rem !important;
   }
 }
 
@@ -562,11 +554,15 @@ body {
   }
 
   .welcome-to {
-    font-size: 1.8rem;
+    font-size: 2.5rem !important;
   }
-
+  
   .finovators {
-    font-size: 2.2rem;
+    font-size: 4rem !important;
+  }
+  
+  .brand-tagline {
+    font-size: 1.5rem !important;
   }
   
   .password-requirements {
@@ -592,36 +588,40 @@ body {
   }
 }
 
-/* Modify the main container to add spacing while maintaining structure */
-.main-container {
-  padding: 2rem 0; /* Add padding top and bottom */
-  height: auto; /* Allow content to determine height */
-  min-height: 90vh; /* Set minimum height slightly less than viewport */
-}
-
-/* Keep the reset card positioning but set a max-height */
+/* Special spacing for reset card */
 .reset-card {
-  max-height: 90vh; /* Limit maximum height */
-  overflow-y: auto; /* Add scrolling if content exceeds height */
-  margin: auto; /* Center vertically in the space */
-  top: 2rem; /* Add a small top margin */
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  top: 2rem;
   bottom: 0;
-  right: 10%;
-  /* Position remains absolute as in original */
+  padding-bottom: 5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-/* Make spacing between sections more compact */
+/* Main container height adjustment */
+.main-container {
+  height: auto;
+  min-height: 95vh;
+  padding: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Spacing adjustments */
 .reset-title {
-  margin-top: 0.75rem; /* Reduce top margin */
+  margin-top: 0.75rem;
 }
 
 .reset-subtitle {
-  margin-bottom: 1.5rem; /* Reduce bottom margin */
+  margin-bottom: 1.5rem;
 }
 
 .reset-form {
-  gap: 1.25rem; /* Slightly reduce the gap between form elements */
-  margin-bottom: 1.5rem; /* Reduce bottom margin */
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Reduce requirements box spacing */
@@ -630,47 +630,555 @@ body {
   margin-bottom: 0.75rem;
 }
 
-/* Add some extra responsive adjustments */
-@media (max-height: 700px) {
-  .reset-card {
-    padding: 1.5rem;
-  }
-  
-  .reset-form {
-    gap: 1rem;
-  }
+/* Enhanced overall page animations */
+
+/* Background gradient animation */
+.background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: var(--primary-background);
+  z-index: -1;
+  background-size: 400% 400%;
+  animation: gradientBG 25s ease infinite; /* Slowed down for more subtlety */
 }
 
-/* Modify the reset card to extend more toward the bottom */
-.reset-card {
-  /* Keep the original positioning */
-  position: absolute;
-  width: 480px;
-  right: 10%;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  /* Adjust the vertical sizing */
-  margin-bottom: 0.5rem; /* Create space at the bottom */
-  padding-bottom: 5rem; /* Add more padding at the bottom */
-  margin-top: 2rem; /* Add a small top margin */
-  
-
-
-/* Adjust the main container to accommodate the extended box */
+/* Main container reveal */
 .main-container {
+  position: relative;
+  width: 100%;
   height: auto;
-  min-height: 95vh; /* Increase from 90vh to 95vh */
-  padding: 1.5rem 0; /* Reduce top/bottom padding */
+  min-height: 95vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  padding: 1.5rem 0;
+  animation: pageReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
-
-/* Make sure there's room at the bottom in responsive view */
-@media (max-width: 900px) {
-  .reset-card {
-    position: relative;
-    margin-bottom: 3rem;
+@keyframes pageReveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
+
+/* Reset card animation */
+.reset-card {
+  position: absolute;
+  width: 480px;
+  right: 10%;
+  background: var(--secondary-background);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 20px 50px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  animation: cardSlideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  z-index: 10;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  top: 2rem;
+  bottom: 0;
+  padding-bottom: 5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.reset-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.12),
+    0 25px 60px rgba(0, 0, 0, 0.06);
+}
+
+/* Reset title and subtitle animations */
+.reset-title {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.4s;
+}
+
+.reset-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form element animations */
+.reset-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: formReveal 0.5s ease-out forwards;
+}
+
+.form-group:nth-child(1) {
+  animation-delay: 0.6s;
+}
+
+.form-group:nth-child(2) {
+  animation-delay: 0.7s;
+}
+
+.form-group:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+@keyframes formReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Password strength meter animation */
+.strength-meter::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
+              background-color 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Password requirements animation */
+.password-requirements {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  padding: 0.75rem;
+  opacity: 0;
+  animation: requirementsReveal 0.6s ease-out forwards 0.9s;
+}
+
+@keyframes requirementsReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.requirements-list li {
+  opacity: 0;
+  animation: requirementItemReveal 0.4s ease-out forwards;
+}
+
+.requirements-list li:nth-child(1) { animation-delay: 1.0s; }
+.requirements-list li:nth-child(2) { animation-delay: 1.1s; }
+.requirements-list li:nth-child(3) { animation-delay: 1.2s; }
+.requirements-list li:nth-child(4) { animation-delay: 1.3s; }
+.requirements-list li:nth-child(5) { animation-delay: 1.4s; }
+
+@keyframes requirementItemReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Button animations */
+.reset-button {
+  height: 48px;
+  background: var(--button-bg);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  transition: 
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
+}
+
+@keyframes buttonReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reset-button:hover {
+  background: var(--button-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.reset-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer animation */
+.auth-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  animation: footerReveal 0.6s ease-out forwards 1.6s;
+}
+
+@keyframes footerReveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Input field focus animation */
+.form-input:focus {
+  outline: none;
+  border-color: rgba(68, 58, 216, 0.7);
+  background-color: var(--input-bg-focus);
+  box-shadow: 0 0 0 3px var(--input-focus-color);
+  animation: inputFocus 0.3s ease-out;
+}
+
+@keyframes inputFocus {
+  0% {
+    box-shadow: 0 0 0 0 var(--input-focus-color);
+  }
+  50% {
+    box-shadow: 0 0 0 4px var(--input-focus-color);
+  }
+  100% {
+    box-shadow: 0 0 0 3px var(--input-focus-color);
+  }
+}
+
+/* PROFESSIONAL WELCOME CONTAINER - With refined animations */
+.welcome-container {
+  position: absolute;
+  top: 47.5%; /* Vertical positioning */
+  left: 45%; /* Horizontal positioning */
+  transform: translate(-90%, -50%); /* Centers the element */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 550px;
+  z-index: 1;
+  opacity: 0; /* Start invisible for animation */
+  animation: welcomeReveal 1s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s; /* Refined easing with delay */
+}
+
+/* Clean professional reveal animation */
+@keyframes welcomeReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-90%, -50%) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-90%, -50%) scale(1);
+  }
+}
+
+/* Refined text elements with professional timing */
+.welcome-to {
+  color: var(--text-light);
+  font-size: 4.2rem !important;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  width: 100%;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: textReveal 0.6s ease-out forwards 0.5s;
+}
+
+.finovators {
+  color: var(--text-light);
+  font-size: 7rem !important;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(45deg, #ffffff, #e0e0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  width: 100%;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: textReveal 0.6s ease-out forwards 0.7s, subtleGradient 18s ease-in-out infinite alternate;
+}
+
+.brand-tagline {
+  color: var(--text-light);
+  font-size: 2.5rem !important;
+  opacity: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 400;
+  width: 100%;
+  line-height: 1.3;
+  transform: translateY(10px);
+  animation: textReveal 0.6s ease-out forwards 0.9s;
+}
+
+/* Spinner animation enhancement */
+.spinner {
+  animation: spin 0.8s linear infinite;
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Refined text reveal animation */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtle gradient animation - very slow and professional */
+@keyframes subtleGradient {
+  0% {
+    background: linear-gradient(45deg, #ffffff, #e0e0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  100% {
+    background: linear-gradient(45deg, #e8e8ff, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+/* Requirement check animation */
+.requirements-list li.requirement-met::before {
+  animation: checkmark 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive design adjustments */
+@media (max-width: 1200px) {
+  .reset-card {
+    right: 5%;
+    width: 450px;
+  }
+  
+  .welcome-container {
+    left: 20% !important;
+  }
+  
+  .welcome-to {
+    font-size: 3.5rem !important;
+  }
+  
+  .finovators {
+    font-size: 6rem !important;
+  }
+  
+  .brand-tagline {
+    font-size: 2rem !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-container {
+    flex-direction: column;
+    justify-content: center;
+    height: auto;
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+
+  .reset-card {
+    position: relative;
+    right: auto;
+    width: 90%;
+    max-width: 480px;
+    margin-bottom: 2rem;
+    order: 2;
+    animation: mobileCardReveal 0.8s ease-out forwards;
+  }
+  
+  .welcome-container {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 auto 2rem auto !important;
+    order: 1 !important;
+    animation: mobileReveal 0.8s ease-out forwards !important;
+  }
+  
+  @keyframes mobileCardReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes mobileReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .reset-card {
+    padding: 1.5rem;
+  }
+
+  .reset-form {
+    gap: 1rem;
+  }
+
+  .welcome-to {
+    font-size: 2.5rem !important;
+  }
+  
+  .finovators {
+    font-size: 4rem !important;
+  }
+  
+  .brand-tagline {
+    font-size: 1.5rem !important;
+  }
+  
+  .password-requirements {
+    padding: 0.5rem;
+  }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001s !important;
+  }
 }

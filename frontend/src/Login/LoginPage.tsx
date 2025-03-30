@@ -70,20 +70,35 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulated authentication logic
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      console.log("Signing in with:", credentials);
-      
-      // Navigate to dashboard on successful login
+      const response = await fetch("http://localhost:5005/account/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: credentials.login,
+          password: credentials.password,
+        }),
+      });
+    
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to log in");
+      }
+    
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.id);
+    
+      console.log("Logged in:", data);
+    
       navigate("/Dashboard");
-    } catch (error) {
-      // Handle login errors
-      setErrors(["Authentication failed. Please try again."]);
+    } catch (error: any) {
+      setErrors(["Login failed: " + error.message]);
     } finally {
       setIsLoading(false);
     }
+    
   }, [credentials, navigate]);
 
   return (
