@@ -72,6 +72,21 @@ export default class TransactionManager {
   }
 
   /**
+   * This method returns all associated/related Transactions for the specified Account
+   * @author Matthew R
+   * @param accountID The ID for the Account entry to search transactions related to
+   */
+  public static async getAssociatedTransactionsForAccount(accountID: string) {
+    const transactions = await prisma.transaction.findMany({
+      where: { account: { id: accountID } },
+    });
+    if (!transactions || transactions?.length === 0) {
+      return null;
+    }
+    return transactions;
+  }
+
+  /**
    * This method creates a single new transaction and saves the value in the database.
    * @author Matthew R
    * @param transaction An object containing information (required/optional) about the transaction to create.
