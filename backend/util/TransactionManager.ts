@@ -129,4 +129,17 @@ export default class TransactionManager {
       throw error;
     }
   }
+
+  /**
+   * This method deletes a transaction from the database using its ID.
+   * @author Matthew R
+   * @param transactionID The ID of the transaction which is to be deleted.
+   */
+  public static async deleteTransactionByID(transactionID: string) {
+    const transaction = this.getTransactionById(transactionID);
+    if (transaction === null) {
+      throw new Error(`Transaction '${transactionID}' does not exist.`);
+    }
+    return prisma.transaction.delete({ where: { id: transactionID } });
+  }
 }
