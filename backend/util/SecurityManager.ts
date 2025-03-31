@@ -49,7 +49,7 @@ export default class SecurityManager {
   /**
    * Verifies and decodes a JWT token.
    * Ensures that only valid tokens are used for authentication.
-   * @author Jaocb D
+   * @author Jacob D
    * @param {string} token - JWT token to verify.
    * @returns {Object | null} - Decoded token if valid, else null.
    */
@@ -60,7 +60,8 @@ export default class SecurityManager {
         return decoded;
       }
       return null;
-    } catch {
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }
