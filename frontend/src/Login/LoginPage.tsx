@@ -133,7 +133,7 @@ export default function LoginPage() {
               htmlFor="login" 
               className="form-label"
             >
-              Username or Email
+              Email
             </label>
             <div className="input-wrapper">
               <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 className="form-input"
                 value={credentials.login}
                 onChange={handleInputChange}
-                placeholder="Enter your username or email"
+                placeholder="Enter your email"
                 required
                 aria-required="true"
                 aria-invalid={errors.some(e => e.includes('Login'))}
