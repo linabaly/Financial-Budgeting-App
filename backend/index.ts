@@ -19,11 +19,11 @@ function setupPrismaClient() {
 async function main() {
   PrismaDBClient = setupPrismaClient();
   MainServer = new Server(
-    Number(process.env.WEB_SERVER_PORT) || 3000,
+    Number(process.env.WEB_SERVER_PORT) || 5005,
     path.join(__dirname, "routes")
   );
-  MainServer.listen(Number(process.env.WEB_SERVER_PORT) || 3000);
-  console.info(`Server listening on port ${process.env.WEB_SERVER_PORT || 3000}`);
+  MainServer.listen(Number(process.env.WEB_SERVER_PORT) || 5005);
+  console.info(`Server listening on port ${process.env.WEB_SERVER_PORT || 5005}`);
 }
 
 // This function starts the application.
