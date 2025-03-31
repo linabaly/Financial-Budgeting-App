@@ -1,5 +1,7 @@
 import { Router, Response } from "express";
 import { Server } from ".";
+import SecurityManager from "./SecurityManager";
+import AccountManager from "./AccountManager";
 
 /**
  * @author Matthew R
@@ -64,7 +66,7 @@ export default class Route {
     });
   }
 
-  public handleServerError(error: Error, res: Response) {
+  protected handleServerError(error: Error, res: Response) {
     res.status(500).json({
       code: this.constants.codes.SERVER_ERROR,
       message: this.constants.messages.SERVER_ERROR,
@@ -72,13 +74,71 @@ export default class Route {
     console.error(error);
   }
 
-  public handleError(error: HTTPResponseError, res: Response) {
+  protected handleError(error: HTTPResponseError, res: Response) {
     res.status(error.status).json({
       // code: error.code,
       text_code: error.text_code,
       message: error.message,
     });
     console.error(error);
+  }
+
+  /**
+   * This helper method takes an authentication token and authenticates the request. If it can authenticate, it'll return the account. If not, it will return null.
+   * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwards.
+   * After "null" is returned from this function, you should always return from the route function.
+   * @author Matthew R
+   * @param token The JWT token passed to perform authentication for.
+   * @param res The Response object of the request
+   * @protected
+   */
+  protected async authenticate(token: string | undefined, res: Response) {
+    try {
+      if (!token) {
+        this.handleError(
+          {
+            text_code: this.constants.messages.CLIENT_ERROR[0],
+            status: 400,
+            message: this.constants.messages.CLIENT_ERROR[1],
+          },
+          res
+        );
+        return null;
+      }
+      let decodedToken: { id: string; name: string } | null;
+      try {
+        decodedToken = SecurityManager.verifyToken(token);
+      } catch {
+        return null;
+      }
+      if (!decodedToken) {
+        this.handleError(
+          {
+            text_code: this.constants.messages.BEARER_TOKEN_INVALID[0],
+            status: 401,
+            message: this.constants.messages.BEARER_TOKEN_INVALID[1],
+          },
+          res
+        );
+        return null;
+      }
+      const account = await AccountManager.getAccount({ id: decodedToken.id });
+      if (!account) {
+        this.handleError(
+          {
+            text_code: this.constants.messages.UNAUTHORIZED[0],
+            status: 401,
+            message: this.constants.messages.UNAUTHORIZED[1],
+          },
+          res
+        );
+        return null;
+      }
+      return account;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   get constants() {
