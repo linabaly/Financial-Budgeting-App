@@ -118,35 +118,8 @@ export default class AccountRoute extends Route {
 
     this.router.get("/me", async (req, res) => {
       try {
-        if (!req.headers.authorization)
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        const decodedToken = SecurityManager.verifyToken(req.headers.authorization);
-        if (!decodedToken)
-          return this.handleError(
-            {
-              text_code: this.constants.messages.BEARER_TOKEN_INVALID[0],
-              status: 401,
-              message: this.constants.messages.BEARER_TOKEN_INVALID[1],
-            },
-            res
-          );
-        const account = await AccountManager.getAccount({ id: decodedToken.id });
-        if (!account)
-          return this.handleError(
-            {
-              text_code: this.constants.messages.UNAUTHORIZED[0],
-              status: 401,
-              message: this.constants.messages.UNAUTHORIZED[1],
-            },
-            res
-          );
+        const account = await this.authenticate(req.headers.authorization, res);
+        if (!account) return;
         res.status(200).json(account);
         return;
       } catch (error) {
