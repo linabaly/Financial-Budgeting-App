@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import Header from './components/Header';
 import TotalBalance from './components/TotalBalance';
@@ -19,6 +19,42 @@ const Dashboard: React.FC = () => {
   const [showSavingsModal, setShowSavingsModal] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentSavings, setCurrentSavings] = useState(4500);
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardError, setDashboardError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+
+        const token = localStorage.getItem("token");
+        console.log(token);
+        if (!token) throw new Error("No token found. Please log in again.");
+  
+        const response = await fetch("http://localhost:5005/account/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+  
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || "Failed to fetch dashboard data");
+        }
+  
+        const data = await response.json();
+        console.log("Dashboard Data:", data);
+        setDashboardData(data);
+      } catch (error: any) {
+        setDashboardError(error.message);
+      }
+    };
+  
+    fetchDashboardData();
+  }, []);
+  
+
 
   // Handle closing all modals
   const closeAllModals = () => {
@@ -119,7 +155,7 @@ const Dashboard: React.FC = () => {
       <main className="main-content">
         <div className="greeting-section">
           <div>
-            <h1>Hello, <span className="rainbow-name">Alex</span>!</h1>
+            <h1>Hello, <span className="rainbow-name">{dashboardData ? dashboardData.name || "User" : "Loading..."}</span>!</h1>
             <div className="greeting-date">
               {currentDate.toLocaleDateString('en-US', {
                 weekday: 'long',
