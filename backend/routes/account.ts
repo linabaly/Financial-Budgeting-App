@@ -118,7 +118,7 @@ export default class AccountRoute extends Route {
 
     this.router.get("/me", async (req, res) => {
       try {
-        const account = await this.authenticate(req.headers.authorization, res);
+        const account = await this.authenticate(req, res);
         if (!account) return;
         res.status(200).json(account);
         return;
