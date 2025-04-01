@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { Server } from ".";
 import SecurityManager from "./SecurityManager";
 import AccountManager from "./AccountManager";
@@ -88,12 +88,13 @@ export default class Route {
    * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwards.
    * After "null" is returned from this function, you should always return from the route function.
    * @author Matthew R
-   * @param token The JWT token passed to perform authentication for.
+   * @param req
    * @param res The Response object of the request
    * @protected
    */
-  protected async authenticate(token: string | undefined, res: Response) {
+  protected async authenticate(req: Request, res: Response) {
     try {
+      let token = req.cookies.token || req.headers.authorization;
       if (!token) {
         this.handleError(
           {
