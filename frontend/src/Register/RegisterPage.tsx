@@ -178,8 +178,8 @@ export default function RegisterPage() {
         password: formData.password 
       });
       
-      // Navigate to dashboard on successful registration
-      navigate("/Dashboard");
+      // Navigate to login on successful registration
+      navigate("/");
     } catch (error) {
       setErrors(["Registration failed. Please try again."]);
     } finally {
