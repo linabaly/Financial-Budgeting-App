@@ -127,5 +127,58 @@ export default class AccountRoute extends Route {
         return;
       }
     });
+
+    this.router.patch("/me", async (req, res) => {
+      try {
+        if (!req.body.email && !req.body.name) {
+          return this.handleError(
+            {
+              text_code: this.constants.messages.CLIENT_ERROR[0],
+              status: 400,
+              message: this.constants.messages.CLIENT_ERROR[1],
+            },
+            res
+          );
+        }
+        const account = await this.authenticate(req, res);
+        if (!account) return this.sendUnauthorized(res);
+        const updateDetails: {
+          id: string;
+          name?: string | undefined;
+          email?: string | undefined;
+        } = {
+          id: account.id,
+        };
+        if (req.body.email) updateDetails.email = req.body.email.trim();
+        if (req.body.name) updateDetails.name = req.body.name.trim();
+        const updateQuery = await AccountManager.updateAccount(updateDetails);
+        updateQuery.password = "[REDACTED]";
+        res.status(200).json(updateQuery);
+      } catch (error) {
+        return this.handleServerError(error as Error, res);
+      }
+    });
+
+    this.router.delete("/me", async (req, res) => {
+      try {
+        const account = await this.authenticate(req, res);
+        if (!account) return this.sendUnauthorized(res);
+        const deletionQuery = await AccountManager.deleteAccount(account.id);
+        if (!deletionQuery) {
+          return this.handleError(
+            {
+              text_code: this.constants.messages.CLIENT_ERROR[0],
+              status: 400,
+              message: this.constants.messages.CLIENT_ERROR[1],
+            },
+            res
+          );
+        }
+        res.sendStatus(204);
+        return;
+      } catch (error) {
+        return this.handleServerError(error as Error, res);
+      }
+    });
   }
 }
