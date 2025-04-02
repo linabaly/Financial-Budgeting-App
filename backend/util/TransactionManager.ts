@@ -2,19 +2,19 @@ import { v4 as uuid } from "uuid";
 import { PrismaDBClient as prisma } from "../index";
 
 export enum TransactionType {
-  INCOME = "INCOME",
-  EXPENSE = "EXPENSE",
+  INCOME,
+  EXPENSE,
 }
 
-export enum Category {
-  FOOD = "FOOD",
-  RENT = "RENT",
-  ENTERTAINMENT = "ENTERTAINMENT",
-  UTILITIES = "UTILITIES",
-  TRANSPORTATION = "TRANSPORTATION",
-  HEALTHCARE = "HEALTHCARE",
-  OTHER = "OTHER",
-  INCOME = "INCOME",
+export enum TransactionCategory {
+  FOOD,
+  RENT,
+  ENTERTAINMENT,
+  UTILITIES,
+  TRANSPORTATION,
+  HEALTHCARE,
+  OTHER,
+  INCOME,
 }
 
 export interface TransactionDetails {
@@ -22,7 +22,7 @@ export interface TransactionDetails {
   amount: number | string; // TODO Handle Decimal type
   descriptor: string;
   type: TransactionType;
-  category: Category;
+  category: TransactionCategory;
   postedAt: Date;
   accountID: string;
   currency?: string;
@@ -31,7 +31,7 @@ export interface TransactionDetails {
 
 export interface TransactionFilters {
   accountId?: string;
-  category?: Category;
+  category?: TransactionCategory;
   type?: TransactionType;
   startDate?: Date;
   endDate?: Date;
@@ -44,7 +44,7 @@ export interface TransactionSummary {
   totalIncome: number;
   totalExpenses: number;
   netAmount: number;
-  categorySummary: Record<Category, number>;
+  categorySummary: Record<TransactionCategory, number>;
   monthlyBreakdown: Record<
     string,
     {
