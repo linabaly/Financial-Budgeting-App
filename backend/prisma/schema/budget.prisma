@@ -10,11 +10,11 @@ enum TransactionCategory {
 }
 
 model Budget {
-  id        String   @id @default(uuid()) // UUID instead of auto-incrementing INT
-  category  Category
-  limit     Decimal  @db.Decimal(10, 2)
+  id        String              @id @default(uuid()) // UUID instead of auto-incrementing INT
+  category  TransactionCategory
+  limit     Decimal             @db.Decimal(10, 2)
   accountId String // Foreign Key linking to Account
-  createdAt DateTime @default(now())
+  createdAt DateTime            @default(now())
   startDate DateTime
   endDate   DateTime
 
