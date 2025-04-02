@@ -1,4 +1,4 @@
-enum Category {
+enum TransactionCategory {
   FOOD
   RENT
   ENTERTAINMENT
