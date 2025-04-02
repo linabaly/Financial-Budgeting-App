@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from 'react';
+// You can input new email and name, but it doesn 't update the profile.
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { API_BASE_URL } from "../config";
-
 
 interface PersonalInfoProps {
   onSave: () => void;
 }
 
-// TODO: Change Name and Email to be editable
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
-  const [profileData, setProfileData] = useState<any>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [personalInfo, setPersonalInfo] = useState({
     name: '',
     email: ''
   });
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
     setPersonalInfo(prev => ({
       ...prev,
-      [field]: value
+      [id]: value
     }));
-  };
+  }, []);
 
   const handleUpdateInfo = async () => {
     try {
@@ -33,7 +31,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
       const response = await fetch(`${API_BASE_URL}/account/me`, {
         method: "PATCH",
         headers: {
-          "Authentication": token,
+          "Authorization": token,  
           "Content-Type": "application/json",
         },
         body: JSON.stringify(personalInfo),
@@ -50,40 +48,40 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
     }
   };
 
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found. Please log in again.");
+  
+        const response = await fetch(`${API_BASE_URL}/account/me`, {  
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+          },
+        });
+  
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || "Failed to fetch profile data");
+        }
+  
+        const data = await response.json();
+        console.log("Profile Data:", data);
 
-  // Fetch user profile name
-    useEffect(() => {
-        const fetchProfileData = async () => {
-          try {
-    
-            const token = localStorage.getItem("token");
-            console.log(token);
-            if (!token) throw new Error("No token found. Please log in again.");
-      
-            const response = await fetch("http://localhost:5005/account/me", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-              },
-            });
-      
-            if (!response.ok) {
-              const err = await response.json();
-              throw new Error(err.message || "Failed to fetch profile data");
-            }
-      
-            const data = await response.json();
-            console.log("Profile Data:", data);
-            setProfileData(data);
-          } catch (error: any) {
-            setProfileError(error.message);
-          }
-        };
-      
-        fetchProfileData();
-      }, []);
-
+        setPersonalInfo({
+          name: data.name || '',
+          email: data.email || ''
+        });
+      } catch (error: any) {
+        setProfileError(error.message);
+      }
+    };
+  
+    fetchProfileData();
+  }, []);
   
   return (
     <motion.div 
@@ -93,6 +91,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
       exit={{ opacity: 0 }}
     >
       <h2>Personal Information</h2>
+      {profileError && <div className="error-message">{profileError}</div>}
       <div className="form-grid">
         <motion.div 
           className="form-group"
@@ -103,8 +102,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           <label>Full Name</label>
           <input 
             type="text" 
-            value={profileData ? profileData.name || "User" : "Loading..."}
-            onChange={(e) => handleInputChange('firstName', e.target.value)}
+            id="name"
+            value={personalInfo.name}
+            placeholder='Enter your full name'
+            onChange={handleInputChange}
           />
         </motion.div>
         
@@ -117,8 +118,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           <label>Email</label>
           <input 
             type="email" 
-            value={profileData ? profileData.email || "email" : "Loading..."}
-            onChange={(e) => handleInputChange('email', e.target.value)}
+            id="email"
+            value={personalInfo.email}
+            placeholder='Enter your email'
+            onChange={handleInputChange}
           />
         </motion.div>
       </div>
@@ -135,4 +138,4 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   );
 };
 
-export default PersonalInfo;  
+export default PersonalInfo;
