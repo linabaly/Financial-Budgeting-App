@@ -31,28 +31,9 @@ export default class AccountRoute extends Route {
       const account = await PrismaDBClient.account.findUnique({
         where: { email: passedCreds.email },
       });
-      if (!account) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.UNAUTHORIZED[0],
-            status: 403,
-            message: this.constants.messages.UNAUTHORIZED[1],
-          },
-          res
-        );
-      }
-      if (
-        !(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword))
-      ) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.UNAUTHORIZED[0],
-            status: 403,
-            message: this.constants.messages.UNAUTHORIZED[1],
-          },
-          res
-        );
-      }
+      if (!account) return this.sendUnauthorized(res);
+      if (!(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword)))
+        return this.sendUnauthorized(res);
       try {
         const token = SecurityManager.generateToken({ id: account.id, name: account.name });
         console.info(`Logged into account ${account.email} with token ${token}`);
@@ -119,7 +100,7 @@ export default class AccountRoute extends Route {
     this.router.get("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return;
+        if (!account) return this.sendUnauthorized(res);
         res.status(200).json(account);
         return;
       } catch (error) {
