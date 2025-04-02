@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { API_BASE_URL } from "../config";
+
 
 interface PersonalInfoProps {
   onSave: () => void;
 }
 
+// TODO: Change Name and Email to be editable
+
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
+  const [profileData, setProfileData] = useState<any>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [personalInfo, setPersonalInfo] = useState({
-    firstName: 'Alex',
-    lastName: 'Johnson',
-    email: 'alex.johnson@example.com',
-    phone: '+1 (555) 123-4567',
-    address: '123 Finance Street, New York, NY 10001',
-    birthday: '1990-05-15',
-    occupation: 'Software Engineer',
-    bio: 'Finance enthusiast and tech professional with a passion for efficient money management.'
+    name: '',
+    email: ''
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -25,11 +25,66 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
     }));
   };
 
-  const handleUpdateInfo = () => {
-    // Call the onSave function passed from the parent
-    onSave();
+  const handleUpdateInfo = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found. Please try again.");
+      
+      const response = await fetch(`${API_BASE_URL}/account/me`, {
+        method: "PATCH",
+        headers: {
+          "Authentication": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(personalInfo),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to update profile");
+      }
+      
+      onSave();
+    } catch (error: any) {
+      setProfileError(error.message);
+    }
   };
 
+
+  // Fetch user profile name
+    useEffect(() => {
+        const fetchProfileData = async () => {
+          try {
+    
+            const token = localStorage.getItem("token");
+            console.log(token);
+            if (!token) throw new Error("No token found. Please log in again.");
+      
+            const response = await fetch("http://localhost:5005/account/me", {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: token,
+              },
+            });
+      
+            if (!response.ok) {
+              const err = await response.json();
+              throw new Error(err.message || "Failed to fetch profile data");
+            }
+      
+            const data = await response.json();
+            console.log("Profile Data:", data);
+            setProfileData(data);
+          } catch (error: any) {
+            setProfileError(error.message);
+          }
+        };
+      
+        fetchProfileData();
+      }, []);
+
+  
   return (
     <motion.div 
       className="personal-info-section"
@@ -45,25 +100,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <label>First Name</label>
+          <label>Full Name</label>
           <input 
             type="text" 
-            value={personalInfo.firstName}
+            value={profileData ? profileData.name || "User" : "Loading..."}
             onChange={(e) => handleInputChange('firstName', e.target.value)}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <label>Last Name</label>
-          <input 
-            type="text" 
-            value={personalInfo.lastName}
-            onChange={(e) => handleInputChange('lastName', e.target.value)}
           />
         </motion.div>
         
@@ -76,78 +117,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           <label>Email</label>
           <input 
             type="email" 
-            value={personalInfo.email}
+            value={profileData ? profileData.email || "email" : "Loading..."}
             onChange={(e) => handleInputChange('email', e.target.value)}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <label>Phone Number</label>
-          <input 
-            type="tel" 
-            value={personalInfo.phone}
-            onChange={(e) => handleInputChange('phone', e.target.value)}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group full-width"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <label>Bio</label>
-          <textarea 
-            value={personalInfo.bio}
-            onChange={(e) => handleInputChange('bio', e.target.value)}
-            rows={4}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <label>Occupation</label>
-          <input 
-            type="text" 
-            value={personalInfo.occupation}
-            onChange={(e) => handleInputChange('occupation', e.target.value)}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7 }}
-        >
-          <label>Birthday</label>
-          <input 
-            type="date" 
-            value={personalInfo.birthday}
-            onChange={(e) => handleInputChange('birthday', e.target.value)}
-          />
-        </motion.div>
-        
-        <motion.div 
-          className="form-group full-width"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8 }}
-        >
-          <label>Address</label>
-          <input 
-            type="text" 
-            value={personalInfo.address}
-            onChange={(e) => handleInputChange('address', e.target.value)}
           />
         </motion.div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PersonalInfo from './PersonalInfo';
@@ -68,6 +68,41 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     }
   };
 
+  // Fetch user name
+  const [profileData, setProfileData] = useState<any>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  useEffect(() => {
+      const fetchProfileData = async () => {
+        try {
+  
+          const token = localStorage.getItem("token");
+          console.log(token);
+          if (!token) throw new Error("No token found. Please log in again.");
+    
+          const response = await fetch("http://localhost:5005/account/me", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          });
+    
+          if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || "Failed to fetch profile data");
+          }
+    
+          const data = await response.json();
+          console.log("Profile Data:", data);
+          setProfileData(data);
+        } catch (error: any) {
+          setProfileError(error.message);
+        }
+      };
+    
+      fetchProfileData();
+    }, []);
+
   return (
     <div className="profile-page">
       <div className="profile-back-button">
@@ -110,8 +145,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                 />
               </div>
             </div>
-            <h3>Alex Johnson</h3>
-            <p>Software Engineer</p>
+            <h3><span>{profileData ? profileData.name || "User" : "Loading..."}</span></h3>
           </div>
           
           <nav className="profile-nav">
