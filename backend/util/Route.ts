@@ -142,6 +142,23 @@ export default class Route {
     }
   }
 
+  /**
+   * This is a helper method that writes the generic UNAUTHORIZED response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendUnauthorized(res: Response) {
+    this.handleError(
+      {
+        text_code: this.constants.messages.UNAUTHORIZED[0],
+        status: 401,
+        message: this.constants.messages.UNAUTHORIZED[1],
+      },
+      res
+    );
+  }
+
   get constants() {
     return {
       codes: {
