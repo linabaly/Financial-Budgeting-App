@@ -4,14 +4,14 @@ enum TransactionType {
 }
 
 model Transaction {
-  id         String          @id @default(uuid())
+  id         String              @id @default(uuid())
   postedAt   DateTime
   descriptor String
-  account    Account         @relation(fields: [accountId], references: [id])
-  currency   String          @default("USD")
-  amount     Decimal         @db.Decimal(10, 2)
+  account    Account             @relation(fields: [accountID], references: [id])
+  currency   String              @default("USD")
+  amount     Decimal             @db.Decimal(10, 2)
   type       TransactionType
-  category   Category
-  createdAt  DateTime        @default(now())
-  accountId  String
+  category   TransactionCategory
+  createdAt  DateTime            @default(now())
+  accountID  String
 }

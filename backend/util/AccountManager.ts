@@ -129,7 +129,7 @@ export default class AccountManager {
     await prisma.budget.deleteMany({ where: { accountId: id } });
     await prisma.goal.deleteMany({ where: { accountId: id } });
     await prisma.recurringTransaction.deleteMany({ where: { accountId: id } });
-    await prisma.transaction.deleteMany({ where: { accountId: id } });
+    await prisma.transaction.deleteMany({ where: { accountID: id } });
 
     // Delete the account
     return prisma.account.delete({ where: { id: id } });

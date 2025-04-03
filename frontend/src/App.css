@@ -395,3 +395,23 @@ body {
   border: 0;
 }
 
+.save-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #6c5ce7;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.save-notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -128,15 +128,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
  * Provides functions for showing loading states and notifications
  */
 export const showNotification = (message: string) => {
-  const notification = document.getElementById('save-notification');
-  if (notification) {
-    notification.textContent = message;
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-    }, 3000);
-  }
+  const event = new CustomEvent('show-notification', { detail: message });
+  window.dispatchEvent(event);
 };
 
 export const simulateLoading = (callback: () => void, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -148,14 +141,31 @@ export const simulateLoading = (callback: () => void, setIsLoading: React.Dispat
 };
 
 function App() {
+
+  const [notification, setNotification] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleNotification = (e: any) => {
+      setNotification(e.detail);
+      setTimeout(() => setNotification(null), 3000);
+    };
+  
+    window.addEventListener('show-notification', handleNotification);
+    return () => window.removeEventListener('show-notification', handleNotification);
+  }, []);
+  
+
   return (
     <Router>
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           {/* Global notification container */}
-          <div id="save-notification" className="save-notification">
-            Changes saved successfully!
-          </div>
+          {notification && (
+  <div className="save-notification show">
+    {notification}
+  </div>
+)}
+
           
           <Routes>
             {/* Public Routes */}

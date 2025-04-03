@@ -310,7 +310,7 @@ export const generateMonthlyComparisonChart = (containerRef: React.RefObject<HTM
   d3.select(containerRef.current).selectAll('*').remove();
   
   // Rest of the function unchanged
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  const margin = { top: 20, right: 60, bottom: 30, left: 40 };
   const width = containerRef.current.clientWidth - margin.left - margin.right;
   const height = containerRef.current.clientHeight - margin.top - margin.bottom;
   
@@ -389,7 +389,7 @@ export const generateMonthlyComparisonChart = (containerRef: React.RefObject<HTM
   
   // Add legend
   const legend = svg.append('g')
-    .attr('transform', `translate(${width - 120}, -10)`);
+    .attr('transform', `translate(${width - 140}, -10)`);
   
   legend.append('rect')
     .attr('x', 0)
