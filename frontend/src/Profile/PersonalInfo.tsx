@@ -1,4 +1,4 @@
-// You can input new email and name, but it doesn 't update the profile.
+// FIX: You can input new email and name, but it doesn 't update the profile.
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { API_BASE_URL } from "../config";
@@ -11,8 +11,8 @@ interface PersonalInfoProps {
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   const [profileError, setProfileError] = useState<string | null>(null);
   const [personalInfo, setPersonalInfo] = useState({
-    name: '',
-    email: ''
+    name: "",
+    email: ""
   });
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,18 +31,21 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
       const response = await fetch(`${API_BASE_URL}/account/me`, {
         method: "PATCH",
         headers: {
-          "Authorization": token,  
+          "Authentication": token,  
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(personalInfo),
+        body: JSON.stringify({
+          name: personalInfo.name,
+          email: personalInfo.email,
+        }),
       });
-
+      console.log(response);
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || "Failed to update profile");
+        throw new Error("Failed to update profile");
       }
-      
+
       onSave();
+      setProfileError(null);
     } catch (error: any) {
       setProfileError(error.message);
     }
@@ -72,8 +75,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         console.log("Profile Data:", data);
 
         setPersonalInfo({
-          name: data.name || '',
-          email: data.email || ''
+          name: data.name,
+          email: data.email
         });
       } catch (error: any) {
         setProfileError(error.message);
