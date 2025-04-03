@@ -155,7 +155,7 @@ const Dashboard: React.FC = () => {
       <main className="main-content">
         <div className="greeting-section">
           <div>
-            <h1>Hello, <span className="rainbow-name">{dashboardData ? dashboardData.name || "User" : "Loading..."}</span>!</h1>
+            <h1>Hello, <span className="name">{dashboardData ? dashboardData.name || "User" : "Loading..."}</span>!</h1>
             <div className="greeting-date">
               {currentDate.toLocaleDateString('en-US', {
                 weekday: 'long',

@@ -1851,3 +1851,9 @@ body {
   opacity: 0 !important;
   visibility: hidden !important;
 }
+
+.main-content {
+  position: relative;
+  overflow: visible; /* not hidden */
+  z-index: 1;
+}
