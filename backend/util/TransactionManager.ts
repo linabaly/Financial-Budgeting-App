@@ -2,19 +2,19 @@ import { v4 as uuid } from "uuid";
 import { PrismaDBClient as prisma } from "../index";
 
 export enum TransactionType {
-  INCOME,
-  EXPENSE,
+  INCOME = "INCOME",
+  EXPENSE = "EXPENSE",
 }
 
 export enum TransactionCategory {
-  FOOD,
-  RENT,
-  ENTERTAINMENT,
-  UTILITIES,
-  TRANSPORTATION,
-  HEALTHCARE,
-  OTHER,
-  INCOME,
+  FOOD = "FOOD",
+  RENT = "RENT",
+  ENTERTAINMENT = "ENTERTAINMENT",
+  UTILITIES = "UTILITIES",
+  TRANSPORTATION = "TRANSPORTATION",
+  HEALTHCARE = "HEALTHCARE",
+  OTHER = "OTHER",
+  INCOME = "INCOME",
 }
 
 export interface TransactionDetails {

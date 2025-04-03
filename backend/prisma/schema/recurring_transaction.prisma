@@ -9,16 +9,16 @@ enum Frequency {
 }
 
 model RecurringTransaction {
-  id          String          @id @default(uuid())
-  account     Account         @relation(fields: [accountId], references: [id])
-  amount      Decimal         @db.Decimal(10, 2)
-  category    Category
+  id          String              @id @default(uuid())
+  account     Account             @relation(fields: [accountId], references: [id])
+  amount      Decimal             @db.Decimal(10, 2)
+  category    TransactionCategory
   type        TransactionType
   descriptor  String
   frequency   Frequency
-  startDate   DateTime        @default(now())
+  startDate   DateTime            @default(now())
   endDate     DateTime
   nextDueDate DateTime
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime            @default(now())
   accountId   String
 }
