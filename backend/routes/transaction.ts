@@ -62,7 +62,12 @@ export default class TransactionRoute extends Route {
 
     this.router.post("/", async (req, res) => {
       try {
-        if ((!req.body.amount || typeof Number(req.body.amount) !== "number") || (!req.body.descriptor || typeof req.body.descriptor !== "string") || (!req.body.type || typeof Number(req.body.type) !== "number") || (!req.body.amount || typeof Number(req.body.amount) !== "number") || (!req.body.category || typeof Number(req.body.category) !== "number")) {
+        if (
+          !req.body.amount ||
+          typeof Number(req.body.amount) !== "number" ||
+          !req.body.descriptor ||
+          typeof req.body.descriptor !== "string"
+        ) {
           return this.handleError(
             {
               text_code: this.constants.messages.CLIENT_ERROR[0],
@@ -77,10 +82,10 @@ export default class TransactionRoute extends Route {
         const passedTransactionDetails: TransactionDetails = {
           accountID: account.id,
           amount: Number(req.body.amount),
-          category: Number(req.body.category),
+          category: req.body.category,
           descriptor: req.body.descriptor.trim(),
           postedAt: req.body.postedAt ? new Date(req.body.postedAt) : new Date(),
-          type: Number(req.body.type),
+          type: req.body.type,
         };
         const createQuery = await TransactionManager.createTransaction(passedTransactionDetails);
         res.status(200).json(createQuery);
