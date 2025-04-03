@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
                     <span className="accordion-icon">{activeAccordion === 0 ? '−' : '+'}</span>
                   </div>
                   <div className="accordion-content">
-                    <p>Getting started with Finovators is simple. Visit our website or download our mobile app from the App Store or Google Play Store. Create an account using your email address, then follow the guided setup process. You'll be prompted to connect your financial accounts securely through our bank-level encrypted system. Once connected, Finovators will automatically categorize your transactions and begin generating personalized insights. The entire setup process typically takes less than 10 minutes, and our support team is available to assist if you encounter any issues.</p>
+                    <p>Getting started with Finovators is simple. Visit our website. Create an account using your email address, then start inputting your transactions. Once inputted, Finovators will automatically categorize your transactions and begin generating personalized insights.</p>
                   </div>
                 </div>
                 
@@ -118,17 +118,7 @@ const Footer: React.FC = () => {
                     <span className="accordion-icon">{activeAccordion === 1 ? '−' : '+'}</span>
                   </div>
                   <div className="accordion-content">
-                    <p>Your security is our top priority. We implement multiple layers of protection: 256-bit bank-level encryption for all data transmission and storage, biometric authentication options on mobile devices, and continuous monitoring for suspicious activities. We're SOC 2 Type II certified and comply with PCI DSS standards. We never store your banking credentials directly; instead, we use secure token-based access through trusted financial API providers like Plaid and Yodlee. Additionally, we offer two-factor authentication and automatically log you out after periods of inactivity. Our security team regularly conducts penetration testing and works with independent auditors to ensure we maintain the highest security standards.</p>
-                  </div>
-                </div>
-                
-                <div className={`accordion-item ${activeAccordion === 2 ? 'active' : ''}`}>
-                  <div className="accordion-header" onClick={() => toggleAccordion(2)}>
-                    <h3>What types of financial accounts can I connect?</h3>
-                    <span className="accordion-icon">{activeAccordion === 2 ? '−' : '+'}</span>
-                  </div>
-                  <div className="accordion-content">
-                    <p>Finovators supports a wide range of financial accounts. You can connect checking and savings accounts, credit cards, investment portfolios (including 401(k)s, IRAs, and brokerage accounts), loans (student, auto, personal, and mortgages), and even cryptocurrency wallets. We integrate with over 15,000 financial institutions across North America and Europe, covering major banks, credit unions, and fintech platforms. If you have an account that's not automatically recognized, our support team can usually add support for it within 2-3 business days. For business users, we also support connection to accounting software like QuickBooks and Xero, as well as payment platforms like Stripe and PayPal.</p>
+                    <p>We take your data privacy and security seriously. Our platform uses bank-level security protocols to protect your financial information. This includes Argon2id password hashing, AES-256 encryption for sensitive data, and JWT-based authentication to ensure secure access. We never store your plain-text passwords or share your data with third parties. Your information stays private, encrypted, and protected—so you can focus on budgeting without worrying about your data being compromised.</p>
                   </div>
                 </div>
                 
