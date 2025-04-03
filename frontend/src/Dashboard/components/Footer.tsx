@@ -56,31 +56,43 @@ const Footer: React.FC = () => {
               <h2>About Finovators</h2>
               <div className="about-section">
                 <h3>Our Mission</h3>
-                <p>At Finovators, we believe everyone deserves financial clarity and control. Our mission is to empower individuals and businesses with intuitive tools and actionable insights that transform complex financial data into confident decisions. We're committed to making sophisticated financial technology accessible to all.</p>
+                <p>
+                  We believe financial health shouldn’t be overwhelming. Our mission is to empower college students with clear,
+                  accessible tools to manage their money, track their habits, and build a stable financial future—one transaction at a time.
+                </p>
                 
                 <h3>Our Story</h3>
-                <p>Founded in 2022 by a team of financial experts and technology innovators, Finovators was born from a shared frustration with the overwhelming complexity of personal and small business finance. What began as a simple expense tracking tool has evolved into a comprehensive financial management platform serving over 500,000 users worldwide.</p>
-                
-                <p>Our founders, Sarah Chen and Michael Rodriguez, met while working at a leading financial institution where they observed firsthand how traditional banking solutions often failed to address the real needs of everyday people. They assembled a diverse team of engineers, designers, and financial analysts united by a vision to democratize financial management.</p>
-                
+                <p>
+                  This project was born out of shared frustration. As students juggling tuition, rent, and the reality of limited income,
+                  we recognized the lack of simple yet effective budgeting tools designed for people like us. That's why Lina Baly,
+                  Jacob Darroch, Matthew Ray, and Yana Yerokhina teamed up to create a smarter way to manage student finances.
+                </p>
+                <p>
+                  Backed by our coursework in CMS 484 and inspired by our lived experiences, we developed a budgeting app that’s
+                  as intuitive as it is powerful—built by students, for students.
+                </p>
+
                 <h3>Our Approach</h3>
-                <p>We take a human-centered approach to financial technology. Rather than overwhelming you with complex charts and financial jargon, we focus on delivering meaningful insights in plain language, supported by intuitive visualizations that anyone can understand.</p>
-                
-                <p>Our AI-powered platform continuously learns from user behavior to provide increasingly personalized recommendations, helping you make better financial decisions without requiring you to become a financial expert yourself.</p>
+                <p>
+                  We take a student-centered approach. With a clean interface, real-time progress bars, and category-based visuals,
+                  our app transforms budgeting from a chore into a habit. We incorporate the 50/30/20 rule and deliver insights through
+                  a dashboard that makes financial trends easy to understand at a glance.
+                </p>
+                <p>
+                  Through goal tracking and personalized suggestions, we help students stay on track—without requiring a degree in finance.
+                </p>
                 
                 <h3>Our Values</h3>
                 <ul className="values-list">
-                  <li><strong>Transparency:</strong> We believe in complete transparency in our operations, pricing, and how we handle your data. No hidden fees, no surprises.</li>
-                  <li><strong>Privacy:</strong> Your financial data is yours. We employ bank-level security measures and never sell your information to third parties.</li>
-                  <li><strong>Inclusivity:</strong> We design our products to serve everyone, regardless of financial expertise, background, or circumstances.</li>
-                  <li><strong>Innovation:</strong> We constantly push the boundaries of what financial technology can do, integrating cutting-edge AI and machine learning to deliver smarter insights.</li>
-                  <li><strong>Support:</strong> We provide responsive, knowledgeable support because we understand that financial management can sometimes be stressful.</li>
+                  <li><strong>Simplicity:</strong> A streamlined design for real-life student use—no fluff, just function.</li>
+                  <li><strong>Security:</strong> We use bank-level encryption (Argon2id, JWT, and AES-256) to protect your data and privacy.</li>
+                  <li><strong>Responsibility:</strong> Our suggestions foster smart habits and financial self-awareness.</li>
+                  <li><strong>Inclusivity:</strong> Whether you rely on aid, scholarships, or part-time work, this app meets you where you are.</li>
+                  <li><strong>Innovation:</strong> With future goals like AI-powered suggestions and mobile access, we’re always evolving.</li>
                 </ul>
                 
-                <h3>Our Impact</h3>
-                <p>Beyond our commercial offerings, Finovators is committed to improving financial literacy globally. Through our Finovators Foundation, we've partnered with educational institutions to provide free financial education resources to underserved communities.</p>
-                
-                <p>Our Financial Futures program has reached over 50,000 high school students, equipping the next generation with essential money management skills they'll use throughout their lives.</p>
+                <h3>Our Vison</h3>
+                <p>We’re not just building a budgeting app—we’re creating a foundation for lifelong financial wellness. From students navigating their first rent payment to young professionals managing their first paycheck, our platform aims to grow alongside its users and their goals.</p>
               </div>
             </div>
           )}
