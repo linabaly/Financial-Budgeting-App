@@ -36,7 +36,9 @@ export default class AccountRoute extends Route {
         return this.sendUnauthorized(res);
       try {
         const token = SecurityManager.generateToken({ id: account.id, name: account.name });
-        console.info(`Logged into account ${account.email} with token ${token}`);
+        console.info(
+          `Logged into account '${account.email}' with token '[REDACTED]' with IP address '${req.ip}'`
+        );
         res.cookie("token", token, {
           httpOnly: true,
           sameSite: "lax",
