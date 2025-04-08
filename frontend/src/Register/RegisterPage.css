@@ -1,1209 +1,672 @@
-:root {
-  /* Color Palette */
-  --primary-background: linear-gradient(135deg, rgba(68, 58, 216, 1) 0%, rgba(85, 61, 235, 1) 50%, rgba(54, 46, 172, 1) 100%);
-  --secondary-background: rgba(239, 240, 248, 0.9);
-  --input-bg: #f8f9fa;
-  --input-bg-focus: #ffffff;
-  --input-border-color: #e0e0e0;
-  --input-focus-color: rgba(68, 58, 216, 0.5);
-  --button-bg: #443ad8;
-  --button-hover-bg: #3632b0;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --text-light: #ffffff;
-  --error-color: #d32f2f;
-  --error-bg: #fff4f4;
-  
-  /* Typography */
-  --default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFang SC",
-    "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei",
-    "Source Han Sans CN", sans-serif;
-  
-  /* Transitions */
-  --transition-speed: 0.3s;
-}
-
-/* Accessibility and Base Styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: var(--default-font-family);
-  line-height: 1.6;
-  color: var(--text-primary);
-  overscroll-behavior: none;
-}
-
-/* Main Container */
-.main-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* Background with Advanced Gradient and Animation */
-.background {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: var(--primary-background);
-  z-index: -1;
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Register Card with Enhanced Shadow and Depth */
-.register-card {
-  position: absolute;
-  width: 450px;
-  right: 10%;
-  background: var(--secondary-background);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2.5rem;
-  box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.1),
-    0 20px 50px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(10px);
-  transition: transform var(--transition-speed) ease;
-  animation: fadeIn 0.6s forwards;
-  z-index: 10;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.register-card:hover {
-  transform: translateY(-5px);
-}
-
-/* Register Title with Subtle Animation */
-.register-title {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.register-subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-  text-align: center;
-  animation: fadeIn 0.8s forwards 0.2s;
-  opacity: 0;
-}
-
-/* Form Styling with Enhanced Interactivity */
-.register-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.form-label {
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: color var(--transition-speed);
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  width: 20px;
-  height: 20px;
-  color: #999;
-}
-
-.form-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 16px 0 2.5rem;
-  border: 1.5px solid var(--input-border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: var(--input-bg);
-  color: var(--text-primary);
-  transition: 
-    border-color var(--transition-speed),
-    background-color var(--transition-speed),
-    box-shadow var(--transition-speed);
-}
-
-.form-input::placeholder {
-  color: #aaa;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: rgba(68, 58, 216, 0.7);
-  background-color: var(--input-bg-focus);
-  box-shadow: 0 0 0 3px var(--input-focus-color);
-}
-
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777;
-}
-
-.password-toggle svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* Password Strength Meter */
-.password-strength {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.strength-meter {
-  flex-grow: 1;
-  height: 4px;
-  background-color: #e0e0e0;
-  border-radius: 2px;
-  margin-right: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.strength-meter::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 0;
-  transition: width var(--transition-speed), background-color var(--transition-speed);
-}
-
-.strength-1::before { 
-  width: 20%; 
-  background-color: #ff4b4b; 
-}
-
-.strength-2::before { 
-  width: 40%; 
-  background-color: #ffa500; 
-}
-
-.strength-3::before { 
-  width: 60%; 
-  background-color: #ffd700; 
-}
-
-.strength-4::before { 
-  width: 80%; 
-  background-color: #2ecc71; 
-}
-
-.strength-5::before { 
-  width: 100%; 
-  background-color: #2ecc71; 
-}
-
-.strength-text {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-/* Button Styling with Enhanced Hover and Focus States */
-.register-button {
-  height: 48px;
-  background: var(--button-bg);
-  color: var(--text-light);
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  transition: 
-    background var(--transition-speed),
-    transform var(--transition-speed),
-    box-shadow var(--transition-speed);
-  position: relative;
-  overflow: hidden;
-}
-
-.register-button:hover {
-  background: var(--button-hover-bg);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.register-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.register-button:disabled {
-  background-color: rgba(68, 58, 216, 0.6);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.spinner {
-  animation: spin 1s linear infinite;
-  width: 20px;
-  height: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Error Display */
-.error-container {
-  background-color: var(--error-bg);
-  border-left: 4px solid var(--error-color);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.error-message {
-  color: var(--error-color);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.error-message:not(:last-child) {
-  margin-bottom: 0.5rem;
-}
-
-.error-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-/* Auth footer */
-.auth-footer {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.login-prompt {
-  color: var(--text-secondary);
-  margin-bottom: 0.75rem;
-}
-
-.login-button {
-  background-color: transparent;
-  color: var(--button-bg);
-  border: 1.5px solid var(--button-bg);
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  font-size: 0.95rem;
-}
-
-.login-button:hover {
-  background-color: rgba(68, 58, 216, 0.05);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-/* Brand Wrapper */
-.brand-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-/* FIXED WELCOME CONTAINER - Consistent across pages */
-.welcome-container {
-  position: absolute;
-  top: 50%; /* This controls vertical positioning (50% = middle of screen) */
-  left: 45%; /* This controls horizontal positioning (25% = quarter from left) */
-  transform: translate(-90%, -50%); /* This centers the element both horizontally and vertically */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 550px;
-  z-index: 1;
-  opacity: 1; /* Start visible to fix loading issue */
-}
-
-/* Larger text styles */
-.welcome-to {
-  color: var(--text-light);
-  font-size: 4.2rem !important;
-  font-weight: 300;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
-  width: 100%;
-  line-height: 1.2;
-}
-
-.finovators {
-  color: var(--text-light);
-  font-size: 7rem !important;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #ffffff, #e0e0ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
-  width: 100%;
-  line-height: 1.1;
-}
-
-.brand-tagline {
-  color: var(--text-light);
-  font-size: 2.5rem !important;
-  opacity: 0.95;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  font-weight: 400;
-  width: 100%;
-  line-height: 1.3;
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .register-card {
-    right: 5%;
-    width: 400px;
-  }
-
-  .welcome-container {
-    left: 25% !important;
+/* ====================================================
+   VARIABLES - Color palette, typography, and transitions
+   Defines global design tokens used throughout the component
+   ==================================================== */
+   .register-page {
+    /* Color Palette */
+    --primary-background: linear-gradient(135deg, rgba(68, 58, 216, 1) 0%, rgba(85, 61, 235, 1) 50%, rgba(54, 46, 172, 1) 100%);
+    --secondary-background: rgba(239, 240, 248, 0.9);
+    --input-bg: #f8f9fa;
+    --input-bg-focus: #ffffff;
+    --input-border-color: #e0e0e0;
+    --input-focus-color: rgba(68, 58, 216, 0.5);
+    --button-bg: #443ad8;
+    --button-hover-bg: #3632b0;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-light: #ffffff;
+    --error-color: #d32f2f;
+    --error-bg: #fff4f4;
+    
+    /* Typography */
+    --default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+      "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei",
+      "Source Han Sans CN", sans-serif;
+    
+    /* Transitions */
+    --transition-speed: 0.3s;
   }
   
-  .welcome-to {
-    font-size: 3.5rem !important;
+  /* ====================================================
+     BASE STYLES - General resets and base element styling
+     Applies fundamental styling to all elements within the component
+     ==================================================== */
+  .register-page *,
+  .register-page *::before,
+  .register-page *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
   
-  .finovators {
-    font-size: 6rem !important;
-  }
-  
-  .brand-tagline {
-    font-size: 2rem !important;
-  }
-}
-
-@media (max-width: 900px) {
+  /* ====================================================
+     LAYOUT & CONTAINERS - Main layout structure
+     Controls the overall layout and positioning of content
+     ==================================================== */
   .main-container {
-    flex-direction: column;
-    justify-content: center;
-    height: auto;
-    min-height: 100vh;
-    padding: 2rem 0;
-  }
-
-  .register-card {
     position: relative;
-    right: auto;
-    width: 90%;
-    max-width: 450px;
-    margin-bottom: 2rem;
-    order: 2;
+    width: 100%;
+    height: auto;
+    min-height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 1.5rem 0;
+    animation: pageReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   }
-
+  
+  .background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: var(--primary-background);
+    z-index: -1;
+    background-size: 400% 400%;
+    animation: gradientBG 25s ease infinite;
+  }
+  
+  /* ====================================================
+     REGISTER CARD - Main registration form container
+     Styles the card that contains the registration form
+     ==================================================== */
+  .register-card {
+    position: absolute;
+    width: 450px;
+    right: 10%;
+    background: var(--secondary-background);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem;
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.1),
+      0 20px 50px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    animation: cardSlideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    z-index: 10;
+    max-height: 95vh;
+    overflow-y: auto;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    margin-top: 5rem;
+    margin-bottom: 0;
+  }
+  
+  .register-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      0 15px 30px rgba(0, 0, 0, 0.12),
+      0 25px 60px rgba(0, 0, 0, 0.06);
+  }
+  
+  .register-title {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.4s;
+  }
+  
+  .register-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
+  }
+  
+  /* ====================================================
+     WELCOME CONTAINER - Branding section
+     Controls the branding section with welcome text and logo
+     ==================================================== */
   .welcome-container {
-    position: relative !important;
-    left: auto !important;
-    transform: none !important;
-    margin: 0 auto 2rem auto !important;
-    order: 1 !important;
-    opacity: 1 !important;
+    position: absolute;
+    top: 47.5%;
+    left: 45%;
+    transform: translate(-90%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 550px;
+    z-index: 1;
+    opacity: 0;
+    animation: welcomeReveal 1s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s;
   }
   
   .brand-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .welcome-to {
+    color: var(--text-light);
+    font-size: 4.2rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+    width: 100%;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: textReveal 0.6s ease-out forwards 0.5s;
+  }
+  
+  .finovators {
+    color: var(--text-light);
+    font-size: 7rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #ffffff, #e0e0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    width: 100%;
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: textReveal 0.6s ease-out forwards 0.7s, subtleGradient 18s ease-in-out infinite alternate;
+  }
+  
+  .brand-tagline {
+    color: var(--text-light);
+    font-size: 2.5rem;
+    opacity: 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    font-weight: 400;
+    width: 100%;
+    line-height: 1.3;
+    transform: translateY(10px);
+    animation: textReveal 0.6s ease-out forwards 0.9s;
+  }
+  
+  /* ====================================================
+     FORM ELEMENTS - Form inputs and controls
+     Styles for form fields, labels, and input wrappers
+     ==================================================== */
+  .register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: formReveal 0.5s ease-out forwards;
+  }
+  
+  .form-group:nth-child(1) {
+    animation-delay: 0.6s;
+  }
+  
+  .form-group:nth-child(2) {
+    animation-delay: 0.7s;
+  }
+  
+  .form-group:nth-child(3) {
+    animation-delay: 0.8s;
+  }
+  
+  .form-group:nth-child(4) {
+    animation-delay: 0.9s;
+  }
+  
+  .form-label {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color var(--transition-speed);
+  }
+  
+  .input-wrapper {
+    position: relative;
+    display: flex;
     align-items: center;
   }
   
-  .welcome-to {
-    font-size: 3.2rem !important;
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    width: 20px;
+    height: 20px;
+    color: #999;
   }
   
-  .finovators {
-    font-size: 5rem !important;
-  }
-  
-  .brand-tagline {
-    font-size: 1.8rem !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .register-card {
-    padding: 1.5rem;
-  }
-
-  .register-form {
-    gap: 1rem;
-  }
-
-  .welcome-to {
-    font-size: 2.5rem !important;
-  }
-  
-  .finovators {
-    font-size: 4rem !important;
-  }
-  
-  .brand-tagline {
-    font-size: 1.5rem !important;
-  }
-}
-
-/* Accessibility Enhancements */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-@media (prefers-contrast: high) {
-  .register-card {
-    border: 2px solid #000;
-  }
-
   .form-input {
-    border: 2px solid #000;
-  }
-}
-
-/* Special spacing for register card */
-.register-card {
-  max-height: 95vh;
-  overflow-y: auto;
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-  margin-top: 5rem;
-  margin-bottom: 0;
-}
-
-/* Main container height adjustment */
-.main-container {
-  height: auto;
-  min-height: 95vh;
-  padding: 1.5rem 0;
-}
-
-/* Adjust vertical spacing of form elements */
-.register-title {
-  margin-top: 0.75rem;
-}
-
-.register-subtitle {
-  margin-bottom: 1.5rem;
-}
-
-.register-form {
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Adjust footer spacing */
-.auth-footer {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-}
-
-/* ENHANCED WELCOME CONTAINER - With improved animations */
-.welcome-container {
-  position: absolute;
-  top: 47.5%; /* Vertical positioning */
-  left: 45%; /* Horizontal positioning */
-  transform: translate(-90%, -50%); /* Centers the element */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 550px;
-  z-index: 1;
-  opacity: 0; /* Start invisible for animation */
-  animation: welcomeFadeIn 1.2s ease-out forwards; /* Main container animation */
-}
-
-/* Enhanced fade-in animation with slight bounce */
-@keyframes welcomeFadeIn {
-  0% {
-    opacity: 0;
-    transform: translate(-90%, -45%) scale(0.95);
-  }
-  70% {
-    opacity: 1;
-    transform: translate(-90%, -52%) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-90%, -50%) scale(1);
-  }
-}
-
-/* Animated text elements with staggered timing */
-.welcome-to {
-  color: var(--text-light);
-  font-size: 4.2rem !important;
-  font-weight: 300;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
-  width: 100%;
-  line-height: 1.2;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: textSlideUp 0.8s ease forwards 0.3s;
-}
-
-.finovators {
-  color: var(--text-light);
-  font-size: 7rem !important;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #ffffff, #e0e0ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
-  width: 100%;
-  line-height: 1.1;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: textSlideUp 0.8s ease forwards 0.5s, gradientShift 8s ease-in-out infinite alternate;
-}
-
-.brand-tagline {
-  color: var(--text-light);
-  font-size: 2.5rem !important;
-  opacity: 0;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  font-weight: 400;
-  width: 100%;
-  line-height: 1.3;
-  transform: translateY(20px);
-  animation: textSlideUp 0.8s ease forwards 0.7s;
-}
-
-/* Text slide-up animation */
-@keyframes textSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Subtle gradient shift animation for "Finovators" text */
-@keyframes gradientShift {
-  0% {
-    background: linear-gradient(45deg, #ffffff, #e0e0ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-  100% {
-    background: linear-gradient(45deg, #e0e0ff, #ffffff);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .welcome-container {
-    left: 20% !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .welcome-container {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    margin: 0 auto 2rem auto !important;
-    order: 1 !important;
-    animation: welcomeFadeInMobile 1s ease-out forwards !important;
+    width: 100%;
+    height: 48px;
+    padding: 0 16px 0 2.5rem;
+    border: 1.5px solid var(--input-border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    transition: 
+      border-color var(--transition-speed),
+      background-color var(--transition-speed),
+      box-shadow var(--transition-speed);
   }
   
-  @keyframes welcomeFadeInMobile {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+  .form-input::placeholder {
+    color: #aaa;
   }
-}
-
-/* Enhanced overall page animations */
-
-/* Background gradient animation */
-.background {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: var(--primary-background);
-  z-index: -1;
-  background-size: 400% 400%;
-  animation: gradientBG 25s ease infinite; /* Slowed down for more subtlety */
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Main container reveal */
-.main-container {
-  position: relative;
-  width: 100%;
-  height: auto;
-  min-height: 95vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  padding: 1.5rem 0;
-  animation: pageReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-
-@keyframes pageReveal {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Register card animation */
-.register-card {
-  position: absolute;
-  width: 450px;
-  right: 10%;
-  background: var(--secondary-background);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2.5rem;
-  box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.1),
-    0 20px 50px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(10px);
-  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-  animation: cardSlideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  z-index: 10;
-  max-height: 95vh;
-  overflow-y: auto;
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-  margin-top: 5rem;
-  margin-bottom: 0;
-}
-
-@keyframes cardSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.register-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 
-    0 15px 30px rgba(0, 0, 0, 0.12),
-    0 25px 60px rgba(0, 0, 0, 0.06);
-}
-
-/* Register title and subtitle animations */
-.register-title {
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  opacity: 0;
-  animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.4s;
-}
-
-.register-subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  text-align: center;
-  opacity: 0;
-  animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
-}
-
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Form element animations */
-.register-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  position: relative;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: formReveal 0.5s ease-out forwards;
-}
-
-.form-group:nth-child(1) {
-  animation-delay: 0.6s;
-}
-
-.form-group:nth-child(2) {
-  animation-delay: 0.7s;
-}
-
-.form-group:nth-child(3) {
-  animation-delay: 0.8s;
-}
-
-.form-group:nth-child(4) {
-  animation-delay: 0.9s;
-}
-
-@keyframes formReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Password strength meter animation */
-.strength-meter::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 0;
-  transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
-              background-color 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-/* Button animations */
-.register-button {
-  height: 48px;
-  background: var(--button-bg);
-  color: var(--text-light);
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  transition: 
-    background 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.1s;
-}
-
-@keyframes buttonReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.register-button:hover {
-  background: var(--button-hover-bg);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.register-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Footer animation */
-.auth-footer {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  opacity: 0;
-  animation: footerReveal 0.6s ease-out forwards 1.2s;
-}
-
-@keyframes footerReveal {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Input field focus animation */
-.form-input:focus {
-  outline: none;
-  border-color: rgba(68, 58, 216, 0.7);
-  background-color: var(--input-bg-focus);
-  box-shadow: 0 0 0 3px var(--input-focus-color);
-  animation: inputFocus 0.3s ease-out;
-}
-
-@keyframes inputFocus {
-  0% {
-    box-shadow: 0 0 0 0 var(--input-focus-color);
-  }
-  50% {
-    box-shadow: 0 0 0 4px var(--input-focus-color);
-  }
-  100% {
+  
+  .form-input:focus {
+    outline: none;
+    border-color: rgba(68, 58, 216, 0.7);
+    background-color: var(--input-bg-focus);
     box-shadow: 0 0 0 3px var(--input-focus-color);
-  }
-}
-
-/* PROFESSIONAL WELCOME CONTAINER - With refined animations */
-.welcome-container {
-  position: absolute;
-  top: 47.5%; /* Vertical positioning */
-  left: 45%; /* Horizontal positioning */
-  transform: translate(-90%, -50%); /* Centers the element */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 550px;
-  z-index: 1;
-  opacity: 0; /* Start invisible for animation */
-  animation: welcomeReveal 1s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s; /* Refined easing with delay */
-}
-
-/* Clean professional reveal animation */
-@keyframes welcomeReveal {
-  0% {
-    opacity: 0;
-    transform: translate(-90%, -50%) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-90%, -50%) scale(1);
-  }
-}
-
-/* Refined text elements with professional timing */
-.welcome-to {
-  color: var(--text-light);
-  font-size: 4.2rem !important;
-  font-weight: 300;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
-  width: 100%;
-  line-height: 1.2;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: textReveal 0.6s ease-out forwards 0.5s;
-}
-
-.finovators {
-  color: var(--text-light);
-  font-size: 7rem !important;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #ffffff, #e0e0ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
-  width: 100%;
-  line-height: 1.1;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: textReveal 0.6s ease-out forwards 0.7s, subtleGradient 18s ease-in-out infinite alternate;
-}
-
-.brand-tagline {
-  color: var(--text-light);
-  font-size: 2.5rem !important;
-  opacity: 0;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  font-weight: 400;
-  width: 100%;
-  line-height: 1.3;
-  transform: translateY(10px);
-  animation: textReveal 0.6s ease-out forwards 0.9s;
-}
-
-/* Spinner animation enhancement */
-.spinner {
-  animation: spin 0.8s linear infinite;
-  width: 20px;
-  height: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Refined text reveal animation */
-@keyframes textReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Subtle gradient animation - very slow and professional */
-@keyframes subtleGradient {
-  0% {
-    background: linear-gradient(45deg, #ffffff, #e0e0ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-  100% {
-    background: linear-gradient(45deg, #e8e8ff, #ffffff);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-}
-
-/* Responsive design adjustments */
-@media (max-width: 1200px) {
-  .register-card {
-    right: 5%;
-    width: 400px;
+    animation: inputFocus 0.3s ease-out;
   }
   
-  .welcome-container {
-    left: 20% !important;
-  }
-  
-  .welcome-to {
-    font-size: 3.5rem !important;
-  }
-  
-  .finovators {
-    font-size: 6rem !important;
-  }
-  
-  .brand-tagline {
-    font-size: 2rem !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .main-container {
-    flex-direction: column;
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    height: auto;
-    min-height: 100vh;
-    padding: 2rem 0;
+    color: #777;
   }
-
-  .register-card {
+  
+  .password-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* ====================================================
+     PASSWORD STRENGTH METER - Strength indicator
+     Visual indicator for password security levels
+     ==================================================== */
+  .password-strength {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .strength-meter {
+    flex-grow: 1;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    margin-right: 10px;
+    overflow: hidden;
     position: relative;
-    right: auto;
-    width: 90%;
-    max-width: 450px;
-    margin-bottom: 2rem;
-    order: 2;
-    animation: mobileCardReveal 0.8s ease-out forwards;
   }
   
-  .welcome-container {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    margin: 0 auto 2rem auto !important;
-    order: 1 !important;
-    animation: mobileReveal 0.8s ease-out forwards !important;
+  .strength-meter::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
+                background-color 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   }
   
-  @keyframes mobileCardReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
+  .strength-1::before { 
+    width: 20%; 
+    background-color: #ff4b4b; 
+  }
+  
+  .strength-2::before { 
+    width: 40%; 
+    background-color: #ffa500; 
+  }
+  
+  .strength-3::before { 
+    width: 60%; 
+    background-color: #ffd700; 
+  }
+  
+  .strength-4::before { 
+    width: 80%; 
+    background-color: #2ecc71; 
+  }
+  
+  .strength-5::before { 
+    width: 100%; 
+    background-color: #2ecc71; 
+  }
+  
+  .strength-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  
+  /* ====================================================
+     BUTTONS - Action buttons
+     Styles for primary and secondary action buttons
+     ==================================================== */
+  .register-button {
+    height: 48px;
+    background: var(--button-bg);
+    color: var(--text-light);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    transition: 
+      background 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.1s;
+  }
+  
+  .register-button:hover {
+    background: var(--button-hover-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .register-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .register-button:disabled {
+    background-color: rgba(68, 58, 216, 0.6);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .login-button {
+    background-color: transparent;
+    color: var(--button-bg);
+    border: 1.5px solid var(--button-bg);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    font-size: 0.95rem;
+  }
+  
+  .login-button:hover {
+    background-color: rgba(68, 58, 216, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* ====================================================
+     ERROR DISPLAY - Error messages
+     Styling for validation error messages
+     ==================================================== */
+  .error-container {
+    background-color: var(--error-bg);
+    border-left: 4px solid var(--error-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .error-message:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .error-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  
+  /* ====================================================
+     FOOTER - Authentication options footer
+     Styles for the login prompt and button in the footer
+     ==================================================== */
+  .auth-footer {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    animation: footerReveal 0.6s ease-out forwards 1.2s;
+  }
+  
+  .login-prompt {
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+  
+  /* ====================================================
+     LOADING SPINNER - Loading animation
+     Animation for the loading spinner during form submission
+     ==================================================== */
+  .spinner {
+    animation: spin 0.8s linear infinite;
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* ====================================================
+     ANIMATIONS - Keyframe definitions
+     Defines all animations used throughout the component
+     ==================================================== */
+  @keyframes pageReveal {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  @keyframes cardSlideIn {
+    0% { opacity: 0; transform: translateX(40px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes formReveal {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes buttonReveal {
+    0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  
+  @keyframes footerReveal {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes welcomeReveal {
+    0% { opacity: 0; transform: translate(-90%, -50%) scale(0.98); }
+    100% { opacity: 1; transform: translate(-90%, -50%) scale(1); }
+  }
+  
+  @keyframes textReveal {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes subtleGradient {
+    0% { background: linear-gradient(45deg, #ffffff, #e0e0ff); -webkit-background-clip: text; background-clip: text; }
+    100% { background: linear-gradient(45deg, #e8e8ff, #ffffff); -webkit-background-clip: text; background-clip: text; }
+  }
+  
+  @keyframes inputFocus {
+    0% { box-shadow: 0 0 0 0 var(--input-focus-color); }
+    50% { box-shadow: 0 0 0 4px var(--input-focus-color); }
+    100% { box-shadow: 0 0 0 3px var(--input-focus-color); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* ====================================================
+     ACCESSIBILITY - Accessibility enhancements
+     Supports various user preferences and needs
+     ==================================================== */
+  @media (prefers-reduced-motion: reduce) {
+    .register-page *,
+    .register-page *::before,
+    .register-page *::after {
+      animation-duration: 0.001s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.001s !important;
     }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+  }
+  
+  @media (prefers-contrast: high) {
+    .register-card {
+      border: 2px solid #000;
+    }
+  
+    .form-input {
+      border: 2px solid #000;
     }
   }
   
-  @keyframes mobileReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
+  /* ====================================================
+     RESPONSIVE DESIGN - Screen size adaptations
+     Adjusts layout and sizing for different screen sizes
+     ==================================================== */
+  @media (max-width: 1200px) {
+    .register-card {
+      right: 5%;
+      width: 400px;
     }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+  
+    .welcome-container {
+      left: 20%;
     }
-  }
-}
-
-@media (max-width: 480px) {
-  .register-card {
-    padding: 1.5rem;
-  }
-
-  .register-form {
-    gap: 1rem;
-  }
-
-  .welcome-to {
-    font-size: 2.5rem !important;
+    
+    .welcome-to {
+      font-size: 3.5rem;
+    }
+    
+    .finovators {
+      font-size: 6rem;
+    }
+    
+    .brand-tagline {
+      font-size: 2rem;
+    }
   }
   
-  .finovators {
-    font-size: 4rem !important;
+  @media (max-width: 900px) {
+    .main-container {
+      flex-direction: column;
+      justify-content: center;
+      height: auto;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+  
+    .register-card {
+      position: relative;
+      right: auto;
+      width: 90%;
+      max-width: 450px;
+      margin-bottom: 2rem;
+      order: 2;
+      animation: mobileCardReveal 0.8s ease-out forwards;
+    }
+    
+    .welcome-container {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      margin: 0 auto 2rem auto;
+      order: 1;
+      animation: mobileReveal 0.8s ease-out forwards;
+    }
+    
+    @keyframes mobileCardReveal {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes mobileReveal {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   }
   
-  .brand-tagline {
-    font-size: 1.5rem !important;
+  @media (max-width: 480px) {
+    .register-card {
+      padding: 1.5rem;
+    }
+  
+    .register-form {
+      gap: 1rem;
+    }
+  
+    .welcome-to {
+      font-size: 2.5rem;
+    }
+    
+    .finovators {
+      font-size: 4rem;
+    }
+    
+    .brand-tagline {
+      font-size: 1.5rem;
+    }
   }
-}
-
-/* Accessibility Enhancements */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001s !important;
-    animation-delay: 0s !important;
-    transition-duration: 0.001s !important;
-  }
-}

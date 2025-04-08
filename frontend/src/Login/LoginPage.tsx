@@ -1,21 +1,47 @@
+/**
+ * LoginPage Component
+ * 
+ * This file implements a responsive login page with validation, error handling, 
+ * and authentication logic. The page displays a branded welcome message alongside
+ * a login form with email and password inputs.
+ * 
+ * Key features:
+ * - Form validation with error messaging
+ * - Password visibility toggle
+ * - Loading states
+ * - Authentication API integration
+ * - Responsive design for various screen sizes
+ */
+
 import React, { useState, useCallback, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 
-// Type definition for login credentials
+/**
+ * Interface defining the structure for login credentials
+ * @property {string} login - User's email address
+ * @property {string} password - User's password
+ */
 interface LoginCredentials {
   login: string;
   password: string;
 }
 
-// Validation utility functions
+/**
+ * Validates user login credentials
+ * 
+ * @param credentials - The user's login credentials to validate
+ * @returns An array of error messages, empty if validation passes
+ */
 const validateLogin = (credentials: LoginCredentials): string[] => {
   const errors: string[] = [];
 
+  // Validate login field (email)
   if (!credentials.login.trim()) {
     errors.push("Login is required");
   }
 
+  // Validate password field
   if (!credentials.password.trim()) {
     errors.push("Password is required");
   } else if (credentials.password.length < 6) {
@@ -25,19 +51,37 @@ const validateLogin = (credentials: LoginCredentials): string[] => {
   return errors;
 };
 
+/**
+ * LoginPage Component
+ * 
+ * Renders a login form with validation, error handling, and authentication.
+ * Manages form state, processes user input, and handles the authentication process.
+ */
 export default function LoginPage() {
-  // State management with more robust typing
+  // ========== STATE MANAGEMENT ==========
+  
+  // Form data state
   const [credentials, setCredentials] = useState<LoginCredentials>({
     login: "",
     password: ""
   });
+  
+  // UI state
   const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Navigation hook for redirecting after login
   const navigate = useNavigate();
 
-  // Memoized input change handler
+  // ========== EVENT HANDLERS ==========
+
+  /**
+   * Handles form input changes
+   * Updates the credentials state when input values change
+   * 
+   * @param e - The input change event
+   */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setCredentials(prev => ({
@@ -46,30 +90,39 @@ export default function LoginPage() {
     }));
   }, []);
 
-  // Toggle password visibility
+  /**
+   * Toggles password visibility between plain text and hidden
+   */
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
 
-  // Comprehensive sign-in handler
+  /**
+   * Handles the sign-in process
+   * Validates input, makes authentication API call, and handles success/failure
+   * 
+   * @param e - The form submission event
+   */
   const handleSignIn = useCallback(async (e: FormEvent) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); // Prevent default form submission behavior
     
-    // Reset previous errors
+    // Reset any previous error messages
     setErrors([]);
     
-    // Validate credentials
+    // Validate user input
     const validationErrors = validateLogin(credentials);
     
+    // If validation fails, display errors and stop the login process
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Simulate loading state
+    // Set loading state to show user that login is processing
     setIsLoading(true);
 
     try {
+      // Make API request to authenticate user
       const response = await fetch("http://localhost:5005/account/login", {
         method: "POST",
         headers: {
@@ -81,34 +134,42 @@ export default function LoginPage() {
         }),
       });
     
+      // Handle unsuccessful response
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to log in");
       }
     
+      // Process successful response
       const data = await response.json();
+      
+      // Store authentication data in local storage
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.id);
     
-      console.log("Logged in:", data);
-    
+      // Navigate to dashboard on successful login
       navigate("/Dashboard");
     } catch (error: any) {
+      // Display error message if login fails
       setErrors(["Login failed: " + error.message]);
     } finally {
+      // Reset loading state regardless of outcome
       setIsLoading(false);
     }
-    
   }, [credentials, navigate]);
 
+  // ========== COMPONENT RENDER ==========
   return (
     <div className="main-container">
+      {/* Animated background gradient */}
       <div className="background" />
+      
+      {/* Login form card */}
       <div className="login-card">
         <h2 className="login-title">Welcome Back</h2>
         <p className="login-subtitle">Enter your credentials to continue</p>
         
-        {/* Error Display */}
+        {/* Error message display area */}
         {errors.length > 0 && (
           <div 
             role="alert" 
@@ -127,7 +188,9 @@ export default function LoginPage() {
           </div>
         )}
 
+        {/* Login form */}
         <form className="login-form" onSubmit={handleSignIn} noValidate>
+          {/* Email input field */}
           <div className="form-group">
             <label 
               htmlFor="login" 
@@ -155,6 +218,7 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Password input field with show/hide toggle */}
           <div className="form-group">
             <div className="password-label-wrapper">
               <label 
@@ -188,6 +252,7 @@ export default function LoginPage() {
                 aria-invalid={errors.some(e => e.includes('Password'))}
                 aria-describedby="password-error"
               />
+              {/* Toggle button for password visibility */}
               <button 
                 type="button" 
                 className="password-toggle"
@@ -210,6 +275,7 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Submit button with loading state */}
           <button 
             type="submit" 
             className="signin-button" 
@@ -226,6 +292,7 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Account creation footer */}
         <div className="auth-footer">
           <p className="signup-prompt">Don't have an account?</p>
           <button 
@@ -239,6 +306,7 @@ export default function LoginPage() {
         </div>
       </div>
 
+      {/* Welcome message container */}
       <div className="welcome-container">
         <div className="brand-wrapper">
           <h1 className="welcome-to">Welcome to</h1>
