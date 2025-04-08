@@ -53,7 +53,6 @@ const FinancialGoals = lazy(() => import("./Profile/FinancialGoals"));
 const NotificationPreferences = lazy(() => import("./Profile/NotificationPreferences"));
 const PersonalInfo = lazy(() => import("./Profile/PersonalInfo"));
 const SecuritySettings = lazy(() => import("./Profile/SecuritySettings"));
-const ProfileSettings = lazy(() => import("./Profile/ProfileSettings"));
 
 /**
  * Loading Fallback Component
@@ -256,16 +255,6 @@ function App() {
                 <ProtectedRoute>
                   <SecuritySettings onSave={() => {
                     showNotification('Security settings updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/profile-settings"
-              element={
-                <ProtectedRoute>
-                  <ProfileSettings onSave={() => {
-                    showNotification('Profile settings updated successfully!');
                   }} />
                 </ProtectedRoute>
               }
