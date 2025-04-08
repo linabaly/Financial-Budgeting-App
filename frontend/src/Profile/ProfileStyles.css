@@ -1,24 +1,41 @@
-/* Enhanced Profile Page Styling */
+/* ==========================================================================
+   PROFILE STYLES - Core UI styling for the profile section
+   ========================================================================== */
+
+/* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css');
 
+/* ==========================================================================
+   VARIABLES - Color scheme and base measurements
+   ========================================================================== */
 :root {
-  --primary-color: #9b59b6; /* Purple */
-  --primary-dark: #8e44ad; /* Darker purple */
-  --primary-light: #d2b4de; /* Lighter purple */
-  --accent-color: #9b59b6; /* Purple accent */
-  --secondary-color: #9b59b6; /* Purple secondary */
+  /* Colors */
+  --primary-color: #9b59b6;
+  --primary-dark: #8e44ad;
+  --primary-light: #d2b4de;
   --danger-color: #e74c3c;
+  
+  /* Backgrounds */
   --bg-dark: #121212;
   --bg-card: #1e1e1e;
   --bg-component: #252525;
+  
+  /* Text */
   --text-primary: #ffffff;
   --text-secondary: #aaaaaa;
+  
+  /* UI Elements */
   --border-color: #333333;
   --shadow-color: rgba(155, 89, 182, 0.2);
+  
+  /* Animation */
   --transition-speed: 0.3s;
 }
 
+/* ==========================================================================
+   RESET & BASE STYLES - Default styling and resets
+   ========================================================================== */
 * {
   margin: 0;
   padding: 0;
@@ -32,6 +49,9 @@ body {
   line-height: 1.6;
 }
 
+/* ==========================================================================
+   LAYOUT CONTAINERS - Main structural elements
+   ========================================================================== */
 /* Profile Page Container */
 .profile-page {
   min-height: 100vh;
@@ -40,6 +60,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Main grid layout */
 .profile-container {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -54,60 +75,17 @@ body {
   z-index: 1;
 }
 
-/* Loading Overlay */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  backdrop-filter: blur(5px);
+/* Content area */
+.profile-content {
+  padding: 2rem;
+  overflow: hidden;
 }
 
-.loader {
-  width: 48px;
-  height: 48px;
-  border: 5px solid #ffffff;
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
+.content-section {
+  max-width: 800px;
 }
 
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Save Notification */
-.save-notification {
-  position: fixed;
-  top: 20px;
-  right: -300px;
-  background: #9b59b6;
-  color: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
-  z-index: 1000;
-  transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-.save-notification.show {
-  right: 20px;
-}
-
-/* Back Button */
+/* Back navigation button */
 .profile-back-button {
   position: absolute;
   top: 3rem;
@@ -119,19 +97,21 @@ body {
   display: flex;
   align-items: center;
   background: transparent;
-  color: #fff;
+  color: var(--text-primary);
   border: none;
   cursor: pointer;
   font-size: 1rem;
   gap: 0.5rem;
-  transition: color 0.3s ease;
+  transition: color var(--transition-speed) ease;
 }
 
 .profile-back-button button:hover {
   color: var(--primary-color);
 }
 
-/* Sidebar Styling */
+/* ==========================================================================
+   SIDEBAR - Profile navigation and user info
+   ========================================================================== */
 .profile-sidebar {
   background-color: rgba(30, 30, 30, 0.7);
   padding: 2rem 1.5rem;
@@ -142,7 +122,7 @@ body {
   backdrop-filter: blur(10px);
 }
 
-/* Avatar Styling */
+/* Avatar styling */
 .profile-avatar {
   display: flex;
   flex-direction: column;
@@ -223,7 +203,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Navigation Styling */
+/* Navigation menu */
 .profile-nav {
   display: flex;
   flex-direction: column;
@@ -252,7 +232,7 @@ body {
 }
 
 .profile-nav button.active {
-  background-color: rgba(155, 89, 182, 0.15); /* Changed color to match purple */
+  background-color: rgba(155, 89, 182, 0.15);
   color: var(--primary-color);
   font-weight: 500;
 }
@@ -262,16 +242,9 @@ body {
   color: var(--text-primary);
 }
 
-/* Content Area */
-.profile-content {
-  padding: 2rem;
-  overflow: hidden;
-}
-
-.content-section {
-  max-width: 800px;
-}
-
+/* ==========================================================================
+   TYPOGRAPHY - Text elements and headings
+   ========================================================================== */
 .content-section h2 {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
@@ -286,7 +259,7 @@ body {
   left: 0;
   width: 50px;
   height: 3px;
-  background: #9b59b6;
+  background: var(--primary-color);
   border-radius: 3px;
 }
 
@@ -296,7 +269,29 @@ body {
   color: var(--text-primary);
 }
 
-/* Form Styling */
+/* ==========================================================================
+   CARD COMPONENTS - Cards and sectioned containers
+   ========================================================================== */
+.settings-section {
+  margin-bottom: 2rem;
+  background-color: var(--bg-component);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.notification-section {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.notification-section:last-of-type {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   FORM ELEMENTS - Inputs, selects, and form layout
+   ========================================================================== */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -343,10 +338,10 @@ body {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.2); /* Changed color to match purple */
+  box-shadow: 0 0 0 3px var(--shadow-color);
 }
 
-/* Toggle Switch */
+/* Toggle components */
 .toggle-group,
 .notification-item {
   display: flex;
@@ -363,7 +358,8 @@ body {
   background-color: var(--bg-component);
   border-radius: 30px;
   cursor: pointer;
-  transition: background-color var(--transition-speed);
+  transition: background-color 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-switch.active {
@@ -378,17 +374,119 @@ body {
   background-color: white;
   top: 2px;
   left: 2px;
-  transition: transform var(--transition-speed);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-switch.active .toggle-slider {
   transform: translateX(26px);
 }
 
-/* Save Button */
+.toggle-switch:hover .toggle-slider {
+  box-shadow: 0 1px 8px rgba(155, 89, 182, 0.5);
+}
+
+/* Search field */
+.search-container {
+  position: relative;
+  max-width: 500px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background-color: var(--bg-component);
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  color: var(--text-primary);
+  transition: all var(--transition-speed);
+}
+
+.search-container svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.search-container input:focus {
+  border-color: var(--primary-color);
+  background-color: var(--bg-component);
+  box-shadow: 0 0 0 3px var(--shadow-color);
+}
+
+/* Notification items */
+.notification-preferences {
+  background-color: var(--bg-component);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.notification-group {
+  margin-top: 1.5rem;
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item label {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+/* Frequency selectors */
+.frequency-selector {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.frequency-option {
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: var(--bg-component);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  outline: none;
+}
+
+.frequency-option:hover {
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.2);
+}
+
+.frequency-option.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+}
+
+/* ==========================================================================
+   BUTTONS - Button components and actions
+   ========================================================================== */
+/* Primary action button */
 .save-button {
-  background: #9b59b6;
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 14px 30px;
@@ -396,22 +494,192 @@ body {
   margin-top: 2rem;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-  transition: all var(--transition-speed);
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  outline: none;
 }
 
-.save-button:hover {
-  box-shadow: 0 7px 20px rgba(155, 89, 182, 0.4); /* Changed color to match purple */
+.save-button:hover:not(:disabled) {
+  box-shadow: 0 7px 20px rgba(155, 89, 182, 0.4);
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
 .save-button:disabled {
-  background: linear-gradient(90deg, #555, #777);
+  background-color: #666;
   cursor: not-allowed;
+  opacity: 0.6;
   box-shadow: none;
 }
 
-/* Password Strength */
+.save-button.loading {
+  animation: pulse-bg 1.5s infinite;
+}
+
+/* Action buttons */
+.change-password-btn,
+.verify-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-speed);
+}
+
+.change-password-btn:hover,
+.verify-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.change-password-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Add goal button */
+.add-goal-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-speed);
+}
+
+.add-goal-button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Create goal button */
+.create-goal-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  grid-column: span 2;
+  transition: all var(--transition-speed);
+}
+
+.create-goal-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.create-goal-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Connected accounts button */
+.connect-button {
+  background-color: var(--bg-component);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-speed);
+}
+
+.connect-button.connected {
+  background-color: rgba(155, 89, 182, 0.1);
+}
+
+.connect-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Session actions */
+.end-session-btn {
+  background-color: transparent;
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition-speed);
+}
+
+.end-session-btn:hover {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+/* ==========================================================================
+   NOTIFICATION SYSTEM - Alerts and status indicators
+   ========================================================================== */
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+/* Toast notification */
+.save-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--primary-color);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.save-notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   SECURITY COMPONENTS - Password strength, QR codes, etc.
+   ========================================================================== */
+/* Password strength indicator */
 .password-strength {
   margin-top: 8px;
 }
@@ -440,35 +708,11 @@ body {
 }
 
 .match-success {
-  color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .match-error {
   color: var(--danger-color);
-}
-
-/* Change Password Button */
-.change-password-btn,
-.verify-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  margin-top: 1rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all var(--transition-speed);
-}
-
-.change-password-btn:hover,
-.verify-button:hover {
-  background-color: #8e44ad; /* Changed to darker purple */
-}
-
-.change-password-btn:disabled {
-  background-color: #555;
-  cursor: not-allowed;
 }
 
 /* Two Factor Authentication */
@@ -494,14 +738,9 @@ body {
   border-radius: 8px;
 }
 
-.qr-code::before,
-.qr-code::after {
+.qr-code::before {
   content: '';
   position: absolute;
-  background-color: black;
-}
-
-.qr-code::before {
   top: 25%;
   left: 25%;
   width: 50%;
@@ -510,6 +749,8 @@ body {
 }
 
 .qr-code::after {
+  content: '';
+  position: absolute;
   width: 80%;
   height: 80%;
   top: 10%;
@@ -550,103 +791,26 @@ body {
 }
 
 .current-device {
-  color: var(--secondary-color);
+  color: var(--primary-color);
   font-size: 0.9rem;
 }
 
-.end-session-btn {
-  background-color: transparent;
-  color: var(--danger-color);
-  border: 1px solid var(--danger-color);
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: all var(--transition-speed);
-}
-
-.end-session-btn:hover {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-/* Notification Frequency */
-.frequency-selector {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.frequency-option {
-  padding: 8px 16px;
-  border-radius: 20px;
-  background-color: var(--bg-component);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--transition-speed);
-}
-
-.frequency-option:hover {
-  border-color: var(--primary-color);
-  color: var(--text-primary);
-}
-
-.frequency-option.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
-}
-
-/* Financial Goals */
+/* ==========================================================================
+   FINANCIAL GOALS - Goals cards and progress
+   ========================================================================== */
+/* Goals container */
 .goals-actions {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1.5rem;
 }
 
-.add-goal-button {
-  background-color: var(--secondary-color); /* Changed from green to purple */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all var(--transition-speed);
-}
-
-.add-goal-button:hover {
-  background-color: #8e44ad; /* Changed to darker purple */
-}
-
 .add-goal-section {
   margin-bottom: 2rem;
-  background-color: rgba(155, 89, 182, 0.1); /* Changed color to match purple */
+  background-color: rgba(155, 89, 182, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid rgba(155, 89, 182, 0.2); /* Changed color to match purple */
-}
-
-.create-goal-button {
-  background-color: var(--secondary-color); /* Changed from green to purple */
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  grid-column: span 2;
-  transition: all var(--transition-speed);
-}
-
-.create-goal-button:hover {
-  background-color: #8e44ad; /* Changed to darker purple */
-}
-
-.create-goal-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
+  border: 1px solid rgba(155, 89, 182, 0.2);
 }
 
 .goals-grid {
@@ -655,6 +819,7 @@ body {
   gap: 1.5rem;
 }
 
+/* Goal cards */
 .goal-card {
   background-color: var(--bg-component);
   border-radius: 12px;
@@ -687,6 +852,7 @@ body {
   color: var(--danger-color);
 }
 
+/* Progress bars */
 .goal-progress-container {
   display: flex;
   align-items: center;
@@ -713,6 +879,7 @@ body {
   text-align: right;
 }
 
+/* Goal details */
 .goal-details {
   display: flex;
   flex-direction: column;
@@ -781,7 +948,165 @@ body {
   color: var(--text-secondary);
 }
 
-/* Responsive Design */
+/* ==========================================================================
+   PROFILE HEADER - Enhanced profile header with stats
+   ========================================================================== */
+.profile-header {
+  background-color: var(--bg-component);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.profile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.profile-avatar-header {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.profile-avatar-header img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-color);
+}
+
+.user-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-component);
+}
+
+.user-status.online {
+  background-color: var(--primary-color);
+}
+
+.user-status.away {
+  background-color: #f39c12;
+}
+
+.user-status.offline {
+  background-color: var(--danger-color);
+}
+
+.profile-user-details h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-user-details p {
+  color: var(--text-secondary);
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+}
+
+/* Header navigation */
+.profile-navigation {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition-speed);
+  overflow: hidden;
+}
+
+.nav-item.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.active-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--primary-color);
+  border-radius: 3px 3px 0 0;
+}
+
+/* Stats display */
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 0.5rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.3rem;
+}
+
+/* Connected accounts */
+.connected-accounts {
+  margin-top: 2rem;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-info svg {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN - Media queries for different screen sizes
+   ========================================================================== */
 @media (max-width: 1024px) {
   .profile-container {
     grid-template-columns: 1fr;
@@ -840,218 +1165,7 @@ body {
   .frequency-selector {
     flex-direction: column;
   }
-}
-
-/* Additional Animation Classes */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideInUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.slide-in-up {
-  animation: slideInUp 0.5s ease forwards;
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-/* Enhanced Profile Header Styles */
-.profile-header {
-  background-color: var(--bg-component);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.profile-user-info {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-.profile-avatar-header {
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-
-.profile-avatar-header img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--primary-color);
-}
-
-.user-status {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-component);
-}
-
-.user-status.online {
-  background-color: var(--secondary-color);
-}
-
-.user-status.away {
-  background-color: #f39c12;
-}
-
-.user-status.offline {
-  background-color: #e74c3c;
-}
-
-.profile-user-details h2 {
-  font-size: 1.4rem;
-  margin: 0;
-  padding: 0;
-}
-
-.profile-user-details p {
-  color: var(--text-secondary);
-  margin: 5px 0 0;
-  font-size: 0.9rem;
-}
-
-.profile-navigation {
-  display: flex;
-  gap: 1rem;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1rem;
-}
-
-.nav-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all var(--transition-speed);
-  overflow: hidden;
-}
-
-.nav-item.active {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.active-indicator {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  background: #9b59b6;
-  border-radius: 3px 3px 0 0;
-}
-
-.profile-stats {
-  display: flex;
-  justify-content: space-around;
-  padding-top: 0.5rem;
-}
-
-.stat-item {
-  text-align: center;
-  padding: 0.5rem 1rem;
-}
-
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-top: 0.3rem;
-}
-
-/* Enhanced Profile Settings Styles */
-.settings-section {
-  margin-bottom: 2rem;
-  background-color: var(--bg-component);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-
-.connected-accounts {
-  margin-top: 2rem;
-}
-
-.account-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.account-item:last-child {
-  border-bottom: none;
-}
-
-.account-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.account-info svg {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-}
-
-.connect-button {
-  background-color: var(--bg-component);
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  padding: 8px 16px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all var(--transition-speed);
-}
-
-.connect-button.connected {
-  background-color: rgba(155, 89, 182, 0.1); /* Changed color to match purple */
-}
-
-.connect-button:hover {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
+  
   .profile-header {
     padding: 1rem;
   }
@@ -1089,221 +1203,44 @@ body {
   }
 }
 
-/* Additional CSS styles for enhanced notification functionality */
-
-/* Notification Components */
-.notification-preferences {
-  background-color: var(--bg-component);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.notification-section {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1.5rem;
-}
-
-.notification-section:last-of-type {
-  border-bottom: none;
-}
-
-.notification-group {
-  margin-top: 1.5rem;
-}
-
-.notification-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.notification-item:last-child {
-  border-bottom: none;
-}
-
-.notification-item label {
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-
-/* Loading Overlay with Fade Effect */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  backdrop-filter: blur(5px);
-}
-
-/* Save Notification - Modified to auto-hide */
-.save-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: var(--primary-color);
-  color: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateX(100px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none; /* Ensures it doesn't interfere with clicks */
-}
-
-.save-notification.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Improved Toggle Switch with Animation */
-.toggle-switch {
-  position: relative;
-  width: 50px;
-  height: 24px;
-  background-color: var(--bg-component);
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.toggle-switch.active {
-  background-color: var(--primary-color);
-}
-
-.toggle-slider {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: white;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
-}
-
-.toggle-switch.active .toggle-slider {
-  transform: translateX(26px);
-}
-
-.toggle-switch:hover .toggle-slider {
-  box-shadow: 0 1px 8px rgba(155, 89, 182, 0.5);
-}
-
-/* Enhanced Frequency Options */
-.frequency-selector {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.frequency-option {
-  padding: 10px 20px;
-  border-radius: 30px;
-  background-color: var(--bg-component);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  outline: none;
-}
-
-.frequency-option:hover {
-  border-color: var(--primary-color);
-  color: var(--text-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.2);
-}
-
-.frequency-option.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
-  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
-}
-
-/* Enhanced Save Button */
-.save-button {
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 14px 30px;
-  border-radius: 30px;
-  margin-top: 2rem;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-  transition: all 0.3s ease;
-  display: block;
-  width: 100%;
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  outline: none;
-}
-
-.save-button:hover:not(:disabled) {
-  box-shadow: 0 7px 20px rgba(155, 89, 182, 0.4);
-  background-color: #8e44ad;
-  transform: translateY(-2px);
-}
-
-.save-button:disabled {
-  background-color: #666;
-  cursor: not-allowed;
-  opacity: 0.6;
-  box-shadow: none;
-}
-
-/* Loading Animation for Save Button */
-@keyframes pulse-bg {
-  0% { background-color: var(--primary-color); }
-  50% { background-color: #8e44ad; }
-  100% { background-color: var(--primary-color); }
-}
-
-.save-button:disabled:not(.loading) {
-  animation: none;
-}
-
-.save-button.loading {
-  animation: pulse-bg 1.5s infinite;
-}
-
-/* Loader Animation */
+/* ==========================================================================
+   ANIMATIONS - Keyframes and animation classes
+   ========================================================================== */
 @keyframes rotation {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.loader {
-  width: 48px;
-  height: 48px;
-  border: 5px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse-bg {
+  0% { background-color: var(--primary-color); }
+  50% { background-color: var(--primary-dark); }
+  100% { background-color: var(--primary-color); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.5s ease forwards;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
 }

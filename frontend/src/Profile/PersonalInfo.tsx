@@ -1,37 +1,64 @@
-// FIX: You can input new email and name, but it doesn 't update the profile.
+/**
+ * PersonalInfo.tsx
+ * 
+ * Component for displaying and editing basic user information
+ * such as name, email, and other personal details.
+ */
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+
+// Import your API config
 import { API_BASE_URL } from "../config";
 
+/**
+ * Props for the PersonalInfo component
+ */
 interface PersonalInfoProps {
+  /** Callback function when data is successfully saved */
   onSave: () => void;
 }
 
-
+/**
+ * PersonalInfo component for displaying and updating user's personal information
+ */
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
+  // State for error handling
   const [profileError, setProfileError] = useState<string | null>(null);
+  
+  // State for form fields
   const [personalInfo, setPersonalInfo] = useState({
     name: "",
     email: ""
   });
 
+  /**
+   * Handles input changes in form fields
+   */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
+    
     setPersonalInfo(prev => ({
       ...prev,
       [id]: value
     }));
   }, []);
 
+  /**
+   * Updates the user's profile information
+   */
   const handleUpdateInfo = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found. Please try again.");
       
+      if (!token) {
+        throw new Error("No token found. Please try again.");
+      }
+      
+      // Send updated profile to the server
       const response = await fetch(`${API_BASE_URL}/account/me`, {
         method: "PATCH",
         headers: {
-          "Authentication": token,  
+          "Authorization": token,  
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -39,11 +66,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           email: personalInfo.email,
         }),
       });
-      console.log(response);
+      
       if (!response.ok) {
         throw new Error("Failed to update profile");
       }
 
+      // Call the onSave callback to show notification
       onSave();
       setProfileError(null);
     } catch (error: any) {
@@ -51,12 +79,17 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
     }
   };
 
-  // Fetch user profile data
+  /**
+   * Fetch user profile data on component mount
+   */
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) throw new Error("No token found. Please log in again.");
+        
+        if (!token) {
+          throw new Error("No token found. Please log in again.");
+        }
   
         const response = await fetch(`${API_BASE_URL}/account/me`, {  
           method: "GET",
@@ -72,11 +105,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         }
   
         const data = await response.json();
-        console.log("Profile Data:", data);
-
+        
+        // Update the form with fetched data
         setPersonalInfo({
-          name: data.name,
-          email: data.email
+          name: data.name || "",
+          email: data.email || ""
         });
       } catch (error: any) {
         setProfileError(error.message);
@@ -94,7 +127,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
       exit={{ opacity: 0 }}
     >
       <h2>Personal Information</h2>
+      
+      {/* Display error message if present */}
       {profileError && <div className="error-message">{profileError}</div>}
+      
+      {/* Form fields */}
       <div className="form-grid">
         <motion.div 
           className="form-group"
@@ -102,12 +139,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <label>Full Name</label>
+          <label htmlFor="name">Full Name</label>
           <input 
             type="text" 
             id="name"
             value={personalInfo.name}
-            placeholder='Enter your full name'
+            placeholder="Enter your full name"
             onChange={handleInputChange}
           />
         </motion.div>
@@ -118,17 +155,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
           <input 
             type="email" 
             id="email"
             value={personalInfo.email}
-            placeholder='Enter your email'
+            placeholder="Enter your email"
             onChange={handleInputChange}
           />
         </motion.div>
       </div>
       
+      {/* Save button */}
       <motion.button 
         className="save-button"
         onClick={handleUpdateInfo}
