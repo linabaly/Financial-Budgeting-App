@@ -51,6 +51,10 @@ export default class Server {
     }
   }
 
+  /**
+   * @author Matthew R
+   * This method initializes the server and sets up the Express application.
+   */
   public init() {
     if (this.parse) {
       this.app.use(bodyParser.json());
