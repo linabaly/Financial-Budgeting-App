@@ -79,7 +79,11 @@ export default class Server {
     );
   }
 
-  public listen(port?: number): HTTPServer {
+  /**
+   * @author Matthew R
+   * @param port The optional port to listen on. If `this.port` is defined, then that takes priority. If `this.port` is undefined then it uses the parameter passed to method. If no parameter is passed and `this.port` is undefined, it defaults to port 3000.
+   */
+  public listen(port = 3000): HTTPServer {
     return this.app.listen(this.port ?? port);
   }
 }
