@@ -32,6 +32,10 @@ export default class Server {
     this.loadRoutes().catch((error) => console.error(error));
   }
 
+  /**
+   * @author Matthew R
+   * This method loads the routes and binds them to the Express application.
+   */
   public async loadRoutes() {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const routes = Object.values<typeof Route>(require(this.root));
