@@ -1,348 +1,31 @@
-/* BudgetInsights.css */
-.insights-content {
-    flex: 1;
-    padding: 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    background-color: #000;
-  }
-  
-  /* Summary Cards */
-  .insights-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-  
-  .summary-card {
-    background-color: #333;
-    border-radius: 12px;
-    overflow: hidden;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .summary-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .summary-inner {
-    width: 140px;
-    height: 140px;
-    background-color: #222;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 1rem;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .summary-inner::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-    pointer-events: none;
-  }
-  
-  .summary-inner h3 {
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: #fff;
-  }
-  
-  .amount {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  .amount.positive {
-    color: #2ecc71;
-  }
-  
-  .amount.negative {
-    color: #ff6b6b;
-  }
-  
-  /* Chart Containers */
-  .chart-container {
-    background-color: #333;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pie-chart-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  
-  .pie-chart-wrapper {
-    position: relative;
-    width: 100%;
-    height: 220px;
-  }
-  
-  .legend-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-  }
-  
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: transform 0.2s ease;
-  }
-  
-  .legend-item:hover {
-    transform: translateX(5px);
-  }
-  
-  .legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .legend-color.rent {
-    background-color: #e74c3c;
-  }
-  
-  .legend-color.groceries {
-    background-color: #2ecc71;
-  }
-  
-  .legend-color.entertainment {
-    background-color: #e57373;
-  }
-  
-  .legend-color.utilities {
-    background-color: #2ed8c7;
-  }
-  
-  .legend-name {
-    flex-grow: 1;
-    font-size: 0.95rem;
-  }
-  
-  .legend-value {
-    font-size: 0.95rem;
-    font-weight: 600;
-    text-align: right;
-  }
-  
-  /* Bottom Section */
-  .bottom-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  
-  .bar-chart-wrapper {
-    width: 100%;
-    height: 220px;
-  }
-  
-  .category-details {
-    background-color: #333;
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .insights-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .insights-header h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .report-container {
-    flex: 1;
-    overflow-y: auto;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 1rem;
-    transition: all 0.3s ease;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .report-container.has-content {
-    background-color: rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .report-content {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #bbb;
-  }
-  
-  .report-content h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 1rem 0;
-    color: #fff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 0.5rem;
-  }
-  
-  .report-content h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 1.5rem 0 0.75rem 0;
-    color: #3498db;
-  }
-  
-  .report-content h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 1.25rem 0 0.5rem 0;
-    color: #f39c12;
-  }
-  
-  .report-content p {
-    margin: 0.5rem 0;
-  }
-  
-  .report-content .list-item {
-    position: relative;
-    padding-left: 1.5rem;
-    margin: 0.4rem 0;
-  }
-  
-  .report-content .numbered-item {
-    position: relative;
-    padding-left: 0.5rem;
-    margin: 0.4rem 0 0.4rem 1rem;
-    font-weight: 500;
-  }
-  .btn-icon {
-    font-size: 1.1rem;
-  }
-  
-  .spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-  }
-  
-  .generate-btn.generating {
-    animation: pulse 1.5s infinite;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .report-content h1, 
-  .report-content h2, 
-  .report-content h3, 
-  .report-content p {
-    animation: fadeIn 0.5s ease forwards;
-    opacity: 0;
-  }
-  
-  .report-content h1 { animation-delay: 0.1s; }
-  .report-content h2 { animation-delay: 0.2s; }
-  .report-content h3 { animation-delay: 0.3s; }
-  .report-content p { animation-delay: 0.4s; }
-  
-  /* Responsive Design */
-  @media (max-width: 992px) {
-    .pie-chart-container,
-    .bottom-container {
-      grid-template-columns: 1fr;
-    }
-    
-    .pie-chart-wrapper {
-      height: 200px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .insights-summary {
-      grid-template-columns: 1fr;
-    }
-    
-    .insights-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    
-    .generate-btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
+/* BudgetInsights.css
 
-  /* BudgetInsights.css - Modern Dark Theme */
-.insights-content {
-    flex: 1;
-    padding: 2rem;
-    background-color: #121212;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+/* ---------------------------------------------
+ * LAYOUT & MAIN CONTAINERS
+ * Main layout structure, grid, and containers
+ * --------------------------------------------- */
+ .insights-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #121212;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: pageReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  opacity: 0;
 }
 
-/* Insights Header */
 .insights-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: headerReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s;
+  cursor: pointer;
 }
 
 .insights-header h3 {
@@ -350,12 +33,17 @@
   font-weight: 700;
   background: linear-gradient(90deg, #fff, #aaa);
   -webkit-background-clip: text;
-  background-clip: text; /* Standard property for compatibility */
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
+  animation: textGlow 4s ease-in-out infinite alternate;
 }
 
+.insights-header:hover h3 {
+  text-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
+  letter-spacing: 0.5px;
+}
 
-/* Gradient Underline */
 .insights-header::after {
   content: '';
   position: absolute;
@@ -363,399 +51,184 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, 
-      #6c5ce7, 
-      #8e44ad, 
-      #6c5ce7, 
-      #8e44ad
-  );
+  background: linear-gradient(90deg, #6c5ce7, #8e44ad, #6c5ce7, #8e44ad);
   background-size: 400% 100%;
   animation: gradientFlow 10s linear infinite;
 }
 
-@keyframes gradientFlow {
-  0% { background-position: 0% 0; }
-  100% { background-position: 400% 0; }
-}
-
-/* Summary Cards */
+/* ---------------------------------------------
+ * SUMMARY CARDS
+ * Financial metric cards with circular indicators
+ * --------------------------------------------- */
 .insights-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 .summary-card {
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.summary-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.summary-inner {
-    background: rgba(30,30,30,0.6);
-    padding: 1.5rem;
-    text-align: center;
-}
-
-.summary-inner h3 {
-    font-size: 1rem;
-    color: #aaa;
-    margin-bottom: 0.5rem;
-}
-
-.amount {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-/* Chart Containers */
-.chart-container {
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.chart-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.pie-chart-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-.legend-container {
-    background-color: rgba(30,30,30,0.6);
-    border-radius: 8px;
-    padding: 1rem;
-}
-
-/* Bottom Section */
-.bottom-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-.category-details {
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 1.5rem;
-}
-
-.generate-btn {
-  position: relative;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  gap: 0.75rem;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
-  z-index: 1;
-}
-
-.generate-btn::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(
-      45deg, 
-      #6c5ce7, 
-      #8e44ad
-  );
-  z-index: -1;
-  border-radius: 10px;
-}
-
-.generate-btn::after {
-  content: '';
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  right: 1px;
-  bottom: 1px;
-  background: linear-gradient(
-      to right,
-      #6c5ce7,
-      #7d5fef
-  );
-  border-radius: 7px;
-  z-index: -1;
-}
-
-.generate-btn .btn-icon {
-  font-size: 1.2rem;
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
-}
-
-.generate-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
-}
-
-.generate-btn:hover::after {
-  background: linear-gradient(
-      to right,
-      #7d5fef,
-      #6c5ce7
-  );
-}
-
-.generate-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 3px 10px rgba(108, 92, 231, 0.3);
-}
-
-/* For the spinner during generation */
-.generate-btn .spinner {
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .insights-summary,
-    .bottom-container,
-    .pie-chart-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .insights-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-}
-
-/* Pie Chart Wrapper */
-.pie-chart-wrapper {
-  position: relative;
-  width: 100%;
-  height: 260px;
-  background-color: #1a1d22;
-  border-radius: 12px;
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.02);
-  transition: box-shadow 0.3s ease;
-}
-
-.pie-chart-wrapper:hover {
-  box-shadow: 0 0 20px rgba(52, 152, 219, 0.15);
-}
-
-/* Slice glow on hover (from d3 filter) */
-path:hover {
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
-}
-
-/* Center text */
-.pie-center-text, .pie-center-subtext {
-  font-family: 'Inter', sans-serif;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Legend container */
-.legend-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: rgba(26, 29, 34, 0.8);
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Legend item hover */
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.legend-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  transform: translateX(5px);
-}
-
-.legend-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
-}
-
-/* Legend text */
-.legend-name {
-  font-size: 0.95rem;
-  color: #f0f0f0;
-  font-weight: 500;
-  flex: 1;
-}
-
-.legend-value {
-  font-size: 0.95rem;
-  color: #ddd;
-  font-weight: 600;
-}
-
-/* Label text on pie slices */
-text {
-  paint-order: stroke;
-  stroke: #000;
-  stroke-width: 0.5px;
-  stroke-linejoin: round;
-}
-
-/* Add page fade-in animation */
-.insights-content {
-  animation: pageReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  opacity: 0;
-}
-
-@keyframes pageReveal {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Add header reveal animation */
-.insights-header {
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: headerReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s;
-}
-
-@keyframes headerReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Enhance gradient flow animation */
-@keyframes gradientFlow {
-  0% { background-position: 0% 0; }
-  50% { background-position: 200% 0; }
-  100% { background-position: 400% 0; }
-}
-
-/* Add staggered card reveal animations */
-.summary-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   opacity: 0;
   transform: translateY(20px);
   animation: cardReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: flat;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
 }
 
 .summary-card:nth-child(1) { animation-delay: 0.4s; }
 .summary-card:nth-child(2) { animation-delay: 0.5s; }
 .summary-card:nth-child(3) { animation-delay: 0.6s; }
 
-@keyframes cardReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  70% {
-    transform: translateY(-5px) scale(1.01);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.summary-inner {
+  width: 160px;
+  height: 160px;
+  background: rgba(30, 30, 30, 0.6);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.2rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  transition: all 0.4s ease;
 }
 
-/* Amount number counter animation */
+.summary-inner::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+}
+
+.summary-inner h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #aaa;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover .summary-inner h3 {
+  color: #fff;
+}
+
 .amount {
-  opacity: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  opacity: 1;
   animation: countUpReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  visibility: visible;
 }
 
 .summary-card:nth-child(1) .amount { animation-delay: 0.7s; }
 .summary-card:nth-child(2) .amount { animation-delay: 0.8s; }
 .summary-card:nth-child(3) .amount { animation-delay: 0.9s; }
 
-@keyframes countUpReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.summary-card:hover .amount {
+  text-shadow: 0 0 10px rgba(108, 92, 231, 0.4);
 }
 
-/* Chart container animations */
+.amount.positive { color: #2ecc71; }
+.amount.negative { color: #ff6b6b; }
+
+/* ---------------------------------------------
+ * CHART CONTAINERS
+ * Chart layout containers and general chart styles
+ * --------------------------------------------- */
 .chart-container {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   opacity: 0;
   transform: translateY(20px);
   animation: containerReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.8s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  position: relative;
 }
 
-@keyframes containerReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ---------------------------------------------
+ * PIE CHART COMPONENTS
+ * Pie chart specific styles and layout
+ * --------------------------------------------- */
+.pie-chart-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
-/* Pie chart wrapper animation */
 .pie-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: 12px;
   opacity: 0;
   animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1s;
 }
 
-@keyframes chartReveal {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.pie-chart-wrapper svg g path {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform-origin: center;
 }
 
-/* Legend items staggered reveal */
+.pie-chart-wrapper svg g path:hover {
+  transform: scale(1.02) translateX(1px) translateY(-1px);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+.pie-center-text, .pie-center-subtext {
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------
+ * LEGEND COMPONENTS
+ * Category legend with interactive items
+ * --------------------------------------------- */
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: rgba(26, 29, 34, 0.8);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
   opacity: 0;
   transform: translateX(-10px);
   animation: legendItemReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
@@ -765,188 +238,6 @@ text {
 .legend-item:nth-child(2) { animation-delay: 1.2s; }
 .legend-item:nth-child(3) { animation-delay: 1.3s; }
 .legend-item:nth-child(4) { animation-delay: 1.4s; }
-.legend-item:nth-child(5) { animation-delay: 1.5s; }
-
-@keyframes legendItemReveal {
-  0% {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Bottom container animation */
-.bottom-container {
-  opacity: 0;
-  animation: bottomReveal 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.3s;
-}
-
-@keyframes bottomReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Generate button animation */
-.generate-btn {
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
-}
-
-@keyframes buttonReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Add button ripple effect */
-.generate-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease-out, height 0.6s ease-out;
-  z-index: 0;
-}
-
-.generate-btn:active::before {
-  width: 300%;
-  height: 300%;
-}
-
-/* Enhanced report content animations */
-.report-content h1 { 
-  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.1s; 
-}
-.report-content h2 { 
-  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s; 
-}
-.report-content h3 { 
-  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s; 
-}
-.report-content p { 
-  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.7s; 
-}
-
-/* Bar chart animation */
-.bar-chart-wrapper {
-  opacity: 0;
-  animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.2s;
-}
-
-/* Enhance spinner animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Add glow pulse to insights header */
-.insights-header h3 {
-  animation: textGlow 4s ease-in-out infinite alternate;
-}
-
-@keyframes textGlow {
-  0% {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0);
-  }
-  100% {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-  }
-}
-
-/* Accessibility consideration */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001s !important;
-    animation-delay: 0s !important;
-    transition-duration: 0.001s !important;
-    animation-iteration-count: 1 !important;
-  }
-}
-
-/* Adjust mobile animations */
-@media (max-width: 768px) {
-  .insights-summary,
-  .chart-container,
-  .bottom-container {
-    animation-delay: 0.4s;
-  }
-  
-  .summary-card:nth-child(n),
-  .legend-item:nth-child(n) {
-    animation-delay: 0.5s;
-  }
-}
-
-/* Enhanced Interactive Elements for Budget Insights */
-
-/* Interactive 3D Card Effect */
-.summary-card {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.summary-card:hover {
-  transform: translateY(-10px) rotateX(5deg);
-  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
-}
-
-.summary-inner {
-  transition: all 0.4s ease;
-}
-
-.summary-card:hover .summary-inner {
-  transform: translateZ(20px);
-  box-shadow: 0 0 30px rgba(108, 92, 231, 0.2);
-}
-
-/* Interactive pie chart with slice highlight */
-.pie-chart-wrapper {
-  cursor: pointer;
-}
-
-.pie-chart-wrapper svg g path {
-  transition: transform 0.3s ease, filter 0.3s ease;
-  transform-origin: center;
-}
-
-.pie-chart-wrapper svg g path:hover {
-  transform: scale(1.05) translateX(3px) translateY(-3px);
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
-}
-
-/* Enhanced interactive legend items */
-.legend-item {
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
 
 .legend-item:hover {
   background-color: rgba(108, 92, 231, 0.2);
@@ -955,6 +246,10 @@ text {
 }
 
 .legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -963,40 +258,59 @@ text {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* Interactive chart containers */
-.chart-container {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
+/* Category-specific colors */
+.legend-color.rent { background-color: #e74c3c; }
+.legend-color.groceries { background-color: #2ecc71; }
+.legend-color.entertainment { background-color: #e57373; }
+.legend-color.utilities { background-color: #2ed8c7; }
+
+.legend-name {
+  flex-grow: 1;
+  font-size: 0.95rem;
+  color: #f0f0f0;
+  font-weight: 500;
 }
 
-.chart-container:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+.legend-value {
+  font-size: 0.95rem;
+  color: #ddd;
+  font-weight: 600;
+  text-align: right;
 }
 
-.chart-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
+/* ---------------------------------------------
+ * BAR CHART COMPONENTS
+ * Bar chart specific styles
+ * --------------------------------------------- */
+.bar-chart-wrapper {
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, transparent 70%, rgba(108, 92, 231, 0.1) 100%);
+  height: 220px;
   opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+  animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.2s;
 }
 
-.chart-container:hover::after {
-  opacity: 1;
+/* ---------------------------------------------
+ * BOTTOM SECTION
+ * Category details and reports section
+ * --------------------------------------------- */
+.bottom-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  opacity: 0;
+  animation: bottomReveal 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.3s;
 }
 
-/* Interactive category details */
 .category-details {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.4s ease;
-  cursor: pointer;
   overflow: hidden;
   position: relative;
 }
@@ -1021,56 +335,24 @@ text {
   height: 100%;
 }
 
-/* Enhanced button interactions */
-.generate-btn {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-}
-
-.generate-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease-out, height 0.6s ease-out;
-  z-index: 0;
-}
-
-.generate-btn:active::before {
-  width: 300%;
-  height: 300%;
-}
-
-.generate-btn:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
-}
-
-/* Interactive insights header with hover effect */
-.insights-header {
-  position: relative;
-  cursor: pointer;
-}
-
-.insights-header h3 {
-  transition: all 0.3s ease;
-}
-
-.insights-header:hover h3 {
-  text-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
-  letter-spacing: 0.5px;
-}
-
-/* Interactive report container with scroll indicator */
+/* ---------------------------------------------
+ * REPORT CONTAINER
+ * Report display with scrollable content
+ * --------------------------------------------- */
 .report-container {
-  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
   transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.report-container.has-content {
+  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .report-container:hover {
@@ -1094,198 +376,293 @@ text {
   opacity: 1;
 }
 
-/* Floating animation for the amount in summary cards */
-.summary-card:hover .amount {
-  animation: float 2s ease-in-out infinite;
+/* ---------------------------------------------
+ * REPORT TYPOGRAPHY
+ * Text styles for report content
+ * --------------------------------------------- */
+.report-content {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #bbb;
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0px); }
-}
-
-/* Remove black box behind pie chart and fix hover issues */
-
-/* Remove black background from pie chart wrapper */
-.pie-chart-wrapper {
-  background-color: transparent;
-  box-shadow: none;
-  position: relative;
-  cursor: pointer;
-}
-
-/* Make pie slices pop out less when hovered */
-.pie-chart-wrapper svg g path:hover {
-  transform: scale(1.02) translateX(1px) translateY(-1px);
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
-}
-
-/* Fix summary card to ensure $ amounts remain visible on hover */
-.summary-card {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.summary-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
-}
-
-.summary-inner {
-  transition: all 0.4s ease;
-  transform-style: preserve-3d;
-}
-
-.summary-card:hover .summary-inner {
-  transform: translateZ(10px);
-}
-
-/* Ensure text remains visible during hover */
-.summary-inner h3,
-.amount {
-  transition: all 0.3s ease;
-  transform-style: preserve-3d;
-  backface-visibility: visible;
-  -webkit-font-smoothing: subpixel-antialiased;
-}
-
-/* Ensure the amount stays visible */
-.summary-card:hover .amount {
-  animation: none;
-  transform: translateZ(5px);
-  text-shadow: 0 0 10px rgba(108, 92, 231, 0.4);
-}
-
-.summary-card:hover .summary-inner h3 {
-  transform: translateZ(5px);
+.report-content h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
   color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.1s;
+  opacity: 0;
 }
 
-/* Make pie chart container transparent */
-.pie-chart-container .chart-container {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
+.report-content h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  color: #3498db;
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.3s;
+  opacity: 0;
 }
 
-.pie-chart-container .chart-container:hover {
-  transform: none;
-  box-shadow: none;
+.report-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem 0;
+  color: #f39c12;
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
+  opacity: 0;
 }
 
-/* Remove the after effect on chart container */
-.chart-container::after {
-  display: none;
+.report-content p {
+  margin: 0.5rem 0;
+  animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.7s;
+  opacity: 0;
 }
 
-/* Fix issues with pie chart hover effects and dollar amount visibility */
-
-/* Remove hover animations from pie chart container */
-.chart-container,
-.pie-chart-wrapper {
-  transition: none;
-}
-
-.chart-container:hover,
-.pie-chart-wrapper:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* Disable any background effect on hover */
-.chart-container::after,
-.pie-chart-wrapper::after {
-  display: none;
-}
-
-/* Fix $ amount visibility in summary cards */
-.summary-card,
-.summary-inner,
-.amount,
-.summary-inner h3 {
-  transform-style: flat;
-  backface-visibility: visible;
-}
-
-.summary-card:hover .amount,
-.summary-card:hover .summary-inner h3 {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  animation: none;
-}
-
-/* Ensure text remains visible and doesn't get affected by 3D transforms */
-.summary-inner {
+.report-content .list-item {
   position: relative;
-  z-index: 2;
+  padding-left: 1.5rem;
+  margin: 0.4rem 0;
 }
 
-/* Remove any 3D transform effects that might cause text to disappear */
-.summary-card:hover {
-  transform: translateY(-5px);
-  transform-style: flat;
+.report-content .numbered-item {
+  position: relative;
+  padding-left: 0.5rem;
+  margin: 0.4rem 0 0.4rem 1rem;
+  font-weight: 500;
 }
 
-.summary-card:hover .summary-inner {
-  transform: none;
+/* ---------------------------------------------
+ * BUTTONS & INTERACTIVE ELEMENTS
+ * Button styles and interactive components
+ * --------------------------------------------- */
+.generate-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  gap: 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
+  z-index: 1;
+  opacity: 0;
+  animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
 }
 
-/* Remove dark background from pie chart areas */
-.pie-chart-wrapper {
-  background-color: transparent !important;
-  box-shadow: none !important;
+.generate-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+  z-index: 0;
 }
 
-/* Fix issues with pie chart circle size and dollar amount visibility */
-
-/* Make the circles around $ amounts bigger */
-.summary-inner {
-  width: 160px;  /* Increase from 140px */
-  height: 160px; /* Increase from 140px */
-  padding: 1.2rem;
+.generate-btn:active::before {
+  width: 300%;
+  height: 300%;
 }
 
-/* Fix $ amount disappearing after hover */
-.amount {
-  transition: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+.generate-btn::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  background: linear-gradient(to right, #6c5ce7, #7d5fef);
+  border-radius: 7px;
+  z-index: -1;
 }
 
-.summary-card,
-.summary-inner,
-.summary-inner h3 {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform-style: flat;
-  backface-visibility: visible;
+.generate-btn:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
 }
 
-/* Ensure no animations or transforms affect the text visibility */
-.summary-card:hover .amount,
-.summary-card:hover .summary-inner h3,
-.summary-card .amount,
-.summary-card .summary-inner h3 {
-  opacity: 1 !important;
-  visibility: visible !important;
-  animation: none !important;
-  transition: none !important;
+.generate-btn:hover::after {
+  background: linear-gradient(to right, #7d5fef, #6c5ce7);
 }
 
-/* Remove any 3D or complex transforms */
-.summary-card:hover {
-  transform: translateY(-5px);
+.generate-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(108, 92, 231, 0.3);
 }
 
-.summary-card:hover .summary-inner {
-  transform: none;
+.generate-btn.generating {
+  animation: pulse 1.5s infinite;
 }
 
-/* Remove dark background from pie chart areas */
-.pie-chart-wrapper {
-  background-color: transparent !important;
-  box-shadow: none !important;
+.btn-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* ---------------------------------------------
+ * SVG TEXT STYLING
+ * Styles for D3.js chart text elements
+ * --------------------------------------------- */
+text {
+  paint-order: stroke;
+  stroke: #000;
+  stroke-width: 0.5px;
+  stroke-linejoin: round;
+}
+
+/* ---------------------------------------------
+ * ANIMATIONS
+ * All keyframe animations used throughout the dashboard
+ * --------------------------------------------- */
+@keyframes pageReveal {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes headerReveal {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardReveal {
+  0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+  70% { transform: translateY(-5px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes countUpReveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes containerReveal {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chartReveal {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes legendItemReveal {
+  0% { opacity: 0; transform: translateX(-10px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bottomReveal {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes buttonReveal {
+  0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 0; }
+  50% { background-position: 200% 0; }
+  100% { background-position: 400% 0; }
+}
+
+@keyframes textGlow {
+  0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0); }
+  100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+}
+
+/* ---------------------------------------------
+ * ACCESSIBILITY & RESPONSIVE DESIGN
+ * Accessibility features and responsive layout adjustments
+ * --------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .insights-summary,
+  .bottom-container,
+  .pie-chart-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .pie-chart-wrapper {
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .insights-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .insights-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .generate-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .insights-summary,
+  .chart-container,
+  .bottom-container {
+    animation-delay: 0.4s;
+  }
+  
+  .summary-card:nth-child(n),
+  .legend-item:nth-child(n) {
+    animation-delay: 0.5s;
+  }
 }
