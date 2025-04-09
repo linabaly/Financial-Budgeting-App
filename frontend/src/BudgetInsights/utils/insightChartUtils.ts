@@ -114,21 +114,21 @@ export const generateEnhancedPieChart = (
     .padAngle(0.03); // Add space between segments for better visual separation
  
   // Create arc generators for different states and purposes
-  // Main arc for normal state
+  // Main arc for normal state - INCREASED THICKNESS
   const mainArc = d3.arc<d3.PieArcDatum<ExpenseCategory>>()
     .innerRadius(radius * 0.55) // Donut hole size
-    .outerRadius(radius * 0.85); // Outer edge of pie
+    .outerRadius(radius * 0.90); // Outer edge of pie
   
   // Hover arc for interactive expansion
   const hoverArc = d3.arc<d3.PieArcDatum<ExpenseCategory>>()
     .innerRadius(radius * 0.55)
-    .outerRadius(radius * 0.90); // Slightly larger on hover for emphasis
+    .outerRadius(radius * 0.95); // Slightly larger on hover for emphasis
   
   // Arc for positioning labels
   const labelArc = d3
     .arc<d3.PieArcDatum<ExpenseCategory>>()
-    .innerRadius(radius * 0.9)
-    .outerRadius(radius * 0.9);
+    .innerRadius(radius * 0.95)
+    .outerRadius(radius * 0.95);
  
   // Filter out zero-value expenses to avoid empty segments
   const filteredExpenses = expenses.filter(expense => expense.value > 0);
@@ -190,7 +190,7 @@ export const generateEnhancedPieChart = (
       centerText.text(datum.data.category)
         .transition()
         .duration(200)
-        .style('font-size', '1.4rem');
+        .style('font-size', '1.4rem'); // Increased size
         
       // Update center value to show category amount
       centerValue.text(`${datum.data.value.toLocaleString()}`)
@@ -268,7 +268,7 @@ export const generateEnhancedPieChart = (
     .attr('text-anchor', 'middle')
     .text(d => `${d.data.percentage.toFixed(1)}%`) // Show percentage on all segments
     .style('fill', '#ffffff') // White text for contrast
-    .style('font-size', '12px')
+    .style('font-size', '12px') // Increased from 12px to 16px
     .style('font-weight', 'bold')
     // Add text shadow for better readability against colored backgrounds
     .style('text-shadow', '0 1px 3px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 1)')
@@ -286,7 +286,7 @@ export const generateEnhancedPieChart = (
     .attr('y', -10)
     .attr('text-anchor', 'middle')
     .text('Total Amount')
-    .style('font-size', '1.2rem')
+    .style('font-size', '1.2rem') // Increased size
     .style('fill', '#fff')
     .style('opacity', 0)
     .transition()
@@ -300,7 +300,7 @@ export const generateEnhancedPieChart = (
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .text(`${totalAmount.toLocaleString()}`)
-    .style('font-size', '1.4rem')
+    .style('font-size', '1.4rem') // Increased size
     .style('fill', '#ff7b72') // Highlighted color for emphasis
     .style('opacity', 0)
     .transition()
@@ -315,7 +315,7 @@ export const generateEnhancedPieChart = (
     .attr('y', 45)
     .attr('text-anchor', 'middle')
     .text('Spent')
-    .style('font-size', '0.9rem')
+    .style('font-size', '0.9rem') // Increased size
     .style('fill', 'rgba(255, 255, 255, 0.7)')
     .style('opacity', 0)
     .transition()
@@ -376,8 +376,25 @@ export const generateMonthlyComparisonChart = (
     .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x0))
     .selectAll('text')
-    .attr('font-size', '10px')
-    .attr('fill', '#aaa');
+    .attr('font-size', '18px')  // Increased from 10px to 24px
+    .attr('fill', '#aaa')
+    .attr('dy', '1em');  // Adjust vertical positioning
+  
+  // Add Y axis with styled labels
+  svg.append('g')
+    .call(
+      d3.axisLeft(y)
+        .tickFormat(d => `${d.toFixed(1)}`)  // Format with dollar sign
+        .ticks(5)  // Reduce number of ticks for clarity
+    )
+    .selectAll('text')
+    .attr('font-size', '16px')  // Increased from 10px to 24px
+    .attr('fill', '#aaa')
+    .attr('dx', '-0.5em');  // Adjust horizontal positioning
+  
+  // Remove axis lines for a cleaner look
+  svg.selectAll('.domain, .tick line')
+    .remove();
   
   // Create groups for each month's data
   const monthGroup = svg.selectAll('.month')
@@ -392,8 +409,8 @@ export const generateMonthlyComparisonChart = (
     .attr('width', x1.bandwidth())
     .attr('height', d => height - y(d.suggested))
     .attr('fill', '#2ecc71') // Green for suggested amounts
-    .attr('rx', 3) // Rounded corners
-    .attr('ry', 3);
+    .attr('rx', 6) // Increased rounded corners
+    .attr('ry', 6);
   
   // Add actual spending bars (red)
   monthGroup.append('rect')
@@ -402,8 +419,8 @@ export const generateMonthlyComparisonChart = (
     .attr('width', x1.bandwidth())
     .attr('height', d => height - y(d.actual))
     .attr('fill', '#e74c3c') // Red for actual spending
-    .attr('rx', 3) // Rounded corners
-    .attr('ry', 3);
+    .attr('rx', 6) // Increased rounded corners
+    .attr('ry', 6);
   
   // Add value labels above each bar
   monthGroup.selectAll('.value-label')
@@ -415,43 +432,43 @@ export const generateMonthlyComparisonChart = (
     .append('text')
     .attr('class', 'value-label')
     .attr('x', d => (x1(d.type) || 0) + x1.bandwidth() / 2)
-    .attr('y', d => y(d.value) - 5)
+    .attr('y', d => y(d.value) - 10)
     .attr('text-anchor', 'middle')
-    .attr('font-size', '8px')
+    .attr('font-size', '14px')  // Increased from 8px to 18px
     .attr('fill', '#fff')
-    .text(d => d.value.toFixed(1));
+    .text(d => `${d.value.toFixed(1)}`);
   
   // Add legend to explain bar colors
   const legend = svg.append('g')
-    .attr('transform', `translate(${width - 140}, -10)`);
+    .attr('transform', `translate(${width - 240}, -10)`);
   
   // Suggested spending legend item
   legend.append('rect')
     .attr('x', 0)
     .attr('y', 0)
-    .attr('width', 12)
-    .attr('height', 12)
-    .attr('fill', '#2ecc71'); // Green
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr('fill', '#2ecc71');
   
   legend.append('text')
-    .attr('x', 18)
-    .attr('y', 10)
-    .attr('font-size', '10px')
+    .attr('x', 25)
+    .attr('y', 15)
+    .attr('font-size', '16px')
     .attr('fill', '#aaa')
     .text('Suggested');
   
   // Actual spending legend item
   legend.append('rect')
-    .attr('x', 85)
+    .attr('x', 150)
     .attr('y', 0)
-    .attr('width', 12)
-    .attr('height', 12)
-    .attr('fill', '#e74c3c'); // Red
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr('fill', '#e74c3c');
   
   legend.append('text')
-    .attr('x', 103)
-    .attr('y', 10)
-    .attr('font-size', '10px')
+    .attr('x', 175)
+    .attr('y', 15)
+    .attr('font-size', '16px')
     .attr('fill', '#aaa')
-    .text('Amount Spent');
+    .text('Actual Spend');
 };

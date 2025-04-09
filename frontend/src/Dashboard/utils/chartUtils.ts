@@ -69,7 +69,7 @@ export const generateMonthlyChart = (containerRef: React.RefObject<HTMLDivElemen
     .attr("x", width)
     .attr("y", y(maxValue) - 5)
     .attr("text-anchor", "end")
-    .attr("font-size", "10px")
+    .attr("font-size", "22px")
     .attr("fill", "#ff6b6b")
     .text("MAX");
   
@@ -92,7 +92,7 @@ export const generateMonthlyChart = (containerRef: React.RefObject<HTMLDivElemen
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
-    .attr("font-size", "8px")
+    .attr("font-size", "24px")
     .attr("fill", "#aaa");
     
   // Remove x-axis line
@@ -177,7 +177,7 @@ export const generateIncomeExpenseChart = (containerRef: React.RefObject<HTMLDiv
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
-    .attr("font-size", "10px")
+    .attr("font-size", "24px")
     .attr("fill", "#aaa");
     
   // Remove x-axis line
