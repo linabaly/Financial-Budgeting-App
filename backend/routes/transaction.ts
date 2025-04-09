@@ -43,16 +43,9 @@ export default class TransactionRoute extends Route {
         const account = await this.authenticate(req, res);
         if (!account) return this.sendUnauthorized(res);
         const transaction = await TransactionManager.getTransactionById(req.params.id);
-        if (!transaction) {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        if (!transaction) return this.sendClientError(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
+        if (transaction.accountID !== account.id) return this.sendForbidden(res);
         res.status(200).json(transaction);
         return;
       } catch (error) {
