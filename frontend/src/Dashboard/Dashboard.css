@@ -578,6 +578,10 @@
    
    .savings-button {
      background-color: #6c5ce7;
+     margin-left: auto;
+     margin-right: auto;
+     height: 40px;
+     width: 150px;
      border: none;
      padding: 0.5rem;
      color: #fff;
@@ -589,16 +593,72 @@
      transform-origin: center;
      position: relative;
    }
-   
+  
    .savings-button:hover {
      transform: scale(1.1);
      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+     background-color: #6c5ce7;
    }
    
    .savings-button:active {
      transform: scale(0.95);
      box-shadow: 0 2px 4px rgba(108, 92, 231, 0.2);
+     background-color: #6c5ce7;
    }
+
+   
+/* Savings progress hover glow effect based on percentage */
+@keyframes progressGlowLow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 10px rgba(255, 107, 107, 0.5), 
+      0 0 20px rgba(255, 107, 107, 0.3); 
+  }
+  50% { 
+    box-shadow: 
+      0 0 15px rgba(255, 107, 107, 0.7), 
+      0 0 25px rgba(255, 107, 107, 0.5); 
+  }
+}
+
+@keyframes progressGlowMedium {
+  0%, 100% { 
+    box-shadow: 
+      0 0 10px rgba(255, 206, 86, 0.5), 
+      0 0 20px rgba(255, 206, 86, 0.3); 
+  }
+  50% { 
+    box-shadow: 
+      0 0 15px rgba(255, 206, 86, 0.7), 
+      0 0 25px rgba(255, 206, 86, 0.5); 
+  }
+}
+
+@keyframes progressGlowHigh {
+  0%, 100% { 
+    box-shadow: 
+      0 0 10px rgba(46, 204, 113, 0.5), 
+      0 0 20px rgba(46, 204, 113, 0.3); 
+  }
+  50% { 
+    box-shadow: 
+      0 0 15px rgba(46, 204, 113, 0.7), 
+      0 0 25px rgba(46, 204, 113, 0.5); 
+  }
+}
+
+/* Percentage-based glow classes on hover */
+.progress-container:hover .progress-bar.glow-low {
+  animation: progressGlowLow 3s infinite;
+}
+
+.progress-container:hover .progress-bar.glow-medium {
+  animation: progressGlowMedium 3s infinite;
+}
+
+.progress-container:hover .progress-bar.glow-high {
+  animation: progressGlowHigh 3s infinite;
+}
    
    /* Recurring payments */
    .payment-item {
