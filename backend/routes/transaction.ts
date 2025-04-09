@@ -30,16 +30,7 @@ export default class TransactionRoute extends Route {
     });
     this.router.get("/:id", async (req, res) => {
       try {
-        if (!req.params.id || typeof req.params.id !== "string") {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        if (!req.params.id || typeof req.params.id !== "string") return this.sendClientError(res);
         const account = await this.authenticate(req, res);
         if (!account) return this.sendUnauthorized(res);
         const transaction = await TransactionManager.getTransactionById(req.params.id);
