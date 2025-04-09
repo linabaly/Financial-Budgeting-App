@@ -59,16 +59,7 @@ export default class AccountRoute extends Route {
     });
 
     this.router.post("/create", async (req, res) => {
-      if (!req.body.email || !req.body.password || !req.body.name) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 400,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
-      }
+      if (!req.body.email || !req.body.password || !req.body.name) return this.sendClientError(res);
       const accountDetails = {
         email: req.body.email,
         password: req.body.password.trim(),
