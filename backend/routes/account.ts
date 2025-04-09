@@ -4,6 +4,9 @@ import Route from "../util/Route";
 import { PrismaDBClient } from "../index";
 import { Server } from "../util";
 
+/**
+ * @author Matthew R
+ */
 export default class AccountRoute extends Route {
   constructor(server: Server) {
     super(server);
