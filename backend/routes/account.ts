@@ -91,7 +91,7 @@ export default class AccountRoute extends Route {
           password: accountDetails.password,
         });
         console.info(account);
-        res.status(200).json(account);
+        res.status(201).json(account);
         return;
       } catch (error) {
         this.handleServerError(error as Error, res);
