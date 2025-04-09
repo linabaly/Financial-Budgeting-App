@@ -66,7 +66,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("x", 15)
       .attr("y", 5)
       .attr("fill", "#fff")
-      .attr("font-size", "14px")
+      .attr("font-size", "18px")
       .text("Income");
     
     // Expense legend
@@ -83,7 +83,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("x", 15)
       .attr("y", 5)
       .attr("fill", "#fff")
-      .attr("font-size", "14px")
+      .attr("font-size", "18px")
       .text("Expenses");
     
     // Title
@@ -92,7 +92,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("y", -30)
       .attr("text-anchor", "middle")
       .attr("fill", "#fff")
-      .attr("font-size", "16px")
+      .attr("font-size", "18px")
       .text("Income vs. Expenses");
     
     // Define scales
@@ -108,18 +108,18 @@ const IncomeExpenseChart: React.FC = () => {
       .domain([yMin, yMax * 1.1]) // Add 10% padding at the top
       .range([height, 0]);
     
-    // Create the x-axis with styling
+    // Create the x-axis with larger styling
     svg.append("g")
-  .attr("transform", `translate(0,${height})`)
-  .call(d3.axisBottom(x))
-  .selectAll("text")
-  .style("font-size", "12px")
-  .style("fill", "#ccc")
-  .style("text-anchor", "middle")
-  .attr("dy", "1.5em"); // Push labels slightly down
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("font-size", "18px")  // Increased x-axis label size
+      .style("fill", "#ccc")
+      .style("text-anchor", "middle")
+      .attr("dy", "1.5em"); // Push labels slightly down
 
     
-    // Create the y-axis with dollar signs and no domain line
+    // Create the y-axis with larger dollar sign labels
     svg.append("g")
       .call(
         d3.axisLeft(y)
@@ -129,7 +129,7 @@ const IncomeExpenseChart: React.FC = () => {
       )
       .call(g => g.select(".domain").remove()) // Remove domain line
       .selectAll("text")
-      .style("font-size", "12px")
+      .style("font-size", "18px")  // Increased y-axis label size
       .style("fill", "#aaa")
       .style("text-anchor", "end");
     
@@ -214,7 +214,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("y", y(lastData.income))
       .attr("dy", "0.35em")
       .style("fill", "#2ecc71")
-      .style("font-size", "12px")
+      .style("font-size", "16px")
       .text(`$${lastData.income}`);
     
     // Expense value
@@ -223,7 +223,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("y", y(lastData.expense))
       .attr("dy", "0.35em")
       .style("fill", "#ff6b6b")
-      .style("font-size", "12px")
+      .style("font-size", "16px")
       .text(`$${lastData.expense}`);
   };
   

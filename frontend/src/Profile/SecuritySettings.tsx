@@ -1,35 +1,63 @@
+/**
+ * SecuritySettings.tsx
+ * 
+ * Component for managing user security settings like
+ * password change, two-factor authentication, and login alerts.
+ */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
+/**
+ * Props for the SecuritySettings component
+ */
 interface SecuritySettingsProps {
+  /** Callback function when settings are saved */
   onSave: () => void;
 }
 
+/**
+ * SecuritySettings component for user security preferences
+ */
 const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
+  // State for password form
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
 
+  // State for security toggles
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [loginAlerts, setLoginAlerts] = useState(true);
+  
+  // Password strength state
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+  /**
+   * Updates password field and calculates strength for new passwords
+   * @param field - The password field to update
+   * @param value - The new value
+   */
   const handlePasswordChange = (field: string, value: string) => {
     setPasswords(prev => ({
       ...prev,
       [field]: value
     }));
 
-    // Simple password strength calculation
+    // Calculate password strength when updating the new password
     if (field === 'newPassword') {
       const strength = calculatePasswordStrength(value);
       setPasswordStrength(strength);
     }
   };
 
+  /**
+   * Calculates password strength as a percentage (0-100)
+   * @param password - The password to evaluate
+   * @returns A number from 0-100 representing password strength
+   */
   const calculatePasswordStrength = (password: string): number => {
     if (!password) return 0;
     
@@ -40,26 +68,37 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     if (password.length >= 12) strength += 1;
     
     // Complexity checks
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1; // Has uppercase
+    if (/[a-z]/.test(password)) strength += 1; // Has lowercase
+    if (/[0-9]/.test(password)) strength += 1; // Has numbers
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1; // Has special chars
     
     // Normalize to 0-100
     return Math.min(100, (strength / 6) * 100);
   };
 
+  /**
+   * Gets color for password strength indicator
+   * @returns CSS color based on strength
+   */
   const getPasswordStrengthColor = (): string => {
-    if (passwordStrength < 30) return '#e74c3c';
-    if (passwordStrength < 70) return '#f39c12';
-    return '#2ecc71';
+    if (passwordStrength < 30) return '#e74c3c'; // Red - Weak
+    if (passwordStrength < 70) return '#f39c12'; // Orange - Medium
+    return '#2ecc71'; // Green - Strong
   };
 
+  /**
+   * Toggles two-factor authentication
+   */
   const toggleTwoFactor = () => {
     setTwoFactorEnabled(!twoFactorEnabled);
   };
 
+  /**
+   * Handles password change submission
+   */
   const changePassword = () => {
+    // Input validation
     if (passwords.newPassword !== passwords.confirmPassword) {
       alert('New passwords do not match!');
       return;
@@ -73,7 +112,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     // Call the onSave function passed from the parent
     onSave();
     
-    // Reset password fields
+    // Reset form fields
     setPasswords({
       currentPassword: '',
       newPassword: '',
@@ -91,30 +130,38 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     >
       <h2>Security Settings</h2>
       
+      {/* Password change section */}
       <motion.div 
-        className="password-change-section"
+        className="settings-section"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
       >
         <h3>Change Password</h3>
+        
+        {/* Current password field */}
         <div className="form-group">
-          <label>Current Password</label>
+          <label htmlFor="currentPassword">Current Password</label>
           <input 
             type="password"
+            id="currentPassword"
             value={passwords.currentPassword}
             onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
             placeholder="Enter your current password"
           />
         </div>
+        
+        {/* New password field with strength indicator */}
         <div className="form-group">
-          <label>New Password</label>
+          <label htmlFor="newPassword">New Password</label>
           <input 
             type="password"
+            id="newPassword"
             value={passwords.newPassword}
             onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
             placeholder="Choose a strong password"
           />
+          {/* Password strength meter */}
           {passwords.newPassword && (
             <div className="password-strength">
               <div className="strength-bar-container">
@@ -134,14 +181,18 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             </div>
           )}
         </div>
+        
+        {/* Confirm password field with match indicator */}
         <div className="form-group">
-          <label>Confirm New Password</label>
+          <label htmlFor="confirmPassword">Confirm New Password</label>
           <input 
             type="password"
+            id="confirmPassword"
             value={passwords.confirmPassword}
             onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
             placeholder="Confirm your new password"
           />
+          {/* Password match indicator */}
           {passwords.newPassword && passwords.confirmPassword && (
             <div className="password-match">
               {passwords.newPassword === passwords.confirmPassword ? (
@@ -152,6 +203,8 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             </div>
           )}
         </div>
+        
+        {/* Change password button */}
         <motion.button 
           className="change-password-btn"
           onClick={changePassword}
@@ -163,13 +216,16 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         </motion.button>
       </motion.div>
 
+      {/* Two-factor authentication section */}
       <motion.div 
-        className="two-factor-section"
+        className="settings-section"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
         <h3>Two-Factor Authentication</h3>
+        
+        {/* 2FA toggle */}
         <div className="toggle-group">
           <label>Enable Two-Factor Authentication</label>
           <div 
@@ -180,6 +236,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           </div>
         </div>
         
+        {/* 2FA setup instructions - only visible when enabled */}
         <AnimatePresence>
           {twoFactorEnabled && (
             <motion.div 
@@ -206,8 +263,9 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         </AnimatePresence>
       </motion.div>
       
+      {/* Login alerts section */}
       <motion.div 
-        className="login-alerts-section"
+        className="settings-section"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -224,14 +282,16 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         </div>
       </motion.div>
       
+      {/* Device sessions section */}
       <motion.div 
-        className="device-sessions"
+        className="settings-section"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.7 }}
       >
         <h3>Active Sessions</h3>
         <div className="sessions-list">
+          {/* Current device session */}
           <div className="session-item">
             <div className="session-details">
               <div className="device-name">Current Browser (Chrome)</div>
@@ -241,6 +301,8 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
               <span className="current-device">Current Device</span>
             </div>
           </div>
+          
+          {/* Other device session with end session option */}
           <div className="session-item">
             <div className="session-details">
               <div className="device-name">iPhone 13 Pro (Safari)</div>
@@ -259,6 +321,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         </div>
       </motion.div>
       
+      {/* Save button */}
       <motion.button 
         className="save-button"
         onClick={onSave}

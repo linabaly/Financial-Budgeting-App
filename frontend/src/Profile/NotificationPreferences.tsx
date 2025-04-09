@@ -1,12 +1,30 @@
+/**
+ * NotificationPreferences.tsx
+ * 
+ * Component for managing notification settings including
+ * email, push, and SMS notifications.
+ */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faEnvelope, faMobile, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faBell, 
+  faEnvelope, 
+  faMobile, 
+  faCheck 
+} from '@fortawesome/free-solid-svg-icons';
 
+/**
+ * Props for the NotificationPreferences component
+ */
 interface NotificationPreferencesProps {
+  /** Callback function when settings are saved */
   onSave: () => void;
 }
 
+/**
+ * Interface for notification settings structure
+ */
 interface Notifications {
   emailNotifications: {
     weeklyReport: boolean;
@@ -24,7 +42,11 @@ interface Notifications {
   };
 }
 
+/**
+ * NotificationPreferences component for managing user notification settings
+ */
 const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSave }) => {
+  // Notification settings state
   const [notifications, setNotifications] = useState<Notifications>({
     emailNotifications: {
       weeklyReport: true,
@@ -42,17 +64,23 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
     }
   });
   
+  // Other state
   const [frequencyOption, setFrequencyOption] = useState<string>('real-time');
-  const [showNotification, setShowNotification] = useState<boolean>(false);
-  const [notificationMessage, setNotificationMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
 
-  // Track changes when notifications state changes
+  /**
+   * Track changes when notifications or frequency changes
+   */
   useEffect(() => {
     setHasChanges(true);
   }, [notifications, frequencyOption]);
 
+  /**
+   * Toggle a notification setting
+   * @param category - The notification category (email, push, sms)
+   * @param key - The specific notification setting to toggle
+   */
   const toggleNotification = (category: string, key: string) => {
     setNotifications(prev => ({
       ...prev,
@@ -61,38 +89,30 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
         [key]: !(prev[category as keyof Notifications] as any)[key]
       }
     }));
-    // No notification shown when toggle is changed
   };
 
+  /**
+   * Change the notification frequency
+   * @param option - The frequency option to set (real-time, daily, weekly)
+   */
   const handleFrequencyChange = (option: string) => {
     setFrequencyOption(option);
-    // No notification shown when frequency is changed
   };
   
-  const showNotificationMessage = (message: string) => {
-    setNotificationMessage(message);
-    setShowNotification(true);
-    
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  };
-  
+  /**
+   * Save notification settings
+   */
   const saveNotificationSettings = () => {
     // Show loading state
     setIsLoading(true);
     
-    // Simulate API call
+    // Simulate API call with timeout
     setTimeout(() => {
       // Call the onSave function passed from the parent
       onSave();
       
       // Hide loading state
       setIsLoading(false);
-      
-      // Show success notification
-      showNotificationMessage('Notification preferences saved successfully!');
       
       // Reset changes flag
       setHasChanges(false);
@@ -113,12 +133,6 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
-  };
-
-  const notificationVariants = {
-    hidden: { right: -300, opacity: 0 },
-    visible: { right: 20, opacity: 1 },
-    exit: { right: -300, opacity: 0 }
   };
 
   return (
@@ -256,7 +270,7 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
       
       {/* Notification Frequency Section */}
       <motion.div 
-        className="notification-frequency"
+        className="notification-section"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
@@ -294,36 +308,6 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
       >
         {isLoading ? 'Saving...' : 'Save Notification Preferences'}
       </motion.button>
-      
-      {/* Loading Overlay */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div 
-            className="loading-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <span className="loader"></span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
-      {/* Save Notification */}
-      <AnimatePresence>
-        {showNotification && (
-          <motion.div 
-            className="save-notification"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={notificationVariants}
-          >
-            <FontAwesomeIcon icon={faCheck} style={{ marginRight: '10px' }} />
-            {notificationMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 };

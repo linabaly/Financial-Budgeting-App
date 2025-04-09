@@ -51,7 +51,7 @@ const MonthlyChart: React.FC = () => {
       // Add the amount with animation
       const amountDisplay = header.append("div")
         .attr("class", "chart-amount")
-        .style("font-size", "1.8rem")
+        .style("font-size", "2.4rem")
         .style("font-weight", "600")
         .text("$0");
       
@@ -77,7 +77,7 @@ const MonthlyChart: React.FC = () => {
       // Add description
       header.append("div")
         .attr("class", "chart-subtitle")
-        .style("font-size", "1rem")
+        .style("font-size", "1.4rem")
         .style("color", "#aaa")
         .text("Monthly Spending Limit");
     }

@@ -1,13 +1,40 @@
+/**
+ * AccountSettings.tsx
+ * 
+ * Component for managing user account preferences like
+ * language, timezone, currency, and theme.
+ */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+/**
+ * Props for the AccountSettings component
+ */
 interface AccountSettingsProps {
+  /** Callback function when settings are saved */
   onSave: () => void;
 }
 
+/**
+ * Default settings structure with app preferences
+ */
+interface AccountPreferences {
+  language: string;
+  timezone: string;
+  currency: string;
+  theme: string;
+  dataPrivacy: {
+    shareAnalytics: boolean;
+    marketingEmails: boolean;
+  };
+}
+
+/**
+ * AccountSettings component for user preferences
+ */
 const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
-  const [settings, setSettings] = useState({
+  // State for user settings with defaults
+  const [settings, setSettings] = useState<AccountPreferences>({
     language: 'en',
     timezone: 'UTC-5',
     currency: 'USD',
@@ -18,6 +45,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     }
   });
 
+  /**
+   * Updates a top-level setting value
+   * @param key - The setting to update
+   * @param value - The new value
+   */
   const handleSettingChange = (key: string, value: string) => {
     setSettings(prev => ({
       ...prev,
@@ -25,6 +57,10 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     }));
   };
 
+  /**
+   * Updates a nested privacy setting
+   * @param key - The privacy setting to toggle
+   */
   const handleToggleChange = (key: string) => {
     setSettings(prev => ({
       ...prev,
@@ -35,12 +71,17 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     }));
   };
 
+  /**
+   * Saves the current settings
+   */
   const saveSettings = () => {
     // Call the onSave function passed from the parent
     onSave();
+    
+    // Additional logic can be added here (API calls, etc.)
   };
 
-  // Staggered animation variants
+  // Animation variants for staggered animations
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -65,6 +106,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     >
       <h2>Account Preferences</h2>
       
+      {/* Display section with language, timezone, etc. */}
       <motion.div 
         className="settings-section"
         variants={containerVariants}
@@ -73,9 +115,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
       >
         <h3>Display Preferences</h3>
         <div className="form-grid">
+          {/* Language selector */}
           <motion.div className="form-group" variants={itemVariants}>
-            <label>Language</label>
+            <label htmlFor="language">Language</label>
             <select 
+              id="language"
               value={settings.language}
               onChange={(e) => handleSettingChange('language', e.target.value)}
             >
@@ -86,9 +130,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
             </select>
           </motion.div>
           
+          {/* Timezone selector */}
           <motion.div className="form-group" variants={itemVariants}>
-            <label>Timezone</label>
+            <label htmlFor="timezone">Timezone</label>
             <select 
+              id="timezone"
               value={settings.timezone}
               onChange={(e) => handleSettingChange('timezone', e.target.value)}
             >
@@ -98,9 +144,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
             </select>
           </motion.div>
           
+          {/* Currency selector */}
           <motion.div className="form-group" variants={itemVariants}>
-            <label>Currency</label>
+            <label htmlFor="currency">Currency</label>
             <select 
+              id="currency"
               value={settings.currency}
               onChange={(e) => handleSettingChange('currency', e.target.value)}
             >
@@ -111,9 +159,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
             </select>
           </motion.div>
           
+          {/* Theme selector */}
           <motion.div className="form-group" variants={itemVariants}>
-            <label>Theme</label>
+            <label htmlFor="theme">Theme</label>
             <select 
+              id="theme"
               value={settings.theme}
               onChange={(e) => handleSettingChange('theme', e.target.value)}
             >
@@ -125,6 +175,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
         </div>
       </motion.div>
       
+      {/* Privacy section with toggles */}
       <motion.div 
         className="settings-section"
         variants={containerVariants}
@@ -132,7 +183,9 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
         animate="show"
         transition={{ delay: 0.3 }}
       >
-        <h3>Data & Privacy</h3>
+        <h3>Data &amp; Privacy</h3>
+        
+        {/* Analytics sharing toggle */}
         <motion.div 
           className="toggle-group"
           variants={itemVariants}
@@ -146,6 +199,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
           </div>
         </motion.div>
         
+        {/* Marketing emails toggle */}
         <motion.div 
           className="toggle-group"
           variants={itemVariants}
@@ -160,6 +214,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
         </motion.div>
       </motion.div>
       
+      {/* Save button */}
       <motion.button 
         className="save-button"
         onClick={saveSettings}

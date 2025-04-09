@@ -1,10 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Transactions.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
 
-// Sample transaction data with properly formatted amounts
-const initialTransactions = [
+/**
+ * Transaction interface to define the shape of transaction data
+ */
+interface Transaction {
+  id: string;
+  name: string;
+  date: string;
+  amount: string;
+  category: string;
+}
+
+/**
+ * Interface for sort configuration
+ */
+interface SortConfig {
+  key: string;
+  direction: string;
+}
+
+/**
+ * Map of category names to their corresponding colors for styling
+ */
+const categoryColors: {[key: string]: string} = {
+  Food: '#27ae60',
+  Housing: '#e74c3c',
+  Utilities: '#3498db',
+  Health: '#9b59b6',
+  Entertainment: '#f39c12',
+  Personal: '#1abc9c',
+  Transport: '#2980b9',
+  Insurance: '#c0392b'
+};
+
+/**
+ * Initial transaction data for demonstration
+ */
+const initialTransactions: Transaction[] = [
   { id: '#T1234', name: 'Groceries', date: '2025-03-15', amount: '$120.45', category: 'Food' },
   { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1,500.00', category: 'Housing' },
   { id: '#T1236', name: 'Electricity Bill', date: '2025-03-05', amount: '$85.20', category: 'Utilities' },
@@ -19,24 +54,16 @@ const initialTransactions = [
   { id: '#T1245', name: 'Coffee', date: '2025-02-01', amount: '$25.30', category: 'Food' },
 ];
 
-// Define category colors for styling
-const categoryColors: {[key: string]: string} = {
-  Food: '#27ae60',
-  Housing: '#e74c3c',
-  Utilities: '#3498db',
-  Health: '#9b59b6',
-  Entertainment: '#f39c12',
-  Personal: '#1abc9c',
-  Transport: '#2980b9',
-  Insurance: '#c0392b'
-};
-
+/**
+ * Transactions Component - Manages displaying, filtering, and sorting financial transactions
+ */
 const Transactions: React.FC = () => {
+  // State management
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [transactions, setTransactions] = useState(initialTransactions);
+  const [itemsPerPage] = useState(10);
+  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState<{key: string, direction: string} | null>(null);
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isNewTransactionOpen, setIsNewTransactionOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState({
@@ -45,7 +72,11 @@ const Transactions: React.FC = () => {
     category: 'Food'
   });
   
-  // Helper function to format currency
+  /**
+   * Formats a number as currency with 2 decimal places
+   * @param amount - The number to format
+   * @returns A formatted string (e.g., "1,234.56")
+   */
   const formatCurrency = (amount: number): string => {
     return amount.toLocaleString('en-US', {
       minimumFractionDigits: 2,
@@ -53,7 +84,9 @@ const Transactions: React.FC = () => {
     });
   };
   
-  // Filter transactions by search term and category
+  /**
+   * Filter transactions based on search term and selected category
+   */
   const filteredTransactions = transactions.filter(transaction => {
     const matchesSearch = (
       transaction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -66,9 +99,12 @@ const Transactions: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
   
-  // Apply sorting with fixed amount sorting
+  /**
+   * Sort transactions based on current sort configuration
+   */
   const sortedTransactions = React.useMemo(() => {
     let sortableTransactions = [...filteredTransactions];
+    
     if (sortConfig !== null) {
       sortableTransactions.sort((a, b) => {
         // Special handling for amount column to sort numerically
@@ -82,7 +118,7 @@ const Transactions: React.FC = () => {
             : amountB - amountA;
         }
         
-        // For other columns, sort as before
+        // For other columns, sort alphabetically
         if (a[sortConfig.key as keyof typeof a] < b[sortConfig.key as keyof typeof b]) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
@@ -92,32 +128,45 @@ const Transactions: React.FC = () => {
         return 0;
       });
     }
+    
     return sortableTransactions;
   }, [filteredTransactions, sortConfig]);
   
-  // Get unique categories for filter
+  /**
+   * Extract unique categories for the category filter
+   */
   const categories = ['All', ...Array.from(new Set(transactions.map(t => t.category)))];
   
-  // Calculate pagination
+  /**
+   * Calculate pagination values
+   */
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTransactions = sortedTransactions.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
 
-  // Handle pagination
+  /**
+   * Navigate to previous page
+   */
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  /**
+   * Navigate to next page
+   */
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
   
-  // Handle sorting
+  /**
+   * Handle column sorting
+   * @param key - The column to sort by
+   */
   const requestSort = (key: string) => {
     let direction = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -126,12 +175,20 @@ const Transactions: React.FC = () => {
     setSortConfig({ key, direction });
   };
   
-  // Handle adding a new transaction
+  /**
+   * Add a new transaction to the list
+   */
   const handleAddTransaction = () => {
+    // Generate random transaction ID
     const newId = `#T${Math.floor(1000 + Math.random() * 9000)}`;
+    
+    // Get current date
     const today = new Date().toISOString().split('T')[0];
+    
+    // Format amount as currency
     const formattedAmount = formatCurrency(parseFloat(newTransaction.amount));
     
+    // Create new transaction object
     const transactionToAdd = {
       id: newId,
       name: newTransaction.name,
@@ -140,12 +197,15 @@ const Transactions: React.FC = () => {
       category: newTransaction.category
     };
     
+    // Add transaction and reset form
     setTransactions([transactionToAdd, ...transactions]);
     setNewTransaction({ name: '', amount: '', category: 'Food' });
     setIsNewTransactionOpen(false);
   };
 
-  // Check if form is valid
+  /**
+   * Validate form inputs
+   */
   const isFormValid = newTransaction.name.trim() !== '' && 
                       newTransaction.amount.trim() !== '' && 
                       parseFloat(newTransaction.amount) > 0;
@@ -154,7 +214,9 @@ const Transactions: React.FC = () => {
     <div className="app">
       <Header />
       
+      {/* Main content area */}
       <main className="transactions-content">
+        {/* Page header */}
         <div className="transactions-header">
           <h1>Transactions</h1>
           <button 
@@ -166,10 +228,12 @@ const Transactions: React.FC = () => {
           </button>
         </div>
         
+        {/* New transaction form */}
         {isNewTransactionOpen && (
           <div className="new-transaction-form card">
             <h3>New Transaction</h3>
             <div className="form-grid">
+              {/* Description field */}
               <div className="form-group">
                 <label>Description</label>
                 <input 
@@ -180,6 +244,8 @@ const Transactions: React.FC = () => {
                   required
                 />
               </div>
+              
+              {/* Amount field */}
               <div className="form-group">
                 <label>Amount ($)</label>
                 <input 
@@ -192,6 +258,8 @@ const Transactions: React.FC = () => {
                   required
                 />
               </div>
+              
+              {/* Category dropdown */}
               <div className="form-group">
                 <label>Category</label>
                 <select 
@@ -204,6 +272,8 @@ const Transactions: React.FC = () => {
                 </select>
               </div>
             </div>
+            
+            {/* Form buttons */}
             <div className="form-actions">
               <button 
                 className="submit-btn" 
@@ -222,7 +292,9 @@ const Transactions: React.FC = () => {
           </div>
         )}
         
+        {/* Search and filter section */}
         <div className="transactions-filters card">
+          {/* Search input */}
           <div className="search-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
@@ -239,6 +311,7 @@ const Transactions: React.FC = () => {
             />
           </div>
           
+          {/* Category filters */}
           <div className="category-filters">
             {categories.map(category => (
               <button 
@@ -256,15 +329,13 @@ const Transactions: React.FC = () => {
           </div>
         </div>
         
+        {/* Transactions table */}
         <div className="transactions-table-container card">
           {sortedTransactions.length > 0 ? (
             <table className="transactions-table">
               <thead>
                 <tr>
-                  <th 
-                    className="sortable" 
-                    onClick={() => requestSort('id')}
-                  >
+                  <th className="sortable" onClick={() => requestSort('id')}>
                     <div className="th-content">
                       <span>ID</span>
                       {sortConfig?.key === 'id' && (
@@ -274,10 +345,7 @@ const Transactions: React.FC = () => {
                       )}
                     </div>
                   </th>
-                  <th 
-                    className="sortable" 
-                    onClick={() => requestSort('name')}
-                  >
+                  <th className="sortable" onClick={() => requestSort('name')}>
                     <div className="th-content">
                       <span>Name</span>
                       {sortConfig?.key === 'name' && (
@@ -287,10 +355,7 @@ const Transactions: React.FC = () => {
                       )}
                     </div>
                   </th>
-                  <th 
-                    className="sortable" 
-                    onClick={() => requestSort('date')}
-                  >
+                  <th className="sortable" onClick={() => requestSort('date')}>
                     <div className="th-content">
                       <span>Date</span>
                       {sortConfig?.key === 'date' && (
@@ -310,10 +375,7 @@ const Transactions: React.FC = () => {
                       )}
                     </div>
                   </th>
-                  <th 
-                    className="sortable amount-column" 
-                    onClick={() => requestSort('amount')}
-                  >
+                  <th className="sortable amount-column" onClick={() => requestSort('amount')}>
                     <div className="th-content">
                       <span>Amount</span>
                       {sortConfig?.key === 'amount' && (
@@ -325,6 +387,7 @@ const Transactions: React.FC = () => {
                   </th>
                 </tr>
               </thead>
+              
               <tbody>
                 {currentTransactions.map((transaction, index) => (
                   <tr key={transaction.id + index} className="transaction-row">
@@ -350,6 +413,7 @@ const Transactions: React.FC = () => {
               </tbody>
             </table>
           ) : (
+            /* No results message */
             <div className="no-results">
               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -371,11 +435,13 @@ const Transactions: React.FC = () => {
           )}
         </div>
         
+        {/* Pagination */}
         {sortedTransactions.length > 0 && (
           <div className="pagination-container">
             <div className="pagination-info">
               Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, sortedTransactions.length)} of {sortedTransactions.length} transactions
             </div>
+            
             <div className="pagination-controls">
               <button 
                 className="pagination-button" 

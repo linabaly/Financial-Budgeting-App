@@ -1,26 +1,39 @@
-import React, { useEffect, useState } from 'react';
+/**
+ * ProfilePage.tsx
+ * 
+ * Main container component for the user profile section.
+ * Handles routing between different profile sections and displays the appropriate component.
+ */
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import PersonalInfo from './PersonalInfo';
-import AccountSettings from './AccountSettings';
-import SecuritySettings from './SecuritySettings';
-import NotificationPreferences from './NotificationPreferences';
-import FinancialGoals from './FinancialGoals';
-import './ProfileStyles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { useNotification } from './contexts/NotificationContext';
-
 import { 
   faUser, 
   faCog, 
   faShieldAlt, 
   faBell, 
-  faChartLine 
+  faChartLine,
+  faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 
-// Function to get the icon for each section
-const getIconForSectionFA = (section: string) => {
+// Import section components
+import PersonalInfo from './PersonalInfo';
+import AccountSettings from './AccountSettings';
+import SecuritySettings from './SecuritySettings';
+import NotificationPreferences from './NotificationPreferences';
+import FinancialGoals from './FinancialGoals';
+
+// Import styles and context
+import './ProfileStyles.css';
+import { useNotification } from './contexts/NotificationContext';
+
+/**
+ * Gets the FontAwesome icon for a section
+ * @param section - The section identifier
+ * @returns The corresponding FontAwesome icon
+ */
+const getSectionIcon = (section: string) => {
   switch(section) {
     case 'personal': return faUser;
     case 'account': return faCog;
@@ -31,26 +44,48 @@ const getIconForSectionFA = (section: string) => {
   }
 };
 
+/**
+ * Props for the ProfilePage component
+ */
 interface ProfilePageProps {
-  // Add any props if needed
+  // Add any required props here
 }
 
+/**
+ * The main ProfilePage component
+ */
 const ProfilePage: React.FC<ProfilePageProps> = () => {
+  // State to track the active profile section
   const [activeSection, setActiveSection] = useState('personal');
-  const { showNotification, simulateLoading, isLoading } = useNotification();
+  
+  // User profile data (would normally come from an API)
+  const [profileData, setProfileData] = useState<any>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  
+  // Hooks
   const navigate = useNavigate();
-
+  const { showNotification, simulateLoading } = useNotification();
+  
+  /**
+   * Navigate back to the previous page
+   */
   const handleGoBack = () => {
-    // Go back to the previous page or default to dashboard
     navigate(-1);
   };
-
+  
+  /**
+   * Handles saving data for any profile section
+   * @param message - The success message to display
+   */
   const handleSaveAction = (message: string) => {
     simulateLoading(() => {
       showNotification(message);
     });
   };
-
+  
+  /**
+   * Renders the appropriate component based on the active section
+   */
   const renderActiveSection = () => {
     switch(activeSection) {
       case 'personal':
@@ -68,61 +103,64 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     }
   };
 
-  // Fetch user name
-  const [profileData, setProfileData] = useState<any>(null);
-  const [profileError, setProfileError] = useState<string | null>(null);
+  // Fetch user profile data on component mount
   useEffect(() => {
-      const fetchProfileData = async () => {
-        try {
-  
-          const token = localStorage.getItem("token");
-          console.log(token);
-          if (!token) throw new Error("No token found. Please log in again.");
-    
-          const response = await fetch("http://localhost:5005/account/me", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token,
-            },
-          });
-    
-          if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message || "Failed to fetch profile data");
-          }
-    
-          const data = await response.json();
-          console.log("Profile Data:", data);
-          setProfileData(data);
-        } catch (error: any) {
-          setProfileError(error.message);
+    const fetchProfileData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+          throw new Error("No token found. Please log in again.");
         }
-      };
+        
+        // Example API call - replace with your actual endpoint
+        const response = await fetch("http://localhost:5005/account/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || "Failed to fetch profile data");
+        }
+        
+        const data = await response.json();
+        setProfileData(data);
+      } catch (error: any) {
+        setProfileError(error.message);
+      }
+    };
     
-      fetchProfileData();
-    }, []);
+    fetchProfileData();
+  }, []);
 
   return (
     <div className="profile-page">
+      {/* Back button */}
       <div className="profile-back-button">
         <motion.button 
           onClick={handleGoBack}
           whileHover={{ x: -5 }}
           whileTap={{ scale: 0.95 }}
         >
-          <FontAwesomeIcon icon="arrow-left" />
+          <FontAwesomeIcon icon={faArrowLeft} />
           Back
         </motion.button>
       </div>
       
+      {/* Main profile container with sidebar and content area */}
       <div className="profile-container">
+        {/* Sidebar with user info and navigation */}
         <motion.div 
           className="profile-sidebar"
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
+          {/* User avatar and name */}
           <div className="profile-avatar">
             <div className="avatar-wrapper">
               <img 
@@ -145,9 +183,10 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                 />
               </div>
             </div>
-            <h3><span>{profileData ? profileData.name || "User" : "Loading..."}</span></h3>
+            <h3>{profileData ? profileData.name || "User" : "Loading..."}</h3>
           </div>
           
+          {/* Navigation menu */}
           <nav className="profile-nav">
             {['personal', 'account', 'security', 'notifications', 'goals'].map((section) => (
               <motion.button 
@@ -157,19 +196,21 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                 whileHover={{ x: 5 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <FontAwesomeIcon icon={getIconForSectionFA(section)} />
+                <FontAwesomeIcon icon={getSectionIcon(section)} />
                 {section.charAt(0).toUpperCase() + section.slice(1)}
               </motion.button>
             ))}
           </nav>
         </motion.div>
         
+        {/* Content area - shows the selected section */}
         <motion.div 
           className="profile-content"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
+          {/* Animate section transitions */}
           <AnimatePresence mode="wait">
             <motion.div 
               key={activeSection}
