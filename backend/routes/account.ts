@@ -93,7 +93,6 @@ export default class AccountRoute extends Route {
           name: accountDetails.name,
           password: accountDetails.password,
         });
-        console.info(account);
         res.status(201).json(account);
         return;
       } catch (error) {
