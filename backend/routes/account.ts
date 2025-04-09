@@ -130,16 +130,7 @@ export default class AccountRoute extends Route {
         const account = await this.authenticate(req, res);
         if (!account) return this.sendUnauthorized(res);
         const deletionQuery = await AccountManager.deleteAccount(account.id);
-        if (!deletionQuery) {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        if (!deletionQuery) return this.sendClientError(res);
         res.sendStatus(204);
         return;
       } catch (error) {
