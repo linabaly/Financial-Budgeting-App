@@ -16,16 +16,7 @@ export default class AccountRoute extends Route {
 
   public bind() {
     this.router.post("/login", async (req, res) => {
-      if (!req.body.email || !req.body.password) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 403,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
-      }
+      if (!req.body.email || !req.body.password) return this.sendClientError(res);
       const passedCreds = {
         email: req.body.email,
         cleartextPassword: req.body.password,
