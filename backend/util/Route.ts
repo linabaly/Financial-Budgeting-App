@@ -159,6 +159,57 @@ export default class Route {
     );
   }
 
+  /**
+   * This is a helper method that writes the generic CLIENT ERROR response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendClientError(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.CLIENT_ERROR[0],
+        status: 400,
+        message: this.constants.messages.CLIENT_ERROR[1],
+      },
+      res
+    );
+  }
+
+  /**
+   * This is a helper method that writes the generic NOT FOUND response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendNotFound(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.NOT_FOUND[0],
+        status: 404,
+        message: this.constants.messages.NOT_FOUND[1],
+      },
+      res
+    );
+  }
+
+  /**
+   * This is a helper method that writes the generic FORBIDDEN/PERMISSION DENIED response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendForbidden(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.PERMISSION_DENIED[0],
+        status: 403,
+        message: this.constants.messages.PERMISSION_DENIED[1],
+      },
+      res
+    );
+  }
+
   get constants() {
     return {
       codes: {

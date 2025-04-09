@@ -32,6 +32,10 @@ export default class Server {
     this.loadRoutes().catch((error) => console.error(error));
   }
 
+  /**
+   * @author Matthew R
+   * This method loads the routes and binds them to the Express application.
+   */
   public async loadRoutes() {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const routes = Object.values<typeof Route>(require(this.root));
@@ -51,6 +55,10 @@ export default class Server {
     }
   }
 
+  /**
+   * @author Matthew R
+   * This method initializes the server and sets up the Express application.
+   */
   public init() {
     if (this.parse) {
       this.app.use(bodyParser.json());
@@ -79,7 +87,11 @@ export default class Server {
     );
   }
 
-  public listen(port?: number): HTTPServer {
+  /**
+   * @author Matthew R
+   * @param port The optional port to listen on. If `this.port` is defined, then that takes priority. If `this.port` is undefined then it uses the parameter passed to method. If no parameter is passed and `this.port` is undefined, it defaults to port 3000.
+   */
+  public listen(port = 3000): HTTPServer {
     return this.app.listen(this.port ?? port);
   }
 }
