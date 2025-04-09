@@ -117,7 +117,7 @@ export default class AccountRoute extends Route {
         if (req.body.email) updateDetails.email = req.body.email.trim();
         if (req.body.name) updateDetails.name = req.body.name.trim();
         const updateQuery = await AccountManager.updateAccount(updateDetails);
-        // updateQuery.password = "[REDACTED]";
+        updateQuery.password = "[REDACTED]";
         res.status(200).json(updateQuery);
         return;
       } catch (error) {
