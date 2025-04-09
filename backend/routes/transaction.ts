@@ -1,9 +1,16 @@
 import AccountManager from "../util/AccountManager"; // TODO: AccountManager likely won't be required here
-import TransactionManager, { TransactionDetails } from "../util/TransactionManager";
+import TransactionManager, {
+  TransactionCategory,
+  TransactionDetails,
+  TransactionType,
+} from "../util/TransactionManager";
 import Route from "../util/Route";
 import { PrismaDBClient } from "../index"; // TODO: PrismaDBClient likely won't be required here
 import { Server } from "../util";
 
+/**
+ * @author Matthew R
+ */
 export default class TransactionRoute extends Route {
   constructor(server: Server) {
     super(server);
