@@ -51,7 +51,7 @@ const MonthlyChart: React.FC = () => {
       // Add the amount with animation
       const amountDisplay = header.append("div")
         .attr("class", "chart-amount")
-        .style("font-size", "2.4rem")
+        .style("font-size", "2.2rem")
         .style("font-weight", "600")
         .text("$0");
       

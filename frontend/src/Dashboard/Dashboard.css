@@ -263,7 +263,7 @@
    
    /* Total balance card */
    .total-balance-card {
-     padding: 1rem;
+     padding: 1.7rem;
      background-color: #222;
      border-radius: 8px;
      transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -294,20 +294,20 @@
    }
    
    .label {
-     font-size: 1.8rem;
+     font-size: 1.6rem;
      color: #ffffff;
      margin-bottom: 0.5rem;
    }
    
    .balance-amount {
-     font-size: 3rem;
+     font-size: 2.6rem;
      font-weight: 700;
      margin-bottom: 0.25rem;
      transition: none;
    }
    
    .balance-growth {
-     font-size: 1.8rem;
+     font-size: 1.6rem;
      color: #2ecc71;
      transition: transform 0.3s ease, text-shadow 0.3s ease;
    }
@@ -320,7 +320,7 @@
    .spending-progress {
     background-color: #222;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 1.7rem;
     color: #fff;
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     cursor: pointer;
