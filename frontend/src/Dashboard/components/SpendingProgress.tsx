@@ -44,14 +44,8 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
   const remaining = budget - spent;
   
   return (
-    <div 
-      style={{ 
-        backgroundColor: '#222', 
-        borderRadius: '12px', 
-        padding: '1rem', 
-        color: '#fff' 
-      }}
-    >
+    <div className="spending-progress">
+
       <div 
         style={{ 
           display: 'flex', 
@@ -60,7 +54,7 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
           marginBottom: '0.5rem' 
         }}
       >
-        <div style={{ fontSize: '1rem', color: '#aaa' }}>
+        <div style={{ fontSize: '1.6rem', color: '#aaa' }}>
           Monthly Spending Limit
         </div>
         <div 
@@ -101,7 +95,7 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
             transform: 'translate(-50%, -50%)',
             color: '#fff',
             fontWeight: 'bold',
-            fontSize: '14px',
+            fontSize: '22px',
             zIndex: 10
           }}
         >
@@ -114,7 +108,7 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
           display: 'flex', 
           justifyContent: 'space-between', 
           marginTop: '0.5rem', 
-          fontSize: '0.9rem' 
+          fontSize: '1.4rem' 
         }}
       >
         <div style={{ color: '#2ecc71' }}>
