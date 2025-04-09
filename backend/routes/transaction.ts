@@ -98,6 +98,8 @@ export default class TransactionRoute extends Route {
         // check if the transaction requested can be located
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendNotFound(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
+        if (transaction.accountID !== account.id) return this.sendForbidden(res);
         // if type is submitted to update, ensure that the submitted type is typeof TransactionType
         if (req.body.type && !Object.values(TransactionType).includes(req.body.type)) {
           return this.sendClientError(res);
