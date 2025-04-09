@@ -74,19 +74,8 @@ export default class AccountRoute extends Route {
         password: req.body.password.trim(),
         name: req.body.name,
       };
-      if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } })) {
-        // TODO: remove testing commands
-        // await PrismaDBClient.account.delete({ where: { email: accountDetails.email } });
-        // return res.sendStatus(202);
-        return this.handleError(
-          {
-            text_code: this.constants.messages.PERMISSION_DENIED[0],
-            status: 403,
-            message: this.constants.messages.PERMISSION_DENIED[1],
-          },
-          res
-        );
-      }
+      if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } }))
+        return this.sendForbidden(res);
       try {
         const account = await AccountManager.createAccount({
           email: accountDetails.email,
