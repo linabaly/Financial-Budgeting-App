@@ -60,16 +60,8 @@ export default class TransactionRoute extends Route {
           typeof Number(req.body.amount) !== "number" ||
           !req.body.descriptor ||
           typeof req.body.descriptor !== "string"
-        ) {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        )
+          return this.sendClientError(res);
         const account = await this.authenticate(req, res);
         if (!account) return this.sendUnauthorized(res);
         const passedTransactionDetails: TransactionDetails = {
