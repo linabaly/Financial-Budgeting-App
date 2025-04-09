@@ -134,5 +134,29 @@ export default class TransactionRoute extends Route {
         return this.handleServerError(error as Error, res);
       }
     });
+
+    this.router.delete("/:id", async (req, res) => {
+      try {
+        // check if the required parameters are present
+        if (!req.params.id) return this.sendClientError(res);
+        // check if the account can be found and authenticated
+        const account = await this.authenticate(req, res);
+        if (!account) return this.sendUnauthorized(res);
+        // check if the transaction requested can be located
+        const transaction = await TransactionManager.getTransactionById(req.params.id);
+        if (!transaction) return this.sendNotFound(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
+        if (transaction.accountID !== account.id) return this.sendForbidden(res);
+
+        try {
+          await TransactionManager.deleteTransactionByID(req.params.id);
+        } catch (error) {
+          return this.sendClientError(res);
+        }
+        res.sendStatus(204);
+      } catch (error) {
+        return this.handleServerError(error as Error, res);
+      }
+    });
   }
 }
