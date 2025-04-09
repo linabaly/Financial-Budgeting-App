@@ -11,25 +11,41 @@ import RecurringPayments from './components/RecurringPayments';
 import ExpenseAlerts from './components/ExpenseAlerts';
 import Footer from './components/Footer';
 
+/**
+ * Dashboard Component
+ * 
+ * Main dashboard page displaying financial summary, charts, insights,
+ * and providing modal forms for different financial activities.
+ */
 const Dashboard: React.FC = () => {
-  // Modal states
+  // ===== STATE MANAGEMENT =====
+  
+  // Modal visibility states
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showSavingsModal, setShowSavingsModal] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  
+  // User and account related states
+  const [currentDate] = useState(new Date());
   const [currentSavings, setCurrentSavings] = useState(4500);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [dashboardError, setDashboardError] = useState<string | null>(null);
 
+  // ===== DATA FETCHING =====
+  
+  /**
+   * Fetch user's account data from API on component mount
+   * Retrieves personal and financial information to populate the dashboard
+   */
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-
+        // Get authentication token from local storage
         const token = localStorage.getItem("token");
-        console.log(token);
         if (!token) throw new Error("No token found. Please log in again.");
   
+        // Fetch user data from API
         const response = await fetch("http://localhost:5005/account/me", {
           method: "GET",
           headers: {
@@ -38,13 +54,14 @@ const Dashboard: React.FC = () => {
           },
         });
   
+        // Handle error responses
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.message || "Failed to fetch dashboard data");
         }
   
+        // Process and store successful response
         const data = await response.json();
-        console.log("Dashboard Data:", data);
         setDashboardData(data);
       } catch (error: any) {
         setDashboardError(error.message);
@@ -54,9 +71,12 @@ const Dashboard: React.FC = () => {
     fetchDashboardData();
   }, []);
   
-
-
-  // Handle closing all modals
+  // ===== MODAL HANDLERS =====
+  
+  /**
+   * Close all modal windows
+   * Used when clicking outside a modal or clicking cancel/close buttons
+   */
   const closeAllModals = () => {
     setShowTransactionModal(false);
     setShowBudgetModal(false);
@@ -64,10 +84,18 @@ const Dashboard: React.FC = () => {
     setShowSavingsModal(false);
   };
 
-  // Example form submission handlers
+  // ===== FORM SUBMISSION HANDLERS =====
+  
+  /**
+   * Handle new transaction form submission
+   * Processes and submits transaction data to backend (currently mock implementation)
+   * 
+   * @param e - Form submission event
+   */
   const handleTransactionSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Get form data
+    
+    // Extract form data
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const transactionData = {
@@ -78,16 +106,24 @@ const Dashboard: React.FC = () => {
       notes: formData.get('notes')
     };
     
-    // Here you would send data to your backend
+    // TODO: Connect to actual API endpoint
     console.log('Transaction data submitted:', transactionData);
     
-    // Show success message and close modal
+    // Display confirmation and close modal
     alert('Transaction added successfully!');
     setShowTransactionModal(false);
   };
 
+  /**
+   * Handle budget setting form submission
+   * Processes and submits budget data to backend (currently mock implementation)
+   * 
+   * @param e - Form submission event
+   */
   const handleBudgetSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Extract form data
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const budgetData = {
@@ -96,13 +132,24 @@ const Dashboard: React.FC = () => {
       period: formData.get('period')
     };
     
+    // TODO: Connect to actual API endpoint
     console.log('Budget data submitted:', budgetData);
+    
+    // Display confirmation and close modal
     alert('Budget set successfully!');
     setShowBudgetModal(false);
   };
 
+  /**
+   * Handle financial goal form submission
+   * Processes and submits financial goal data to backend (currently mock implementation)
+   * 
+   * @param e - Form submission event
+   */
   const handleGoalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Extract form data
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const goalData = {
@@ -112,22 +159,32 @@ const Dashboard: React.FC = () => {
       description: formData.get('description')
     };
     
+    // TODO: Connect to actual API endpoint
     console.log('Goal data submitted:', goalData);
+    
+    // Display confirmation and close modal
     alert('Goal added successfully!');
     setShowGoalModal(false);
   };
 
-  // Handler for savings form submission
+  /**
+   * Handle savings update form submission
+   * Updates savings amount and submits data to backend (currently mock implementation)
+   * 
+   * @param e - Form submission event
+   */
   const handleSavingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Extract form data
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     
-    // Get the new savings amount from the form
+    // Extract and validate amount
     const amount = formData.get('amount');
     const newAmount = amount ? parseFloat(amount.toString()) : 0;
     
-    // Create savings data object for potential API submission
+    // Create data object for API submission
     const savingsData = {
       amount: newAmount,
       savingsType: formData.get('savingsType'),
@@ -135,24 +192,26 @@ const Dashboard: React.FC = () => {
       notes: formData.get('notes')
     };
     
-    // Log the submitted data
+    // TODO: Connect to actual API endpoint
     console.log('Savings data submitted:', savingsData);
     
-    // Update the state with the new amount
+    // Update local state with new amount
     if (newAmount > 0) {
       setCurrentSavings(newAmount);
     }
     
-    // Show success message and close modal
+    // Display confirmation and close modal
     alert('Savings updated successfully!');
     setShowSavingsModal(false);
   };
 
   return (
     <div className="app">
+      {/* Main navigation and header */}
       <Header />
       
       <main className="main-content">
+        {/* User greeting section with date */}
         <div className="greeting-section">
           <div>
             <h1>Hello, <span className="name">{dashboardData ? dashboardData.name || "User" : "Loading..."}</span>!</h1>
@@ -167,6 +226,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
+        {/* Primary dashboard financial summary */}
         <div className="dashboard-section">
           <div className="left-column">
             <TotalBalance />
@@ -177,24 +237,27 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
+        {/* Analytics and insights section */}
         <div className="analytics-container">
-  <div className="analytics-section">
-    <div className="income-expense-chart-container">
-      <IncomeExpenseChart />
-    </div>
-    <div className="insights-container">
-      <SmartInsights />
-      <SavingsProgress 
-        currentSavings={currentSavings} 
-        onUpdateClick={() => setShowSavingsModal(true)} 
-      />
-      <RecurringPayments />
-      <ExpenseAlerts />
-    </div>
-  </div>
-</div>
+          <div className="analytics-section">
+            <div className="income-expense-chart-container">
+              <IncomeExpenseChart />
+            </div>
+            <div className="insights-container">
+              <SmartInsights />
+              <SavingsProgress 
+                currentSavings={currentSavings} 
+                onUpdateClick={() => setShowSavingsModal(true)} 
+              />
+              <RecurringPayments />
+              <ExpenseAlerts />
+            </div>
+          </div>
+        </div>
         
-        {/* Transaction Modal */}
+        {/* === MODAL COMPONENTS === */}
+        
+        {/* Transaction Modal - For adding new transactions */}
         {showTransactionModal && (
           <div className="modal-overlay" onClick={closeAllModals}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -278,7 +341,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
         
-        {/* Budget Modal */}
+        {/* Budget Modal - For setting category budgets */}
         {showBudgetModal && (
           <div className="modal-overlay" onClick={closeAllModals}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -342,7 +405,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
         
-        {/* Goal Modal */}
+        {/* Goal Modal - For creating financial goals */}
         {showGoalModal && (
           <div className="modal-overlay" onClick={closeAllModals}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -413,7 +476,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
         
-        {/* Savings Modal */}
+        {/* Savings Modal - For updating savings amount */}
         {showSavingsModal && (
           <div className="modal-overlay" onClick={closeAllModals}>
             <div className="modal" onClick={e => e.stopPropagation()}>
@@ -440,7 +503,7 @@ const Dashboard: React.FC = () => {
                   <div className="form-group">
                     <label htmlFor="savings-type">Savings Type</label>
                     <select id="savings-type" name="savingsType" required>
-                      <option value="emergency" selected>Emergency Fund</option>
+                      <option value="emergency" defaultValue="emergency">Emergency Fund</option>
                       <option value="retirement">Retirement</option>
                       <option value="vacation">Vacation</option>
                       <option value="education">Education</option>
@@ -488,6 +551,7 @@ const Dashboard: React.FC = () => {
         )}
       </main>
       
+      {/* Site footer */}
       <Footer />
     </div>
   );

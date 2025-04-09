@@ -2,54 +2,76 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 
+/**
+ * Header Component
+ * 
+ * Main navigation component that provides:
+ * - Sticky header with scroll-based appearance changes
+ * - Responsive navigation for desktop and mobile
+ * - Active route indication
+ * - Smooth transitions and animations
+ */
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   
-  // Determine which button should have the active class
-  const isActive = (path: string) => location.pathname === path;
+  // State management
+  const [scrolled, setScrolled] = useState(false); // Controls header appearance on scroll
+  const [menuOpen, setMenuOpen] = useState(false); // Controls mobile menu visibility
 
-  // Handle scroll effect
+  /**
+   * Checks if the current route matches the provided path
+   * Used to highlight active navigation items
+   */
+  const isActive = (path: string): boolean => location.pathname === path;
+
+  /**
+   * Scroll event handler - changes header appearance when scrolled
+   * Adds shadow, changes background opacity, and adjusts padding
+   */
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  // Logo click handler to navigate to dashboard
+  /**
+   * Navigation handlers
+   * Each handler navigates to the specified route and closes mobile menu
+   */
   const handleLogoClick = () => {
     navigate('/dashboard');
+  };
+  
+  const handleNavClick = (path: string) => {
+    navigate(path);
+    setMenuOpen(false);
   };
   
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
+        {/* Logo and Brand Identity */}
         <div className="logo-container" onClick={handleLogoClick}>
           <div className="logo">
             <span className="logo-text">Finovators</span>
           </div>
         </div>
         
+        {/* Mobile Menu Toggle Button */}
         <div className="mobile-menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
           <div className={`menu-bar ${menuOpen ? 'open' : ''}`}></div>
         </div>
         
+        {/* Main Navigation Menu */}
         <nav className={`navigation ${menuOpen ? 'open' : ''}`}>
+          {/* Dashboard Button */}
           <button 
             className={`nav-button ${isActive('/dashboard') ? 'active' : ''}`}
-            onClick={() => {
-              navigate('/dashboard');
-              setMenuOpen(false);
-            }}
+            onClick={() => handleNavClick('/dashboard')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="7" height="9"></rect>
@@ -60,12 +82,10 @@ const Header: React.FC = () => {
             <span>Dashboard</span>
           </button>
           
+          {/* Insights Button */}
           <button 
             className={`nav-button ${isActive('/insights') ? 'active' : ''}`}
-            onClick={() => {
-              navigate('/insights');
-              setMenuOpen(false);
-            }}
+            onClick={() => handleNavClick('/insights')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -76,12 +96,10 @@ const Header: React.FC = () => {
             <span>My Insights</span>
           </button>
           
+          {/* Transactions Button */}
           <button 
             className={`nav-button ${isActive('/transactions') ? 'active' : ''}`}
-            onClick={() => {
-              navigate('/transactions');
-              setMenuOpen(false);
-            }}
+            onClick={() => handleNavClick('/transactions')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -90,7 +108,11 @@ const Header: React.FC = () => {
             <span>Transactions</span>
           </button>
           
-          <div className="profile-icon" onClick={() => navigate('/profile')}>
+          {/* User Profile */}
+          <div 
+            className="profile-icon" 
+            onClick={() => handleNavClick('/profile')}
+          >
             <div className="avatar">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
