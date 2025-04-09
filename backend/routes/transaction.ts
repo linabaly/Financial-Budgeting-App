@@ -88,7 +88,7 @@ export default class TransactionRoute extends Route {
           type: req.body.type,
         };
         const createQuery = await TransactionManager.createTransaction(passedTransactionDetails);
-        res.status(200).json(createQuery);
+        res.status(201).json(createQuery);
         return;
       } catch (error) {
         return this.handleServerError(error as Error, res);
