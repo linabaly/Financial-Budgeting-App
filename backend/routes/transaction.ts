@@ -55,7 +55,7 @@ export default class TransactionRoute extends Route {
       try {
         if (
           !req.body.amount ||
-          typeof Number(req.body.amount) !== "number" ||
+          isNaN(Number(req.body.amount)) ||
           !req.body.descriptor ||
           typeof req.body.descriptor !== "string"
         )
