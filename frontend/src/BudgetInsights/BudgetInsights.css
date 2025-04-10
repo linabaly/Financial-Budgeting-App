@@ -4,6 +4,12 @@
  * LAYOUT & MAIN CONTAINERS
  * Main layout structure, grid, and containers
  * --------------------------------------------- */
+
+  html {
+  font-size: 18px;
+}
+
+
  .insights-content {
   flex: 1;
   padding: 2rem;
@@ -382,7 +388,7 @@
  * --------------------------------------------- */
 .report-content {
   font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   line-height: 1.6;
   color: #bbb;
 }

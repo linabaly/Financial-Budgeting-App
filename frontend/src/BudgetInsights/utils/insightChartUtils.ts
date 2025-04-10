@@ -268,7 +268,7 @@ export const generateEnhancedPieChart = (
     .attr('text-anchor', 'middle')
     .text(d => `${d.data.percentage.toFixed(1)}%`) // Show percentage on all segments
     .style('fill', '#ffffff') // White text for contrast
-    .style('font-size', '12px') // Increased from 12px to 16px
+    .style('font-size', '14px') // Increased from 12px to 16px
     .style('font-weight', 'bold')
     // Add text shadow for better readability against colored backgrounds
     .style('text-shadow', '0 1px 3px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 1)')
@@ -315,7 +315,7 @@ export const generateEnhancedPieChart = (
     .attr('y', 45)
     .attr('text-anchor', 'middle')
     .text('Spent')
-    .style('font-size', '0.9rem') // Increased size
+    .style('font-size', '1.2rem') // Increased size
     .style('fill', 'rgba(255, 255, 255, 0.7)')
     .style('opacity', 0)
     .transition()
