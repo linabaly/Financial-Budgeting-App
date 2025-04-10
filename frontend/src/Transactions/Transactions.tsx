@@ -193,6 +193,16 @@ const Transactions: React.FC = () => {
       if (!token) {
         throw new Error("No token found.");
       }
+
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Making API request to:", `${API_BASE_URL}/transaction`);
+      console.log("With headers:", {
+        "Content-Type": "application/json",
+        "Authenticated": "token exists: " + !!token
+      });
+      console.log("With body:", JSON.stringify(transactionData));
       
       const response = await fetch(`${API_BASE_URL}/transaction`, {
         method: "POST",
@@ -319,9 +329,21 @@ const Transactions: React.FC = () => {
       // Validate form
       if (!isFormValid) return;
 
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+
+      console.log("Sending transaction with data:", {
+        descriptor: newTransaction.name,
+        amount: parseFloat(newTransaction.amount),
+        category: newTransaction.category,
+        type: newTransaction.type,
+        postedAt: new Date(newTransaction.date).toISOString()
+      });
+
       // create payload for API
       const transactionPayload = {
-        description: newTransaction.name,
+        descriptor: newTransaction.name,
         amount: parseFloat(newTransaction.amount),
         category: newTransaction.category,
         type: newTransaction.type,
@@ -330,21 +352,26 @@ const Transactions: React.FC = () => {
 
       // Call API to create transaction
       const createdTransaction = await createTransaction(transactionPayload);
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Transaction created successfully:", createdTransaction);
+
 
       // Format created transaction for display
       const formattedTransaction = {
-        id: createdTransaction._id,
-        name: newTransaction.name,
-        date: new Date(newTransaction.date).toLocaleDateString('en-US'),
-        amount: newTransaction.type === 'INCOME' ?
-          `+$${formatCurrency(parseFloat(newTransaction.amount))}` :
-          `-$${formatCurrency(parseFloat(newTransaction.amount))}`,
-        category: newTransaction.category,
-        type: newTransaction.type
+        id: createdTransaction.id,
+        name: createdTransaction.descriptor,
+        date: new Date(createdTransaction.postedAt).toLocaleDateString('en-US'),
+        amount: createdTransaction.type === 'INCOME' ?
+          `+$${formatCurrency(parseFloat(String(createdTransaction.amount)))}` :
+          `-$${formatCurrency(parseFloat(String(createdTransaction.amount)))}`,
+        category: createdTransaction.category,
+        type: createdTransaction.type
       };
 
       // Update transactions state (UI)
-      setTransactions([formattedTransaction, ...transactions]);
+      setTransactions(prevTransactions => [formattedTransaction, ...prevTransactions]);
       setNewTransaction({
         name: '',
         amount: '',
@@ -428,15 +455,15 @@ const Transactions: React.FC = () => {
                   value={newTransaction.category}
                   onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value})}
                 >
-                  <option value="Food">Food</option>
-                  <option value="Housing">Housing</option>
-                  <option value="Utilities">Utilities</option>
-                  <option value="Health">Health</option>
-                  <option value="Entertainment">Entertainment</option>
-                  <option value="Personal">Personal</option>
-                  <option value="Transport">Transport</option>
-                  <option value="Insurance">Insurance</option>
-                  <option value="Other">Other</option>
+                  <option value="FOOD">Food</option>
+                  <option value="HOUSING">Housing</option>
+                  <option value="UTILITIES">Utilities</option>
+                  <option value="HEALTH">Health</option>
+                  <option value="ENTERTAINMENT">Entertainment</option>
+                  <option value="PERSONAL">Personal</option>
+                  <option value="TRANSPORT">Transport</option>
+                  <option value="INSURANCE">Insurance</option>
+                  <option value="OTHER">Other</option>
                   
                 </select>
               </div>
