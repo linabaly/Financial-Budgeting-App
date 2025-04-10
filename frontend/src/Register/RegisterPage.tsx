@@ -42,26 +42,22 @@ enum PasswordStrength {
 const validateRegistration = (form: RegistrationForm): string[] => {
   const errors: string[] = [];
 
-  // Email validation
   if (!form.email.trim()) {
     errors.push("Email is required");
   } else if (!/\S+@\S+\.\S+/.test(form.email)) {
     errors.push("Please enter a valid email address");
   }
 
-  // Name validation
   if (!form.name.trim()) {
     errors.push("Name is required");
   }
 
-  // Password validation
   if (!form.password.trim()) {
     errors.push("Password is required");
   } else if (form.password.length < 6) {
     errors.push("Password must be at least 6 characters long");
   }
 
-  // Password confirmation validation
   if (!form.repeatPassword.trim()) {
     errors.push("Please confirm your password");
   } else if (form.password !== form.repeatPassword) {
@@ -73,168 +69,113 @@ const validateRegistration = (form: RegistrationForm): string[] => {
 
 /**
  * Evaluates password strength based on length and character variety
- * 
- * @param password - The password to check
- * @returns A PasswordStrength enum value (0-5)
  */
 const checkPasswordStrength = (password: string): PasswordStrength => {
   if (!password) return PasswordStrength.None;
-  
   let score = 0;
-  
-  // Length check
   if (password.length >= 8) score += 1;
   if (password.length >= 12) score += 1;
-  
-  // Character variety checks
-  if (/[A-Z]/.test(password)) score += 1; // Has uppercase
-  if (/[a-z]/.test(password)) score += 1; // Has lowercase
-  if (/[0-9]/.test(password)) score += 1; // Has numbers
-  if (/[^A-Za-z0-9]/.test(password)) score += 1; // Has special characters
-  
-  // Cap the score at 5
+  if (/[A-Z]/.test(password)) score += 1;
+  if (/[a-z]/.test(password)) score += 1;
+  if (/[0-9]/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
   return Math.min(score, 5) as PasswordStrength;
 };
 
-/**
- * Returns a descriptive text for each password strength level
- * 
- * @param strength - The PasswordStrength enum value
- * @returns A human-readable description of the password strength
- */
+const getPasswordRequirementsStatus = (password: string) => ({
+  length: password.length >= 8,
+  uppercase: /[A-Z]/.test(password),
+  lowercase: /[a-z]/.test(password),
+  number: /[0-9]/.test(password),
+  specialChar: /[^A-Za-z0-9]/.test(password)
+});
+
 const getStrengthDescription = (strength: PasswordStrength): string => {
   switch (strength) {
-    case PasswordStrength.None:
-      return "Enter a password";
-    case PasswordStrength.Weak:
-      return "Weak";
-    case PasswordStrength.Fair:
-      return "Fair";
-    case PasswordStrength.Good:
-      return "Good";
-    case PasswordStrength.Strong:
-      return "Strong";
-    case PasswordStrength.VeryStrong:
-      return "Very Strong";
-    default:
-      return "";
+    case PasswordStrength.None: return "Enter password";
+    case PasswordStrength.Weak: return "Weak";
+    case PasswordStrength.Fair: return "Fair";
+    case PasswordStrength.Good: return "Good";
+    case PasswordStrength.Strong: return "Strong";
+    case PasswordStrength.VeryStrong: return "Very Strong";
+    default: return "";
   }
 };
 
-/**
- * RegisterPage Component
- * Handles the registration form, validation, and API submission
- */
+const getStrengthColor = (strength: PasswordStrength): string => {
+  switch (strength) {
+    case PasswordStrength.Weak: return '#e74c3c';
+    case PasswordStrength.Fair: return '#f39c12';
+    case PasswordStrength.Good: return '#f1c40f';
+    case PasswordStrength.Strong: return '#2ecc71';
+    case PasswordStrength.VeryStrong: return '#27ae60';
+    default: return '#ccc';
+  }
+};
+
 export default function RegisterPage() {
-  // ========== STATE MANAGEMENT ==========
-  
-  // Form data state
   const [formData, setFormData] = useState<RegistrationForm>({
     email: "",
     name: "",
     password: "",
     repeatPassword: ""
   });
-  
-  // UI state
   const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.None);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  // Navigation hook for redirecting after registration
   const navigate = useNavigate();
 
-  // ========== EVENT HANDLERS ==========
-
-  /**
-   * Handles form input changes
-   * Updates the form data state and password strength when values change
-   * 
-   * @param e - The input change event
-   */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
-
-    // Update password strength when password changes
+    setFormData(prev => ({ ...prev, [id]: value }));
     if (id === 'password') {
       setPasswordStrength(checkPasswordStrength(value));
+      setShowTooltip(value.length > 0);
     }
   }, []);
 
-  /**
-   * Toggles the visibility of the password field
-   */
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
 
-  /**
-   * Toggles the visibility of the password confirmation field
-   */
   const toggleRepeatPasswordVisibility = useCallback(() => {
     setShowRepeatPassword(prev => !prev);
   }, []);
 
-  /**
-   * Handles the form submission and registration process
-   * Validates form data, submits to API, and handles success/failure
-   * 
-   * @param e - The form submission event
-   */
   const handleRegister = useCallback(async (e: FormEvent) => {
     e.preventDefault();
-    
-    // Reset previous errors
     setErrors([]);
-    
-    // Validate form data
     const validationErrors = validateRegistration(formData);
-    
-    // If validation fails, display errors and stop registration
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
-
-    // Set loading state to show registration is processing
     setIsLoading(true);
-
     try {
-      // Submit registration data to API
       const response = await fetch(`${API_BASE_URL}/account/create`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           name: formData.name, 
           email: formData.email, 
           password: formData.password 
-        }),  
+        })
       });
-      
-      // Handle unsuccessful registration
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
-      
-      // Navigate to login page on successful registration
+      if (!response.ok) throw new Error("Failed to register");
       navigate("/");
-    } catch (error) {
-      // Display error message if registration fails
+    } catch {
       setErrors(["Registration failed. Please try again."]);
     } finally {
-      // Reset loading state regardless of outcome
       setIsLoading(false);
     }
   }, [formData, navigate]);
+
+  const requirementsStatus = getPasswordRequirementsStatus(formData.password);
+
 
   // ========== COMPONENT RENDER ==========
   return (
@@ -324,57 +265,143 @@ export default function RegisterPage() {
             </div>
 
             {/* Password field with strength indicator */}
-            <div className="form-group">
-              <label 
-                htmlFor="password" 
-                className="form-label"
-              >
-                Password
-              </label>
-              <div className="input-wrapper">
-                <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
-                  <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="2" />
-                </svg>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  className="form-input"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Create a password"
-                  required
-                  aria-required="true"
-                  aria-invalid={errors.some(e => e.includes('Password must') || e.includes('Password is'))}
-                />
-                <button 
-                  type="button" 
-                  className="password-toggle"
-                  onClick={togglePasswordVisibility}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-                      <path d="M3 21L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {/* Password strength indicator - only shown when password has value */}
-              {formData.password && (
-                <div className="password-strength">
-                  <div className={`strength-meter strength-${passwordStrength}`}></div>
-                  <span className="strength-text">{getStrengthDescription(passwordStrength)}</span>
-                </div>
-              )}
-            </div>
+            <div className="form-group" style={{ position: 'relative' }}>
+  <label htmlFor="password" className="form-label">Password</label>
+  <div className="input-wrapper">
+    <svg className="input-icon" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
+      <path d="M7 11V7C7 4.24 9.24 2 12 2s5 2.24 5 5v4" stroke="currentColor" strokeWidth="2" />
+    </svg>
+    <input
+      type={showPassword ? "text" : "password"}
+      id="password"
+      className="form-input"
+      value={formData.password}
+      onChange={handleInputChange}
+      placeholder="Create a password"
+      required
+      onFocus={() => setShowTooltip(true)}
+      onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
+    />
+    <button
+      type="button"
+      className="password-toggle"
+      onClick={togglePasswordVisibility}
+      aria-label={showPassword ? "Hide password" : "Show password"}
+    >
+      {showPassword ? (
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
+          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+          <path d="M3 21L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
+          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+        </svg>
+      )}
+    </button>
+  </div>
+
+  {/* Tooltip */}
+  {showTooltip && (
+  <div style={{
+    position: 'absolute',
+    top: '0',
+    right: '105%',
+    background: '#e9e9f9',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    padding: '1rem',
+    fontSize: '0.9rem',
+    width: '260px',
+    color: '#333',
+    zIndex: 10
+  }}>
+    {/* Strength Label + Bar */}
+    <div style={{ marginBottom: '1rem' }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontWeight: 'bold',
+        color: '#555',
+        fontSize: '0.70rem',
+        marginBottom: '0.25rem'
+      }}>
+        <span>Password Strength</span>
+        <span>{getStrengthDescription(passwordStrength)}</span>
+      </div>
+      <div style={{
+        height: '6px',
+        width: '100%',
+        borderRadius: '4px',
+        backgroundColor: '#ddd',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          height: '100%',
+          width: `${(Object.values(requirementsStatus).filter(Boolean).length / 5) * 100}%`,
+          backgroundColor: getStrengthColor(passwordStrength),
+          transition: 'width 0.3s ease'
+        }} />
+      </div>
+    </div>
+
+    {/* Checklist */}
+    <strong style={{
+      display: 'block',
+      marginBottom: '0.5rem',
+      color: '#444',
+      fontSize: '1rem'
+    }}>Password must contain:</strong>
+    <ul style={{
+      listStyle: 'none',
+      padding: 0,
+      margin: 0
+    }}>
+      {[
+        { label: 'At least 8 characters', satisfied: requirementsStatus.length },
+        { label: 'Uppercase letter', satisfied: requirementsStatus.uppercase },
+        { label: 'Lowercase letter', satisfied: requirementsStatus.lowercase },
+        { label: 'Number', satisfied: requirementsStatus.number },
+        { label: 'Special character', satisfied: requirementsStatus.specialChar }
+      ].map((item, idx) => (
+        <li key={idx} style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '0.4rem'
+        }}>
+          <span style={{
+            width: '20px',
+            height: '20px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+            color: item.satisfied ? '#2ecc71' : '#888',
+            fontSize: '14px',
+            marginRight: '0.5rem',
+            border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
+          }}>
+            {item.satisfied ? '✓' : ''}
+          </span>
+          <span style={{
+            color: item.satisfied ? '#2ecc71' : '#444'
+          }}>
+            {item.label}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+
+
+</div>
+
 
             {/* Password confirmation field */}
             <div className="form-group">
