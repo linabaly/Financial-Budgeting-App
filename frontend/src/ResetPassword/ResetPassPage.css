@@ -807,3 +807,13 @@
   color: #2ecc71;
   font-weight: 500;
 }
+
+@media (max-width: 900px) {
+  .reset-password .tooltip-box {
+    top: auto;
+    bottom: 105%;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-0.5rem);
+  }
+}

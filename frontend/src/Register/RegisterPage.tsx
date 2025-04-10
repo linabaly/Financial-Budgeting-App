@@ -306,97 +306,76 @@ export default function RegisterPage() {
 
   {/* Tooltip */}
   {showTooltip && (
-  <div style={{
-    position: 'absolute',
-    top: '0',
-    right: '105%',
-    background: '#e9e9f9',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    padding: '1rem',
-    fontSize: '0.9rem',
-    width: '260px',
-    color: '#333',
-    zIndex: 10
-  }}>
-    {/* Strength Label + Bar */}
-    <div style={{ marginBottom: '1rem' }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontWeight: 'bold',
-        color: '#555',
-        fontSize: '0.70rem',
-        marginBottom: '0.25rem'
-      }}>
-        <span>Password Strength</span>
-        <span>{getStrengthDescription(passwordStrength)}</span>
-      </div>
-      <div style={{
-        height: '6px',
-        width: '100%',
-        borderRadius: '4px',
-        backgroundColor: '#ddd',
-        overflow: 'hidden'
-      }}>
+    <div
+      className="tooltip-box tooltip-fade"
+    >
+      <div style={{ marginBottom: '1rem' }}>
         <div style={{
-          height: '100%',
-          width: `${(Object.values(requirementsStatus).filter(Boolean).length / 5) * 100}%`,
-          backgroundColor: getStrengthColor(passwordStrength),
-          transition: 'width 0.3s ease'
-        }} />
-      </div>
-    </div>
-
-    {/* Checklist */}
-    <strong style={{
-      display: 'block',
-      marginBottom: '0.5rem',
-      color: '#444',
-      fontSize: '1rem'
-    }}>Password must contain:</strong>
-    <ul style={{
-      listStyle: 'none',
-      padding: 0,
-      margin: 0
-    }}>
-      {[
-        { label: 'At least 8 characters', satisfied: requirementsStatus.length },
-        { label: 'Uppercase letter', satisfied: requirementsStatus.uppercase },
-        { label: 'Lowercase letter', satisfied: requirementsStatus.lowercase },
-        { label: 'Number', satisfied: requirementsStatus.number },
-        { label: 'Special character', satisfied: requirementsStatus.specialChar }
-      ].map((item, idx) => (
-        <li key={idx} style={{
           display: 'flex',
-          alignItems: 'center',
-          marginBottom: '0.4rem'
+          justifyContent: 'space-between',
+          fontWeight: 'bold',
+          color: '#555',
+          fontSize: '0.70rem',
+          marginBottom: '0.25rem'
         }}>
-          <span style={{
-            width: '20px',
-            height: '20px',
-            display: 'inline-flex',
+          <span>Password Strength</span>
+          <span>{getStrengthDescription(passwordStrength)}</span>
+        </div>
+        <div style={{
+          height: '6px',
+          width: '100%',
+          borderRadius: '4px',
+          backgroundColor: '#ddd',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${(Object.values(requirementsStatus).filter(Boolean).length / 5) * 100}%`,
+            backgroundColor: getStrengthColor(passwordStrength),
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+      </div>
+      <strong style={{
+        display: 'block',
+        marginBottom: '0.5rem',
+        color: '#444',
+        fontSize: '1rem'
+      }}>Password must contain:</strong>
+      <ul style={{
+        listStyle: 'none',
+        padding: 0,
+        margin: 0
+      }}>
+        {[{ label: 'At least 8 characters', satisfied: requirementsStatus.length },
+          { label: 'Uppercase letter', satisfied: requirementsStatus.uppercase },
+          { label: 'Lowercase letter', satisfied: requirementsStatus.lowercase },
+          { label: 'Number', satisfied: requirementsStatus.number },
+          { label: 'Special character', satisfied: requirementsStatus.specialChar }].map((item, idx) => (
+          <li key={idx} style={{
+            display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
-            color: item.satisfied ? '#2ecc71' : '#888',
-            fontSize: '14px',
-            marginRight: '0.5rem',
-            border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
+            marginBottom: '0.4rem'
           }}>
-            {item.satisfied ? '✓' : ''}
-          </span>
-          <span style={{
-            color: item.satisfied ? '#2ecc71' : '#444'
-          }}>
-            {item.label}
-          </span>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+            <span style={{
+              width: '20px',
+              height: '20px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+              color: item.satisfied ? '#2ecc71' : '#888',
+              fontSize: '14px',
+              marginRight: '0.5rem',
+              border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
+            }}>{item.satisfied ? '✓' : ''}</span>
+            <span style={{ color: item.satisfied ? '#2ecc71' : '#444' }}>{item.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
 
 
 

@@ -325,93 +325,60 @@ const ResetPassPage: React.FC = () => {
 />
 
 {showTooltip && (
-  <div style={{
-    position: 'absolute',
-    top: '0',
-    right: '105%',
-    background: '#e9e9f9',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    padding: '1rem',
-    fontSize: '0.9rem',
-    width: '260px',
-    color: '#333',
-    zIndex: 10
-  }}>
-    <div style={{ marginBottom: '1rem' }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontWeight: 'bold',
-        color: '#555',
-        fontSize: '0.70rem',
-        marginBottom: '0.25rem'
-      }}>
-        <span>Password Strength</span>
-        <span>{passwordStrength.label || 'Enter password'}</span>
-      </div>
-      <div style={{
-        height: '6px',
-        width: '100%',
-        borderRadius: '4px',
-        backgroundColor: '#ddd',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          height: '100%',
+  <div className="tooltip-box">
+    <div className="tooltip-strength">
+      <span>Password Strength</span>
+      <span>{passwordStrength.label || 'Enter password'}</span>
+    </div>
+    <div className="tooltip-bar">
+      <div
+        className="tooltip-bar-fill"
+        style={{
           width: `${(passwordStrength.score / 5) * 100}%`,
           backgroundColor:
-            passwordStrength.score >= 4 ? '#2ecc71' :
-            passwordStrength.score === 3 ? '#f1c40f' :
-            passwordStrength.score === 2 ? '#f39c12' :
-            passwordStrength.score === 1 ? '#e74c3c' :
-            '#ccc',
-          transition: 'width 0.3s ease'
-        }} />
-      </div>
+            passwordStrength.score >= 4
+              ? '#2ecc71'
+              : passwordStrength.score === 3
+              ? '#f1c40f'
+              : passwordStrength.score === 2
+              ? '#f39c12'
+              : passwordStrength.score === 1
+              ? '#e74c3c'
+              : '#ccc',
+        }}
+      />
     </div>
 
-    <strong style={{
-      display: 'block',
-      marginBottom: '0.5rem',
-      color: '#444',
-      fontSize: '1rem'
-    }}>Password must contain:</strong>
-    <ul style={{
-      listStyle: 'none',
-      padding: 0,
-      margin: 0
-    }}>
+    <strong style={{ display: 'block', marginBottom: '0.5rem' }}>
+      Password must contain:
+    </strong>
+    <ul className="tooltip-checklist">
       {[
         { label: 'At least 8 characters', satisfied: passwordResetData.password.length >= 8 },
         { label: 'Uppercase letter', satisfied: /[A-Z]/.test(passwordResetData.password) },
         { label: 'Lowercase letter', satisfied: /[a-z]/.test(passwordResetData.password) },
         { label: 'Number', satisfied: /[0-9]/.test(passwordResetData.password) },
-        { label: 'Special character', satisfied: /[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) }
+        { label: 'Special character', satisfied: /[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) },
       ].map((item, idx) => (
-        <li key={idx} style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: '0.4rem'
-        }}>
-          <span style={{
-            width: '20px',
-            height: '20px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
-            color: item.satisfied ? '#2ecc71' : '#888',
-            fontSize: '14px',
-            marginRight: '0.5rem',
-            border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
-          }}>
+        <li key={idx} className={item.satisfied ? 'met' : ''}>
+          <span
+            style={{
+              width: '20px',
+              height: '20px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+              color: item.satisfied ? '#2ecc71' : '#888',
+              fontSize: '14px',
+              marginRight: '0.5rem',
+              border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa',
+            }}
+          >
             {item.satisfied ? '✓' : ''}
           </span>
-          <span style={{ color: item.satisfied ? '#2ecc71' : '#444' }}>
-            {item.label}
-          </span>
+          {item.label}
         </li>
       ))}
     </ul>
