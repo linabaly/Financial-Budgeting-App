@@ -22,7 +22,7 @@ export default class TransactionRoute extends Route {
     this.router.get("/", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const transactions = await TransactionManager.getAssociatedTransactionsForAccount(
           account.id
         );
@@ -39,7 +39,7 @@ export default class TransactionRoute extends Route {
       try {
         if (!req.params.id || typeof req.params.id !== "string") return this.sendClientError(res);
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendClientError(res);
         // if the requested transaction owner isnt the authenticated user, sent forbidden
@@ -61,7 +61,7 @@ export default class TransactionRoute extends Route {
         )
           return this.sendClientError(res);
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const passedTransactionDetails: TransactionDetails = {
           accountID: account.id,
           amount: Number(req.body.amount),
@@ -84,7 +84,7 @@ export default class TransactionRoute extends Route {
         if (!req.params.id) return this.sendClientError(res);
         // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         // check if the transaction requested can be located
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendNotFound(res);
@@ -131,7 +131,7 @@ export default class TransactionRoute extends Route {
         if (!req.params.id) return this.sendClientError(res);
         // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         // check if the transaction requested can be located
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendNotFound(res);

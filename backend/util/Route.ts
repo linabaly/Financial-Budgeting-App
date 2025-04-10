@@ -94,13 +94,15 @@ export default class Route {
    * @param res The Response object from the router application
    * @protected
    */
-  protected async authenticate(req: Request, res: Response) {
+  protected async authenticate(req: Request, res: Response, sendUnauthorized = true) {
     try {
       // try to fetch the token from the cookies, if not default to authorization headers
       let token = req.cookies.token || req.headers.authorization;
       // if the token isn't located, throw a client error
-      if (!token) {
+      if (!token && sendUnauthorized) {
         this.sendClientError(res);
+        return null;
+      } else if (!token) {
         return null;
       }
       // JWT tokens for the project contain the Account's name and ID
@@ -111,7 +113,7 @@ export default class Route {
         return null;
       }
       // if the token can not be verified, return a specific 401 Unauthorized stating the token is invalid
-      if (!decodedToken) {
+      if (!decodedToken && sendUnauthorized) {
         this.handleError(
           {
             text_code: this.constants.messages.BEARER_TOKEN_INVALID[0],
@@ -121,17 +123,17 @@ export default class Route {
           res
         );
         return null;
-      }
+      } else if (!decodedToken) return null;
       const account = await AccountManager.getAccount({ id: decodedToken.id });
       // if the account can not be located from the bearer token, just return a generic 401 Unauthorized error
-      if (!account) {
+      if (!account && sendUnauthorized) {
         this.sendUnauthorized(res);
         return null;
       }
       return account;
     } catch (error) {
       console.error(error);
-      this.sendUnauthorized(res);
+      if (sendUnauthorized) this.sendUnauthorized(res)
       return null;
     }
   }

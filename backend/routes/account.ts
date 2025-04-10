@@ -25,7 +25,7 @@ export default class AccountRoute extends Route {
       const account = await PrismaDBClient.account.findUnique({
         where: { email: passedCreds.email },
       });
-      if (!account) return this.sendUnauthorized(res);
+      if (!account) return;
       if (!(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword)))
         return this.sendUnauthorized(res);
       try {
@@ -75,7 +75,7 @@ export default class AccountRoute extends Route {
     this.router.get("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         res.status(200).json(account);
         return;
       } catch (error) {
@@ -88,7 +88,7 @@ export default class AccountRoute extends Route {
       try {
         if (!req.body.email && !req.body.name) return this.sendClientError(res);
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const updateDetails: {
           id: string;
           name?: string | undefined;
@@ -110,7 +110,7 @@ export default class AccountRoute extends Route {
     this.router.delete("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const deletionQuery = await AccountManager.deleteAccount(account.id);
         if (!deletionQuery) return this.sendClientError(res);
         res.sendStatus(204);
