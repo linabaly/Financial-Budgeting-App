@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Transactions.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
+import { API_BASE_URL } from "../config";
 
 /**
  * Transaction interface to define the shape of transaction data
@@ -12,6 +13,18 @@ interface Transaction {
   date: string;
   amount: string;
   category: string;
+  type: string;
+}
+
+/**
+ * Interface for the form data 
+ */
+interface TransactionFormData {
+  name: string;
+  amount: string;
+  category: string;
+  type: string;
+  date: string;
 }
 
 /**
@@ -39,20 +52,21 @@ const categoryColors: {[key: string]: string} = {
 /**
  * Initial transaction data for demonstration
  */
-const initialTransactions: Transaction[] = [
-  { id: '#T1234', name: 'Groceries', date: '2025-03-15', amount: '$120.45', category: 'Food' },
-  { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1,500.00', category: 'Housing' },
-  { id: '#T1236', name: 'Electricity Bill', date: '2025-03-05', amount: '$85.20', category: 'Utilities' },
-  { id: '#T1237', name: 'Internet Bill', date: '2025-03-03', amount: '$65.99', category: 'Utilities' },
-  { id: '#T1238', name: 'Gym Membership', date: '2025-03-01', amount: '$50.00', category: 'Health' },
-  { id: '#T1239', name: 'Dining Out', date: '2025-02-28', amount: '$78.50', category: 'Entertainment' },
-  { id: '#T1240', name: 'Shopping', date: '2025-02-25', amount: '$135.75', category: 'Personal' },
-  { id: '#T1241', name: 'Transportation', date: '2025-02-20', amount: '$45.00', category: 'Transport' },
-  { id: '#T1242', name: 'Streaming Service', date: '2025-02-15', amount: '$14.99', category: 'Entertainment' },
-  { id: '#T1243', name: 'Phone Bill', date: '2025-02-10', amount: '$85.00', category: 'Utilities' },
-  { id: '#T1244', name: 'Insurance', date: '2025-02-05', amount: '$120.00', category: 'Insurance' },
-  { id: '#T1245', name: 'Coffee', date: '2025-02-01', amount: '$25.30', category: 'Food' },
-];
+// const initialTransactions: Transaction[] = [
+//   { id: '#T1234', name: 'Groceries', date: '2025-03-15', amount: '$120.45', category: 'Food' },
+//   { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1,500.00', category: 'Housing' },
+//   { id: '#T1236', name: 'Electricity Bill', date: '2025-03-05', amount: '$85.20', category: 'Utilities' },
+//   { id: '#T1237', name: 'Internet Bill', date: '2025-03-03', amount: '$65.99', category: 'Utilities' },
+//   { id: '#T1238', name: 'Gym Membership', date: '2025-03-01', amount: '$50.00', category: 'Health' },
+//   { id: '#T1239', name: 'Dining Out', date: '2025-02-28', amount: '$78.50', category: 'Entertainment' },
+//   { id: '#T1240', name: 'Shopping', date: '2025-02-25', amount: '$135.75', category: 'Personal' },
+//   { id: '#T1241', name: 'Transportation', date: '2025-02-20', amount: '$45.00', category: 'Transport' },
+//   { id: '#T1242', name: 'Streaming Service', date: '2025-02-15', amount: '$14.99', category: 'Entertainment' },
+//   { id: '#T1243', name: 'Phone Bill', date: '2025-02-10', amount: '$85.00', category: 'Utilities' },
+//   { id: '#T1244', name: 'Insurance', date: '2025-02-05', amount: '$120.00', category: 'Insurance' },
+//   { id: '#T1245', name: 'Coffee', date: '2025-02-01', amount: '$25.30', category: 'Food' },
+// ];
+
 
 /**
  * Transactions Component - Manages displaying, filtering, and sorting financial transactions
@@ -61,16 +75,19 @@ const Transactions: React.FC = () => {
   // State management
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isNewTransactionOpen, setIsNewTransactionOpen] = useState(false);
-  const [newTransaction, setNewTransaction] = useState({
+  const [newTransaction, setNewTransaction] = useState<TransactionFormData>({
     name: '',
     amount: '',
-    category: 'Food'
+    category: 'Food',
+    type: 'EXPENSE',
+    date: new Date().toISOString().split('T')[0]
   });
+  const [error, setError] = useState<string | null>(null);
   
   /**
    * Formats a number as currency with 2 decimal places
@@ -83,6 +100,124 @@ const Transactions: React.FC = () => {
       maximumFractionDigits: 2
     });
   };
+
+  /**
+   * Fetch user transactions data
+   */
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+          throw new Error("No token found.");
+        }
+  
+        const response = await fetch(`${API_BASE_URL}/transaction`, {  
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authenticated": token,
+          },
+        });
+  
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || "Failed to fetch transactions");
+        }
+  
+        const data = await response.json();
+      
+        // Format transactions for display
+        const formattedTransactions = data.map((transaction: any) => ({
+          id: transaction._id,
+          name: transaction.name,
+          date: new Date(transaction.date).toLocaleDateString('en-US'),
+          amount: transaction.type === 'INCOME' ? 
+          `+$${parseFloat(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}` :
+          `-$${parseFloat(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+          category: transaction.category,
+          type: transaction.type
+        }));
+    
+        setTransactions(formattedTransactions);
+      } catch (error: any) {
+        console.error("Error fetching transactions:", error.message);
+        setError(error.message);
+      }
+    };
+
+      fetchTransactions();
+  }, []);
+
+  /**
+   * Fetch a specific transaction by ID
+   */
+  const fetchTransactionById = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        throw new Error("No token found.");
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/transaction/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authenticated": token,
+        },
+      });
+      
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to fetch transaction");
+      }
+      
+      const transaction = await response.json();
+      return transaction;
+    } catch (error: any) {
+      console.error("Error fetching transaction:", error.message);
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  /**
+   * Create a new transaction
+   */
+  const createTransaction = async (transactionData: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        throw new Error("No token found.");
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/transaction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authenticated": token,
+        },
+        body: JSON.stringify(transactionData)
+      });
+      
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to create transaction");
+      }
+      
+      const createdTransaction = await response.json();
+      return createdTransaction;
+    } catch (error: any) {
+      console.error("Error creating transaction:", error.message);
+      setError(error.message);
+      throw error;
+    }
+  };
+
+
   
   /**
    * Filter transactions based on search term and selected category
@@ -110,8 +245,8 @@ const Transactions: React.FC = () => {
         // Special handling for amount column to sort numerically
         if (sortConfig.key === 'amount') {
           // Extract numeric values from amounts (remove $ and commas)
-          const amountA = parseFloat(a.amount.replace(/[$,]/g, ''));
-          const amountB = parseFloat(b.amount.replace(/[$,]/g, ''));
+          const amountA = parseFloat(a.amount.replace(/[$,+/-]/g, ''));
+          const amountB = parseFloat(b.amount.replace(/[$,+/-]/g, ''));
           
           return sortConfig.direction === 'ascending' 
             ? amountA - amountB 
@@ -174,33 +309,56 @@ const Transactions: React.FC = () => {
     }
     setSortConfig({ key, direction });
   };
+
   
   /**
    * Add a new transaction to the list
    */
-  const handleAddTransaction = () => {
-    // Generate random transaction ID
-    const newId = `#T${Math.floor(1000 + Math.random() * 9000)}`;
+  const handleAddTransaction = async () => {
+    try {
+      // Validate form
+      if (!isFormValid) return;
+
+      // create payload for API
+      const transactionPayload = {
+        description: newTransaction.name,
+        amount: parseFloat(newTransaction.amount),
+        category: newTransaction.category,
+        type: newTransaction.type,
+        postedAt: new Date(newTransaction.date).toISOString()
+      };
+
+      // Call API to create transaction
+      const createdTransaction = await createTransaction(transactionPayload);
+
+      // Format created transaction for display
+      const formattedTransaction = {
+        id: createdTransaction._id,
+        name: newTransaction.name,
+        date: new Date(newTransaction.date).toLocaleDateString('en-US'),
+        amount: newTransaction.type === 'INCOME' ?
+          `+$${formatCurrency(parseFloat(newTransaction.amount))}` :
+          `-$${formatCurrency(parseFloat(newTransaction.amount))}`,
+        category: newTransaction.category,
+        type: newTransaction.type
+      };
+
+      // Update transactions state (UI)
+      setTransactions([formattedTransaction, ...transactions]);
+      setNewTransaction({
+        name: '',
+        amount: '',
+        category: 'Food',
+        type: 'EXPENSE',
+        date: new Date().toISOString().split('T')[0]
+      })
+      setIsNewTransactionOpen(false);
+
+    } catch (error: any) {
+      console.error("Error adding transaction:", error.message);
+      setError(error.message);
+    }
     
-    // Get current date
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Format amount as currency
-    const formattedAmount = formatCurrency(parseFloat(newTransaction.amount));
-    
-    // Create new transaction object
-    const transactionToAdd = {
-      id: newId,
-      name: newTransaction.name,
-      date: today,
-      amount: `$${formattedAmount}`,
-      category: newTransaction.category
-    };
-    
-    // Add transaction and reset form
-    setTransactions([transactionToAdd, ...transactions]);
-    setNewTransaction({ name: '', amount: '', category: 'Food' });
-    setIsNewTransactionOpen(false);
   };
 
   /**
@@ -208,7 +366,9 @@ const Transactions: React.FC = () => {
    */
   const isFormValid = newTransaction.name.trim() !== '' && 
                       newTransaction.amount.trim() !== '' && 
-                      parseFloat(newTransaction.amount) > 0;
+                      parseFloat(newTransaction.amount) > 0 &&
+                      newTransaction.type !== '' &&
+                      newTransaction.date !== '';
 
   return (
     <div className="app">
@@ -227,6 +387,8 @@ const Transactions: React.FC = () => {
             💰 Add Transaction
           </button>
         </div>
+
+         
         
         {/* New transaction form */}
         {isNewTransactionOpen && (
@@ -266,10 +428,40 @@ const Transactions: React.FC = () => {
                   value={newTransaction.category}
                   onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value})}
                 >
-                  {categories.filter(c => c !== 'All').map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
+                  <option value="Food">Food</option>
+                  <option value="Housing">Housing</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Health">Health</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Insurance">Insurance</option>
+                  <option value="Other">Other</option>
+                  
                 </select>
+              </div>
+
+              {/* Type dropdown */}
+              <div className="form-group">
+                <label>Type</label>
+                <select 
+                  value={newTransaction.type}
+                  onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value})}
+                >
+                  <option value="EXPENSE">Expense</option>
+                  <option value="INCOME">Income</option>
+                </select>
+              </div>
+
+              {/* Date picker */}
+              <div className="form-group">
+                <label>Date</label>
+                <input 
+                  type="date" 
+                  value={newTransaction.date} 
+                  onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
+                  required
+                />
               </div>
             </div>
             
@@ -313,7 +505,7 @@ const Transactions: React.FC = () => {
           
           {/* Category filters */}
           <div className="category-filters">
-            {categories.map(category => (
+            {['All', 'Food', 'Housing', 'Utilities', 'Health', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
               <button 
                 key={category}
                 className={`category-filter ${category === selectedCategory ? 'active' : ''}`}
@@ -407,7 +599,14 @@ const Transactions: React.FC = () => {
                         {transaction.category}
                       </div>
                     </td>
-                    <td className="amount-column">{transaction.amount}</td>
+                    <td>
+                      <div className={`type-badge ${transaction.type === 'INCOME' ? 'income' : 'expense'}`}>
+                        {transaction.type === 'INCOME' ? 'Income' : 'Expense'}
+                      </div>
+                    </td>
+                    <td className={`amount-column ${transaction.type === 'INCOME' ? 'income-amount' : 'expense-amount'}`}>
+                      {transaction.amount}
+                    </td>
                   </tr>
                 ))}
               </tbody>
