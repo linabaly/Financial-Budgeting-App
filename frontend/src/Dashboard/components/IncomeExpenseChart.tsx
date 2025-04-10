@@ -64,9 +64,9 @@ const IncomeExpenseChart: React.FC = () => {
     
     incomeLegend.append("text")
       .attr("x", 15)
-      .attr("y", 5)
+      .attr("y", 3)
       .attr("fill", "#fff")
-      .attr("font-size", "18px")
+      .attr("font-size", "20px")
       .text("Income");
     
     // Expense legend
@@ -81,18 +81,18 @@ const IncomeExpenseChart: React.FC = () => {
     
     expenseLegend.append("text")
       .attr("x", 15)
-      .attr("y", 5)
+      .attr("y", 3)
       .attr("fill", "#fff")
-      .attr("font-size", "18px")
+      .attr("font-size", "20px")
       .text("Expenses");
     
     // Title
     svg.append("text")
       .attr("x", width / 2)
-      .attr("y", -30)
+      .attr("y", -26)
       .attr("text-anchor", "middle")
       .attr("fill", "#fff")
-      .attr("font-size", "18px")
+      .attr("font-size", "22px")
       .text("Income vs. Expenses");
     
     // Define scales

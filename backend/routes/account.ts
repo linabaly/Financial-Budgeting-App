@@ -4,6 +4,9 @@ import Route from "../util/Route";
 import { PrismaDBClient } from "../index";
 import { Server } from "../util";
 
+/**
+ * @author Matthew R
+ */
 export default class AccountRoute extends Route {
   constructor(server: Server) {
     super(server);
@@ -13,16 +16,7 @@ export default class AccountRoute extends Route {
 
   public bind() {
     this.router.post("/login", async (req, res) => {
-      if (!req.body.email || !req.body.password) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 403,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
-      }
+      if (!req.body.email || !req.body.password) return this.sendClientError(res);
       const passedCreds = {
         email: req.body.email,
         cleartextPassword: req.body.password,
@@ -31,7 +25,7 @@ export default class AccountRoute extends Route {
       const account = await PrismaDBClient.account.findUnique({
         where: { email: passedCreds.email },
       });
-      if (!account) return this.sendUnauthorized(res);
+      if (!account) return;
       if (!(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword)))
         return this.sendUnauthorized(res);
       try {
@@ -56,42 +50,21 @@ export default class AccountRoute extends Route {
     });
 
     this.router.post("/create", async (req, res) => {
-      if (!req.body.email || !req.body.password || !req.body.name) {
-        return this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 400,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
-      }
+      if (!req.body.email || !req.body.password || !req.body.name) return this.sendClientError(res);
       const accountDetails = {
         email: req.body.email,
         password: req.body.password.trim(),
         name: req.body.name,
       };
-      if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } })) {
-        // TODO: remove testing commands
-        // await PrismaDBClient.account.delete({ where: { email: accountDetails.email } });
-        // return res.sendStatus(202);
-        return this.handleError(
-          {
-            text_code: this.constants.messages.PERMISSION_DENIED[0],
-            status: 403,
-            message: this.constants.messages.PERMISSION_DENIED[1],
-          },
-          res
-        );
-      }
+      if (await PrismaDBClient.account.findUnique({ where: { email: accountDetails.email } }))
+        return this.sendForbidden(res);
       try {
         const account = await AccountManager.createAccount({
           email: accountDetails.email,
           name: accountDetails.name,
           password: accountDetails.password,
         });
-        console.info(account);
-        res.status(200).json(account);
+        res.status(201).json(account);
         return;
       } catch (error) {
         this.handleServerError(error as Error, res);
@@ -102,7 +75,7 @@ export default class AccountRoute extends Route {
     this.router.get("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         res.status(200).json(account);
         return;
       } catch (error) {
@@ -113,18 +86,9 @@ export default class AccountRoute extends Route {
 
     this.router.patch("/me", async (req, res) => {
       try {
-        if (!req.body.email && !req.body.name) {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        if (!req.body.email && !req.body.name) return this.sendClientError(res);
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const updateDetails: {
           id: string;
           name?: string | undefined;
@@ -135,7 +99,7 @@ export default class AccountRoute extends Route {
         if (req.body.email) updateDetails.email = req.body.email.trim();
         if (req.body.name) updateDetails.name = req.body.name.trim();
         const updateQuery = await AccountManager.updateAccount(updateDetails);
-        // updateQuery.password = "[REDACTED]";
+        updateQuery.password = "[REDACTED]";
         res.status(200).json(updateQuery);
         return;
       } catch (error) {
@@ -146,18 +110,9 @@ export default class AccountRoute extends Route {
     this.router.delete("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
-        if (!account) return this.sendUnauthorized(res);
+        if (!account) return;
         const deletionQuery = await AccountManager.deleteAccount(account.id);
-        if (!deletionQuery) {
-          return this.handleError(
-            {
-              text_code: this.constants.messages.CLIENT_ERROR[0],
-              status: 400,
-              message: this.constants.messages.CLIENT_ERROR[1],
-            },
-            res
-          );
-        }
+        if (!deletionQuery) return this.sendClientError(res);
         res.sendStatus(204);
         return;
       } catch (error) {

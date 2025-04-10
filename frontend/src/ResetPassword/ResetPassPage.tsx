@@ -107,6 +107,8 @@ const ResetPassPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
 
   // Navigation hook for redirecting after completion
   const navigate = useNavigate();
@@ -309,16 +311,81 @@ const ResetPassPage: React.FC = () => {
                   <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="2" />
                 </svg>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  className="form-input"
-                  value={passwordResetData.password}
-                  onChange={handleInputChange('password')}
-                  placeholder="Create a new password"
-                  required
-                  aria-required="true"
-                  aria-invalid={errors.some(e => e.includes('Password must') || e.includes('password is'))}
-                />
+  type={showPassword ? "text" : "password"}
+  id="password"
+  className="form-input"
+  value={passwordResetData.password}
+  onChange={handleInputChange('password')}
+  placeholder="Create a new password"
+  required
+  aria-required="true"
+  aria-invalid={errors.some(e => e.includes('Password must') || e.includes('password is'))}
+  onFocus={() => setShowTooltip(true)}
+  onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
+/>
+
+{showTooltip && (
+  <div className="tooltip-box">
+    <div className="tooltip-strength">
+      <span>Password Strength</span>
+      <span>{passwordStrength.label || 'Enter password'}</span>
+    </div>
+    <div className="tooltip-bar">
+      <div
+        className="tooltip-bar-fill"
+        style={{
+          width: `${(passwordStrength.score / 5) * 100}%`,
+          backgroundColor:
+            passwordStrength.score >= 4
+              ? '#2ecc71'
+              : passwordStrength.score === 3
+              ? '#f1c40f'
+              : passwordStrength.score === 2
+              ? '#f39c12'
+              : passwordStrength.score === 1
+              ? '#e74c3c'
+              : '#ccc',
+        }}
+      />
+    </div>
+
+    <strong style={{ display: 'block', marginBottom: '0.5rem' }}>
+      Password must contain:
+    </strong>
+    <ul className="tooltip-checklist">
+      {[
+        { label: 'At least 8 characters', satisfied: passwordResetData.password.length >= 8 },
+        { label: 'Uppercase letter', satisfied: /[A-Z]/.test(passwordResetData.password) },
+        { label: 'Lowercase letter', satisfied: /[a-z]/.test(passwordResetData.password) },
+        { label: 'Number', satisfied: /[0-9]/.test(passwordResetData.password) },
+        { label: 'Special character', satisfied: /[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) },
+      ].map((item, idx) => (
+        <li key={idx} className={item.satisfied ? 'met' : ''}>
+          <span
+            style={{
+              width: '20px',
+              height: '20px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+              color: item.satisfied ? '#2ecc71' : '#888',
+              fontSize: '14px',
+              marginRight: '0.5rem',
+              border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa',
+            }}
+          >
+            {item.satisfied ? '✓' : ''}
+          </span>
+          {item.label}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+
                 {/* Password visibility toggle */}
                 <button 
                   type="button" 
@@ -341,37 +408,6 @@ const ResetPassPage: React.FC = () => {
                 </button>
               </div>
               
-              {/* Password strength indicator - only shown when password has value */}
-              {passwordResetData.password && (
-                <div className="password-strength">
-                  <div className={`strength-meter strength-${passwordStrength.score}`}></div>
-                  <span className="strength-text">{passwordStrength.label}</span>
-                </div>
-              )}
-              
-              {/* Password requirements checklist - only shown when password has value */}
-              {passwordResetData.password && (
-                <div className="password-requirements">
-                  <p className="requirements-title">Password must contain:</p>
-                  <ul className="requirements-list">
-                    <li className={passwordResetData.password.length >= 8 ? 'requirement-met' : ''}>
-                      At least 8 characters
-                    </li>
-                    <li className={/[A-Z]/.test(passwordResetData.password) ? 'requirement-met' : ''}>
-                      Uppercase letter
-                    </li>
-                    <li className={/[a-z]/.test(passwordResetData.password) ? 'requirement-met' : ''}>
-                      Lowercase letter
-                    </li>
-                    <li className={/[0-9]/.test(passwordResetData.password) ? 'requirement-met' : ''}>
-                      Number
-                    </li>
-                    <li className={/[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) ? 'requirement-met' : ''}>
-                      Special character
-                    </li>
-                  </ul>
-                </div>
-              )}
             </div>
 
             {/* Password confirmation field */}

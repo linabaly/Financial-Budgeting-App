@@ -75,12 +75,14 @@ export default class Route {
   }
 
   protected handleError(error: HTTPResponseError, res: Response) {
+    console.error(error);
+    Object.freeze(res);
     res.status(error.status).json({
       // code: error.code,
       text_code: error.text_code,
       message: error.message,
     });
-    console.error(error);
+    return;
   }
 
   /**
@@ -88,31 +90,30 @@ export default class Route {
    * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwards.
    * After "null" is returned from this function, you should always return from the route function.
    * @author Matthew R
-   * @param req
-   * @param res The Response object of the request
+   * @param req The Request object from the router application
+   * @param res The Response object from the router application
    * @protected
    */
-  protected async authenticate(req: Request, res: Response) {
+  protected async authenticate(req: Request, res: Response, sendUnauthorized = true) {
     try {
+      // try to fetch the token from the cookies, if not default to authorization headers
       let token = req.cookies.token || req.headers.authorization;
-      if (!token) {
-        this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 400,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
+      // if the token isn't located, throw a client error
+      if (!token && sendUnauthorized) {
+        this.sendClientError(res);
+        return null;
+      } else if (!token) {
         return null;
       }
+      // JWT tokens for the project contain the Account's name and ID
       let decodedToken: { id: string; name: string } | null;
       try {
         decodedToken = SecurityManager.verifyToken(token);
       } catch {
         return null;
       }
-      if (!decodedToken) {
+      // if the token can not be verified, return a specific 401 Unauthorized stating the token is invalid
+      if (!decodedToken && sendUnauthorized) {
         this.handleError(
           {
             text_code: this.constants.messages.BEARER_TOKEN_INVALID[0],
@@ -122,23 +123,18 @@ export default class Route {
           res
         );
         return null;
-      }
+      } else if (!decodedToken) return null;
       const account = await AccountManager.getAccount({ id: decodedToken.id });
-      if (!account) {
-        this.handleError(
-          {
-            text_code: this.constants.messages.UNAUTHORIZED[0],
-            status: 401,
-            message: this.constants.messages.UNAUTHORIZED[1],
-          },
-          res
-        );
+      // if the account can not be located from the bearer token, just return a generic 401 Unauthorized error
+      if (!account && sendUnauthorized) {
+        this.sendUnauthorized(res);
         return null;
       }
       return account;
     } catch (error) {
       console.error(error);
-      throw error;
+      if (sendUnauthorized) this.sendUnauthorized(res)
+      return null;
     }
   }
 
@@ -149,11 +145,62 @@ export default class Route {
    * @protected
    */
   protected sendUnauthorized(res: Response) {
-    this.handleError(
+    return this.handleError(
       {
         text_code: this.constants.messages.UNAUTHORIZED[0],
         status: 401,
         message: this.constants.messages.UNAUTHORIZED[1],
+      },
+      res
+    );
+  }
+
+  /**
+   * This is a helper method that writes the generic CLIENT ERROR response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendClientError(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.CLIENT_ERROR[0],
+        status: 400,
+        message: this.constants.messages.CLIENT_ERROR[1],
+      },
+      res
+    );
+  }
+
+  /**
+   * This is a helper method that writes the generic NOT FOUND response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendNotFound(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.NOT_FOUND[0],
+        status: 404,
+        message: this.constants.messages.NOT_FOUND[1],
+      },
+      res
+    );
+  }
+
+  /**
+   * This is a helper method that writes the generic FORBIDDEN/PERMISSION DENIED response back to the client.
+   * @author Matthew R
+   * @param res The Response object from Express to write to.
+   * @protected
+   */
+  protected sendForbidden(res: Response) {
+    return this.handleError(
+      {
+        text_code: this.constants.messages.PERMISSION_DENIED[0],
+        status: 403,
+        message: this.constants.messages.PERMISSION_DENIED[1],
       },
       res
     );
