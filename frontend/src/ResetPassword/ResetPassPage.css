@@ -53,7 +53,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: visible;
     padding: 1.5rem 0;
     animation: pageReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   }
@@ -92,7 +92,7 @@
     animation: cardSlideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
     z-index: 10;
     max-height: 90vh;
-    overflow-y: auto;
+    overflow: visible;
     margin: auto;
     top: 2rem;
     bottom: 0;
@@ -315,7 +315,7 @@
     background-color: #e0e0e0;
     border-radius: 2px;
     margin-right: 10px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
   
@@ -432,7 +432,7 @@
       transform 0.25s ease,
       box-shadow 0.25s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     opacity: 0;
     animation: buttonReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
   }
@@ -749,3 +749,71 @@
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
   }
+
+  /* =========================
+   Password Tooltip Styles
+   ========================= */
+.reset-password .tooltip-box {
+  position: absolute;
+  top: 0;
+  right: 105%;
+  width: 260px;
+  background-color: #f9f9ff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 100;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.reset-password .tooltip-strength {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.reset-password .tooltip-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: visible;
+  margin-bottom: 1rem;
+}
+
+.reset-password .tooltip-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.reset-password .tooltip-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reset-password .tooltip-checklist li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.reset-password .tooltip-checklist li.met {
+  color: #2ecc71;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .reset-password .tooltip-box {
+    top: auto;
+    bottom: 105%;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-0.5rem);
+  }
+}

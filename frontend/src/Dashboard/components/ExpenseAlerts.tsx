@@ -41,15 +41,18 @@ const ExpenseAlerts: React.FC = () => {
         .duration(300)
         .delay((d, i) => i * 100)
         .style("opacity", 1)
-        .style("transform", "translateY(-50px)");
+        .style("transform", "translateY(0)");
     }
   }, []);
   
   return (
-    <div className="expense-alerts">
-      <div className="section-header">Expense Alerts & Warnings</div>
-      <div className="alerts-list" ref={alertsRef}></div>
-    </div>
+    <div className="expense-alerts widget">
+  <div className="widget-header">
+    <div className="section-header">Expense Alerts & Warnings</div>
+  </div>
+  <div className="widget-body alerts-list" ref={alertsRef}></div>
+</div>
+
   );
 };
 

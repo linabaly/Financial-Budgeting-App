@@ -130,9 +130,12 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
   };
   
   return (
-    <div className="savings-progress">
-      <div className="section-header">Savings Progress</div>
-      <div className="savings-content">
+    <div className="savings-progress widget">
+  <div className="widget-header">
+    <div className="section-header">Savings Progress</div>
+  </div>
+  <div className="widget-body savings-content">
+
         <div className="savings-goal">Goal: ${goalAmount.toLocaleString()}</div>
         <div 
           className="current-savings" 

@@ -63,10 +63,13 @@ const SmartInsights: React.FC = () => {
   }, []);
   
   return (
-    <div className="smart-insights">
-      <div className="section-header">Smart AI Insights</div>
-      <div ref={insightsRef}></div>
-    </div>
+    <div className="smart-insights widget">
+  <div className="widget-header">
+    <div className="section-header">Smart AI Insights</div>
+  </div>
+  <div className="widget-body" ref={insightsRef}></div>
+</div>
+
   );
 };
 

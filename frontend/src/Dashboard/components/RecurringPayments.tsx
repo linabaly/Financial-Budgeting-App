@@ -65,10 +65,13 @@ const RecurringPayments: React.FC = () => {
   }, []);
   
   return (
-    <div className="recurring-payments">
-      <div className="section-header">Recurring Payments Reminder</div>
-      <div className="payments-list" ref={paymentsRef}></div>
-    </div>
+    <div className="recurring-payments widget">
+  <div className="widget-header">
+    <div className="section-header">Recurring Payments Reminder</div>
+  </div>
+  <div className="widget-body payments-list" ref={paymentsRef}></div>
+</div>
+
   );
 };
 
