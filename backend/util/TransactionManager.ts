@@ -137,7 +137,7 @@ export default class TransactionManager {
    */
   public static async deleteTransactionByID(transactionID: string) {
     const transaction = this.getTransactionById(transactionID);
-    if (transaction === null) {
+    if (!transaction) {
       throw new Error(`Transaction '${transactionID}' does not exist.`);
     }
     return prisma.transaction.delete({ where: { id: transactionID } });

@@ -88,30 +88,27 @@ export default class Route {
    * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwards.
    * After "null" is returned from this function, you should always return from the route function.
    * @author Matthew R
-   * @param req
-   * @param res The Response object of the request
+   * @param req The Request object from the router application
+   * @param res The Response object from the router application
    * @protected
    */
   protected async authenticate(req: Request, res: Response) {
     try {
+      // try to fetch the token from the cookies, if not default to authorization headers
       let token = req.cookies.token || req.headers.authorization;
+      // if the token isn't located, throw a client error
       if (!token) {
-        this.handleError(
-          {
-            text_code: this.constants.messages.CLIENT_ERROR[0],
-            status: 400,
-            message: this.constants.messages.CLIENT_ERROR[1],
-          },
-          res
-        );
+        this.sendClientError(res);
         return null;
       }
+      // JWT tokens for the project contain the Account's name and ID
       let decodedToken: { id: string; name: string } | null;
       try {
         decodedToken = SecurityManager.verifyToken(token);
       } catch {
         return null;
       }
+      // if the token can not be verified, return a specific 401 Unauthorized stating the token is invalid
       if (!decodedToken) {
         this.handleError(
           {
@@ -124,21 +121,16 @@ export default class Route {
         return null;
       }
       const account = await AccountManager.getAccount({ id: decodedToken.id });
+      // if the account can not be located from the bearer token, just return a generic 401 Unauthorized error
       if (!account) {
-        this.handleError(
-          {
-            text_code: this.constants.messages.UNAUTHORIZED[0],
-            status: 401,
-            message: this.constants.messages.UNAUTHORIZED[1],
-          },
-          res
-        );
+        this.sendUnauthorized(res);
         return null;
       }
       return account;
     } catch (error) {
       console.error(error);
-      throw error;
+      this.sendUnauthorized(res);
+      return null;
     }
   }
 
@@ -149,7 +141,7 @@ export default class Route {
    * @protected
    */
   protected sendUnauthorized(res: Response) {
-    this.handleError(
+    return this.handleError(
       {
         text_code: this.constants.messages.UNAUTHORIZED[0],
         status: 401,
