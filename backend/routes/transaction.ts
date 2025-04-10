@@ -53,15 +53,13 @@ export default class TransactionRoute extends Route {
 
     this.router.post("/", async (req, res) => {
       try {
-        if (
-          !req.body.amount ||
-          typeof Number(req.body.amount) !== "number" ||
-          !req.body.descriptor ||
-          typeof req.body.descriptor !== "string"
-        )
+        // validator checks for required fields and their types
+        if (!req.body.amount || isNaN(Number(req.body.amount)) || !req.body.descriptor)
           return this.sendClientError(res);
+        // authenticate the account
         const account = await this.authenticate(req, res);
         if (!account) return;
+        // form the database query
         const passedTransactionDetails: TransactionDetails = {
           accountID: account.id,
           amount: Number(req.body.amount),
@@ -71,6 +69,7 @@ export default class TransactionRoute extends Route {
           type: req.body.type,
         };
         const createQuery = await TransactionManager.createTransaction(passedTransactionDetails);
+        // 201 CREATED
         res.status(201).json(createQuery);
         return;
       } catch (error) {

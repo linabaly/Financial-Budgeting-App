@@ -112,7 +112,7 @@ export default class TransactionManager {
       type: transaction.type,
       category: transaction.category,
       // if the transaction post date is not specified then we default to the current time
-      postedAt: transaction.postedAt ?? new Date(),
+      postedAt: transaction.postedAt ? new Date(transaction.postedAt) : new Date(),
       // if the currency is not specified we default to USD
       currency: transaction.currency ?? "USD",
       account: {

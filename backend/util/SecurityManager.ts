@@ -61,7 +61,7 @@ export default class SecurityManager {
       }
       return null;
     } catch (error) {
-      console.error(error);
+      console.error(`Error: ${error}`);
       return null;
     }
   }
