@@ -75,12 +75,14 @@ export default class Route {
   }
 
   protected handleError(error: HTTPResponseError, res: Response) {
+    console.error(error);
+    Object.freeze(res);
     res.status(error.status).json({
       // code: error.code,
       text_code: error.text_code,
       message: error.message,
     });
-    console.error(error);
+    return;
   }
 
   /**

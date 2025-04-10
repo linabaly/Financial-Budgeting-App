@@ -140,7 +140,7 @@ export default class TransactionRoute extends Route {
 
         try {
           await TransactionManager.deleteTransactionByID(req.params.id);
-        } catch (error) {
+        } catch {
           return this.sendClientError(res);
         }
         res.sendStatus(204);
