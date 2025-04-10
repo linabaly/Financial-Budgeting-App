@@ -81,7 +81,7 @@ export default class Route {
       text_code: error.text_code,
       message: error.message,
     });
-    Object.freeze(res);
+    // Object.freeze(res);
     return;
   }
 
