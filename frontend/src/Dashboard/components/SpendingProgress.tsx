@@ -22,7 +22,7 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
     if (percentage < 50) {
       return { 
         color: '#2ecc71', 
-        icon: '👍', 
+        icon: '💰', 
         text: 'Good spending habits' 
       };
     } else if (percentage < 80) {
@@ -65,7 +65,49 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
             fontWeight: 500
           }}
         >
-          <span style={{ marginRight: '0.5rem' }}>{status.icon}</span>
+<span style={{
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
+  fontSize: '2.2rem',
+  fontWeight: 'bold',
+  marginRight: '0.2rem',
+  color: '#2ecc71',
+  textShadow: `
+    0 0 10px rgba(46, 204, 113, 0.8),
+    0 0 5px rgba(0, 0, 0, 0.6)
+  `
+}}>
+  💰
+
+  {/* Cover up the built-in $ sign */}
+  <span style={{
+    position: 'absolute',
+    width: '1.9rem',
+    height: '1.7rem',
+    backgroundColor: '#C29F70',
+    borderRadius: '50%',
+    transform: 'translate(0px, 0px)',
+    zIndex: 1
+  }} />
+
+  {/* Overlay your own custom $ */}
+  <span style={{
+    position: 'absolute',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: '#000',
+    transform: 'translate(0px, 1px)',
+    zIndex: 2,
+    pointerEvents: 'none',
+    textShadow: `
+      0 0 4px rgba(0, 0, 0, 0.8)
+    `
+  }}>
+    $
+  </span>
+</span>
           {status.text}
         </div>
       </div>

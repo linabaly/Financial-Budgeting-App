@@ -109,7 +109,11 @@
      align-items: center;
      gap: 1rem;
    }
-   
+
+   .navigation .nav-button {
+    font-size: 1.2rem;
+  }
+
    /* Navigation buttons */
    .nav-button {
      background-color: #000;
@@ -622,43 +626,56 @@
    
 /* Savings progress hover glow effect based on percentage */
 @keyframes progressGlowLow {
-  0%, 100% { 
-    box-shadow: 
-      0 0 10px rgba(255, 107, 107, 0.5), 
-      0 0 20px rgba(255, 107, 107, 0.3); 
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(220, 20, 60, 0.4),
+      0 0 20px rgba(220, 20, 60, 0.2);
   }
-  50% { 
-    box-shadow: 
-      0 0 15px rgba(255, 107, 107, 0.7), 
-      0 0 25px rgba(255, 107, 107, 0.5); 
+  50% {
+    box-shadow:
+      0 0 15px rgba(220, 20, 60, 0.6),
+      0 0 25px rgba(220, 20, 60, 0.35);
   }
 }
 
 @keyframes progressGlowMedium {
-  0%, 100% { 
-    box-shadow: 
-      0 0 10px rgba(255, 206, 86, 0.5), 
-      0 0 20px rgba(255, 206, 86, 0.3); 
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(255, 223, 100, 0.3),
+      0 0 20px rgba(255, 223, 100, 0.15);
   }
-  50% { 
-    box-shadow: 
-      0 0 15px rgba(255, 206, 86, 0.7), 
-      0 0 25px rgba(255, 206, 86, 0.5); 
+  50% {
+    box-shadow:
+      0 0 15px rgba(255, 223, 100, 0.45),
+      0 0 25px rgba(255, 223, 100, 0.25);
   }
 }
 
 @keyframes progressGlowHigh {
-  0%, 100% { 
-    box-shadow: 
-      0 0 10px rgba(46, 204, 113, 0.5), 
-      0 0 20px rgba(46, 204, 113, 0.3); 
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(46, 204, 113, 0.4),
+      0 0 20px rgba(46, 204, 113, 0.2);
   }
-  50% { 
-    box-shadow: 
-      0 0 15px rgba(46, 204, 113, 0.7), 
-      0 0 25px rgba(46, 204, 113, 0.5); 
+  50% {
+    box-shadow:
+      0 0 15px rgba(46, 204, 113, 0.6),
+      0 0 25px rgba(46, 204, 113, 0.35);
   }
 }
+
+.progress-percent.low {
+  color: #dc143c;
+}
+
+.progress-percent.medium {
+  color: #ffdf64;
+}
+
+.progress-percent.high {
+  color: #2ecc71;
+}
+
 
 /* Percentage-based glow classes on hover */
 .progress-container:hover .progress-bar.glow-low {

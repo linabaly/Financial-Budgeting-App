@@ -155,8 +155,8 @@
  * User avatar styling with hover effects
  */
 .profile-icon {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,9 +166,12 @@
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
+  font-size: 1.6rem;
   border-radius: 50%;
+  padding: 6px;
+  box-sizing: border-box;
   background: #6c5ce7;
   display: flex;
   align-items: center;
@@ -178,6 +181,11 @@
   position: relative;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+}
+
+.profile-avatar-icon {
+  width: 100%;
+  height: 100%;
 }
 
 .avatar:hover {
@@ -249,9 +257,48 @@
  * Media queries for different screen sizes
  */
 @media (max-width: 992px) {
-  .nav-button {
-    padding: 0.5rem 0.8rem;
+  .header-content {
+    padding: 0 1rem;
   }
+  
+  .logo-container {
+    padding-left: 0.75rem;
+  }
+  
+  /* Show mobile menu toggle */
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  /* Mobile slide-out navigation */
+  .navigation {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: rgba(25, 25, 25, 0.95);
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+    flex-direction: column;
+    padding: 5rem 1rem 2rem;
+    gap: 1.5rem;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+  }
+  
+  .navigation.open {
+    transform: translateX(0);
+  }
+  
+  /* Full width buttons in mobile view */
+  .nav-button {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.75rem 1rem;
+  }
+  
 }
 
 @media (max-width: 768px) {
@@ -295,20 +342,6 @@
     width: 100%;
     justify-content: flex-start;
     padding: 0.75rem 1rem;
-  }
-  
-  /* Profile icon adjustments for mobile */
-  .profile-icon {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-start;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    margin-top: auto;
-  }
-  
-  .avatar {
-    margin-right: 0.75rem;
   }
 }
 
