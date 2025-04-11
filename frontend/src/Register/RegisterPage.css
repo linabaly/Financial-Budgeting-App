@@ -82,7 +82,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5rem;
+    padding: 1.5rem 1.25rem;
     box-shadow: 
       0 10px 25px rgba(0, 0, 0, 0.1),
       0 20px 50px rgba(0, 0, 0, 0.05);
@@ -90,12 +90,11 @@
     transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
     animation: cardSlideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
     z-index: 10;
-    max-height: 95vh;
     overflow: visible;
     padding-top: 2rem;
-    padding-bottom: 3rem;
-    margin-top: 5rem;
-    margin-bottom: 0;
+    padding-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5em;
   }
   
   .register-card:hover {
@@ -106,10 +105,10 @@
   }
   
   .register-title {
-    margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
     color: var(--text-primary);
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     text-align: center;
     opacity: 0;
@@ -118,7 +117,8 @@
   
   .register-subtitle {
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
     text-align: center;
     opacity: 0;
     animation: fadeUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s;
@@ -203,19 +203,20 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
   
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
     position: relative;
     opacity: 0;
     transform: translateY(8px);
     animation: formReveal 0.5s ease-out forwards;
     overflow: visible;
+    margin-bottom: 0.5rem;
   }
   
   .form-group:nth-child(1) {
@@ -257,8 +258,8 @@
   
   .form-input {
     width: 100%;
-    height: 48px;
-    padding: 0 16px 0 2.5rem;
+    height: 46px;
+    padding: 0 16px 0 3rem;
     border: 1.5px solid var(--input-border-color);
     border-radius: 8px;
     font-size: 1rem;
@@ -380,7 +381,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     transition: 
       background 0.25s ease,
       transform 0.25s ease,
@@ -439,9 +440,9 @@
   .error-container {
     background-color: var(--error-bg);
     border-left: 4px solid var(--error-color);
-    padding: 1rem;
+    padding: 0.75rem;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     width: 100%;
   }
   
@@ -468,8 +469,8 @@
      Styles for the login prompt and button in the footer
      ==================================================== */
   .auth-footer {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -690,16 +691,18 @@
   .register-page .tooltip-box {
     position: absolute;
     top: 0;
-    right: 105%;
+    left: -275px; /* Tooltip width (260px) + margin */
+    transform: translateY(0%);
     width: 260px;
     background-color: #f9f9ff;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     padding: 1rem;
-    z-index: 100;
+    z-index: 9999; /* force over any autocomplete popup */
     font-size: 0.85rem;
     color: #333;
-  }
+    animation: fadeIn 0.3s ease-out;
+  }  
   
   .register-page .tooltip-strength {
     display: flex;
@@ -740,14 +743,4 @@
   .register-page .tooltip-checklist li.met {
     color: #2ecc71;
     font-weight: 500;
-  }
-  
-  @media (max-width: 900px) {
-    .register-page .tooltip-box {
-      top: auto;
-      bottom: 105%;
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%) translateY(-0.5rem);
-    }
   }
