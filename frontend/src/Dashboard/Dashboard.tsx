@@ -10,6 +10,7 @@ import SavingsProgress from './components/SavingsProgress';
 import RecurringPayments from './components/RecurringPayments';
 import ExpenseAlerts from './components/ExpenseAlerts';
 import Footer from './components/Footer';
+import ThemeToggle from './components/ThemeToggle';
 
 /**
  * Dashboard Component
@@ -21,9 +22,6 @@ const Dashboard: React.FC = () => {
   // ===== STATE MANAGEMENT =====
   
   // Modal visibility states
-  const [showTransactionModal, setShowTransactionModal] = useState(false);
-  const [showBudgetModal, setShowBudgetModal] = useState(false);
-  const [showGoalModal, setShowGoalModal] = useState(false);
   const [showSavingsModal, setShowSavingsModal] = useState(false);
   
   // User and account related states
@@ -74,97 +72,11 @@ const Dashboard: React.FC = () => {
   // ===== MODAL HANDLERS =====
   
   /**
-   * Close all modal windows
-   * Used when clicking outside a modal or clicking cancel/close buttons
+   * Close savings modal
+   * Used when clicking outside the modal
    */
-  const closeAllModals = () => {
-    setShowTransactionModal(false);
-    setShowBudgetModal(false);
-    setShowGoalModal(false);
+  const closeSavingsModal = () => {
     setShowSavingsModal(false);
-  };
-
-  // ===== FORM SUBMISSION HANDLERS =====
-  
-  /**
-   * Handle new transaction form submission
-   * Processes and submits transaction data to backend (currently mock implementation)
-   * 
-   * @param e - Form submission event
-   */
-  const handleTransactionSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Extract form data
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const transactionData = {
-      type: formData.get('type'),
-      amount: formData.get('amount'),
-      category: formData.get('category'),
-      date: formData.get('date'),
-      notes: formData.get('notes')
-    };
-    
-    // TODO: Connect to actual API endpoint
-    console.log('Transaction data submitted:', transactionData);
-    
-    // Display confirmation and close modal
-    alert('Transaction added successfully!');
-    setShowTransactionModal(false);
-  };
-
-  /**
-   * Handle budget setting form submission
-   * Processes and submits budget data to backend (currently mock implementation)
-   * 
-   * @param e - Form submission event
-   */
-  const handleBudgetSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Extract form data
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const budgetData = {
-      category: formData.get('category'),
-      amount: formData.get('amount'),
-      period: formData.get('period')
-    };
-    
-    // TODO: Connect to actual API endpoint
-    console.log('Budget data submitted:', budgetData);
-    
-    // Display confirmation and close modal
-    alert('Budget set successfully!');
-    setShowBudgetModal(false);
-  };
-
-  /**
-   * Handle financial goal form submission
-   * Processes and submits financial goal data to backend (currently mock implementation)
-   * 
-   * @param e - Form submission event
-   */
-  const handleGoalSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Extract form data
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const goalData = {
-      name: formData.get('name'),
-      targetAmount: formData.get('targetAmount'),
-      targetDate: formData.get('targetDate'),
-      description: formData.get('description')
-    };
-    
-    // TODO: Connect to actual API endpoint
-    console.log('Goal data submitted:', goalData);
-    
-    // Display confirmation and close modal
-    alert('Goal added successfully!');
-    setShowGoalModal(false);
   };
 
   /**
@@ -211,6 +123,11 @@ const Dashboard: React.FC = () => {
       <Header />
       
       <main className="main-content">
+        {/* Theme toggle container positioned below header */}
+        <div className="theme-toggle-container">
+          <ThemeToggle />
+        </div>
+        
         {/* User greeting section with date */}
         <div className="greeting-section">
           <div>
@@ -257,232 +174,12 @@ const Dashboard: React.FC = () => {
         
         {/* === MODAL COMPONENTS === */}
         
-        {/* Transaction Modal - For adding new transactions */}
-        {showTransactionModal && (
-          <div className="modal-overlay" onClick={closeAllModals}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Add New Transaction</h2>
-                <button className="close-button" onClick={closeAllModals}>×</button>
-              </div>
-              <div className="modal-content">
-                <form className="modal-form" onSubmit={handleTransactionSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="transaction-type">Type</label>
-                    <select id="transaction-type" name="type" required>
-                      <option value="expense">Expense</option>
-                      <option value="income">Income</option>
-                      <option value="transfer">Transfer</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="transaction-amount">Amount</label>
-                    <input 
-                      type="number" 
-                      id="transaction-amount" 
-                      name="amount"
-                      placeholder="0.00" 
-                      step="0.01"
-                      min="0"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="transaction-category">Category</label>
-                    <select id="transaction-category" name="category" required>
-                      <option value="food">Food & Dining</option>
-                      <option value="shopping">Shopping</option>
-                      <option value="housing">Housing</option>
-                      <option value="transportation">Transportation</option>
-                      <option value="entertainment">Entertainment</option>
-                      <option value="health">Health & Fitness</option>
-                      <option value="travel">Travel</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="transaction-date">Date</label>
-                    <input 
-                      type="date" 
-                      id="transaction-date" 
-                      name="date"
-                      defaultValue={new Date().toISOString().split('T')[0]}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="transaction-notes">Notes</label>
-                    <textarea 
-                      id="transaction-notes" 
-                      name="notes"
-                      placeholder="Add any additional details..."
-                    ></textarea>
-                  </div>
-                  
-                  <div className="form-actions">
-                    <button 
-                      type="button" 
-                      className="cancel-btn"
-                      onClick={closeAllModals}
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="submit-btn">
-                      Save Transaction
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Budget Modal - For setting category budgets */}
-        {showBudgetModal && (
-          <div className="modal-overlay" onClick={closeAllModals}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Set Budget</h2>
-                <button className="close-button" onClick={closeAllModals}>×</button>
-              </div>
-              <div className="modal-content">
-                <form className="modal-form" onSubmit={handleBudgetSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="budget-category">Category</label>
-                    <select id="budget-category" name="category" required>
-                      <option value="food">Food & Dining</option>
-                      <option value="shopping">Shopping</option>
-                      <option value="housing">Housing</option>
-                      <option value="transportation">Transportation</option>
-                      <option value="entertainment">Entertainment</option>
-                      <option value="health">Health & Fitness</option>
-                      <option value="travel">Travel</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="budget-amount">Budget Amount</label>
-                    <input 
-                      type="number" 
-                      id="budget-amount" 
-                      name="amount"
-                      placeholder="0.00" 
-                      step="0.01"
-                      min="0"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="budget-period">Budget Period</label>
-                    <select id="budget-period" name="period" required>
-                      <option value="monthly">Monthly</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="yearly">Yearly</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-actions">
-                    <button 
-                      type="button" 
-                      className="cancel-btn"
-                      onClick={closeAllModals}
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="submit-btn">
-                      Save Budget
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Goal Modal - For creating financial goals */}
-        {showGoalModal && (
-          <div className="modal-overlay" onClick={closeAllModals}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Add Financial Goal</h2>
-                <button className="close-button" onClick={closeAllModals}>×</button>
-              </div>
-              <div className="modal-content">
-                <form className="modal-form" onSubmit={handleGoalSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="goal-name">Goal Name</label>
-                    <input 
-                      type="text" 
-                      id="goal-name" 
-                      name="name"
-                      placeholder="e.g., Vacation Fund, Emergency Savings" 
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="goal-amount">Target Amount</label>
-                    <input 
-                      type="number" 
-                      id="goal-amount" 
-                      name="targetAmount"
-                      placeholder="0.00" 
-                      step="0.01"
-                      min="0"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="goal-date">Target Date</label>
-                    <input 
-                      type="date" 
-                      id="goal-date" 
-                      name="targetDate"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="goal-description">Description</label>
-                    <textarea 
-                      id="goal-description" 
-                      name="description"
-                      placeholder="Describe your goal..."
-                    ></textarea>
-                  </div>
-                  
-                  <div className="form-actions">
-                    <button 
-                      type="button" 
-                      className="cancel-btn"
-                      onClick={closeAllModals}
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="submit-btn">
-                      Save Goal
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-        
         {/* Savings Modal - For updating savings amount */}
         {showSavingsModal && (
-          <div className="modal-overlay" onClick={closeAllModals}>
+          <div className="modal-overlay" onClick={closeSavingsModal}>
             <div className="modal" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Update Savings</h2>
-                <button className="close-button" onClick={closeAllModals}>×</button>
+              <div className="modal-header" style={{ textAlign: 'center' }}>
+                <h2 style={{ width: '100%' }}>Update Savings</h2>
               </div>
               <div className="modal-content">
                 <form className="modal-form" onSubmit={handleSavingsSubmit}>
@@ -499,11 +196,11 @@ const Dashboard: React.FC = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="savings-type">Savings Type</label>
                     <select id="savings-type" name="savingsType" required>
-                      <option value="emergency" defaultValue="emergency">Emergency Fund</option>
+                      <option value="emergency">Emergency Fund</option>
                       <option value="retirement">Retirement</option>
                       <option value="vacation">Vacation</option>
                       <option value="education">Education</option>
@@ -511,7 +208,7 @@ const Dashboard: React.FC = () => {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="savings-date">Date</label>
                     <input 
@@ -522,7 +219,7 @@ const Dashboard: React.FC = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="savings-notes">Notes</label>
                     <textarea 
@@ -531,15 +228,8 @@ const Dashboard: React.FC = () => {
                       placeholder="Add any additional details about your savings update..."
                     ></textarea>
                   </div>
-                  
+
                   <div className="form-actions">
-                    <button 
-                      type="button" 
-                      className="cancel-btn"
-                      onClick={closeAllModals}
-                    >
-                      Cancel
-                    </button>
                     <button type="submit" className="submit-btn">
                       Update Savings
                     </button>

@@ -40,7 +40,7 @@ interface SortConfig {
  */
 const categoryColors: {[key: string]: string} = {
   Food: '#27ae60',
-  Housing: '#e74c3c',
+  Rent: '#e74c3c',
   Utilities: '#3498db',
   Health: '#9b59b6',
   Entertainment: '#f39c12',
@@ -112,6 +112,17 @@ const Transactions: React.FC = () => {
         if (!token) {
           throw new Error("No token found.");
         }
+        /**
+       * !!!! DEBUGGING !!!!
+       */
+
+        console.log("Making API request to:", `${API_BASE_URL}/transaction`);
+        console.log("With headers:", {
+          "Content-Type": "application/json",
+          "Authenticated": "token exists: " + !!token
+        });
+      
+      
   
         const response = await fetch(`${API_BASE_URL}/transaction`, {  
           method: "GET",
@@ -120,6 +131,8 @@ const Transactions: React.FC = () => {
             "Authenticated": token,
           },
         });
+
+
   
         if (!response.ok) {
           const err = await response.json();
@@ -130,7 +143,7 @@ const Transactions: React.FC = () => {
       
         // Format transactions for display
         const formattedTransactions = data.map((transaction: any) => ({
-          id: transaction._id,
+          id: transaction.id,
           name: transaction.name,
           date: new Date(transaction.date).toLocaleDateString('en-US'),
           amount: transaction.type === 'INCOME' ? 
@@ -203,6 +216,8 @@ const Transactions: React.FC = () => {
         "Authenticated": "token exists: " + !!token
       });
       console.log("With body:", JSON.stringify(transactionData));
+    
+
       
       const response = await fetch(`${API_BASE_URL}/transaction`, {
         method: "POST",
@@ -212,13 +227,22 @@ const Transactions: React.FC = () => {
         },
         body: JSON.stringify(transactionData)
       });
+
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Fetch response:", response);
       
       if (!response.ok) {
         const err = await response.json();
+        console.error("Error response:", err);
         throw new Error(err.message || "Failed to create transaction");
       }
       
       const createdTransaction = await response.json();
+      console.log("Created transaction:", createdTransaction);
+
+
       return createdTransaction;
     } catch (error: any) {
       console.error("Error creating transaction:", error.message);
@@ -456,7 +480,7 @@ const Transactions: React.FC = () => {
                   onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value})}
                 >
                   <option value="FOOD">Food</option>
-                  <option value="HOUSING">Housing</option>
+                  <option value="RENT">Rent</option>
                   <option value="UTILITIES">Utilities</option>
                   <option value="HEALTH">Health</option>
                   <option value="ENTERTAINMENT">Entertainment</option>
@@ -532,7 +556,7 @@ const Transactions: React.FC = () => {
           
           {/* Category filters */}
           <div className="category-filters">
-            {['All', 'Food', 'Housing', 'Utilities', 'Health', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
+            {['All', 'Food', 'Rent', 'Utilities', 'Health', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
               <button 
                 key={category}
                 className={`category-filter ${category === selectedCategory ? 'active' : ''}`}
