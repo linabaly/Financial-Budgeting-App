@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
+// Import the logo - adjust the path if needed
+
 
 /**
  * Header Component
@@ -54,10 +56,10 @@ const Header: React.FC = () => {
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
-        {/* Logo and Brand Identity */}
+        {/* Logo and Brand Identity - replaced text with SVG logo */}
         <div className="logo-container" onClick={handleLogoClick}>
           <div className="logo">
-            <span className="logo-text">Finovators</span>
+            <img src="public/icons/logo.png" alt="Finovators Logo" className="logo-image" />
           </div>
         </div>
         
@@ -114,7 +116,15 @@ const Header: React.FC = () => {
             onClick={() => handleNavClick('/profile')}
           >
             <div className="avatar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg 
+                className="profile-avatar-icon"
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>

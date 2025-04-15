@@ -23,13 +23,26 @@ interface PasswordResetData {
 }
 
 /**
+ * Enum defining password strength levels from None to Very Strong
+ */
+enum PasswordStrength {
+  None = 0,
+  Weak = 1,
+  Fair = 2,
+  Good = 3,
+  Strong = 4,
+  VeryStrong = 5
+}
+
+/**
  * Comprehensive validation for password reset form
  * Performs detailed validation on all form fields and returns structured results
  * 
  * @param data - The password reset form data to validate
+ * @param passwordStrengthScore - The current password strength score
  * @returns Object containing validation status and any error messages
  */
-const validatePasswordReset = (data: PasswordResetData) => {
+const validatePasswordReset = (data: PasswordResetData, passwordStrengthScore: number) => {
   const errors: string[] = [];
 
   // Email validation
@@ -73,6 +86,11 @@ const validatePasswordReset = (data: PasswordResetData) => {
         errors.push(rule.message);
       }
     });
+    
+    // Password strength requirement - must be Very Strong
+    if (passwordStrengthScore < PasswordStrength.VeryStrong) {
+      errors.push('Password strength must be Very Strong');
+    }
   }
 
   // Password confirmation
@@ -139,9 +157,11 @@ const ResetPassPage: React.FC = () => {
     const normalizedScore = Math.min(strengthScore, 5);
 
     // Map score to descriptive label
+    const labelsByScore = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+    
     return {
       score: normalizedScore,
-      label: ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong'][normalizedScore - 1] || ''
+      label: labelsByScore[normalizedScore] || ''
     };
   }, [passwordResetData.password]);
 
@@ -179,6 +199,21 @@ const ResetPassPage: React.FC = () => {
   );
 
   /**
+   * Generate helper text based on password strength
+   */
+  const getPasswordHelperText = () => {
+    if (passwordResetData.password && passwordStrength.score < PasswordStrength.VeryStrong) {
+      return "Password must have Very Strong strength to reset";
+    }
+    return "";
+  };
+
+  /**
+   * Determine if the reset button should be disabled based on password strength
+   */
+  const isResetDisabled = isLoading || (passwordResetData.password && passwordStrength.score < PasswordStrength.VeryStrong);
+  
+  /**
    * Handle form submission for password reset
    * Validates input and sends reset request
    * 
@@ -191,7 +226,7 @@ const ResetPassPage: React.FC = () => {
     setErrors([]);
 
     // Validate all form inputs
-    const validation = validatePasswordReset(passwordResetData);
+    const validation = validatePasswordReset(passwordResetData, passwordStrength.score);
     
     // If validation fails, display errors and stop submission
     if (!validation.isValid) {
@@ -231,7 +266,20 @@ const ResetPassPage: React.FC = () => {
       // Reset loading state regardless of outcome
       setIsLoading(false);
     }
-  }, [passwordResetData, navigate]);
+  }, [passwordResetData, navigate, passwordStrength.score]);
+
+  // Get color based on password strength score
+  const getStrengthColor = (score: number): string => {
+    switch (score) {
+      case 0: return '#ccc';
+      case 1: return '#e74c3c';
+      case 2: return '#f39c12';
+      case 3: return '#f1c40f';
+      case 4: return '#2ecc71';
+      case 5: return '#27ae60';
+      default: return '#ccc';
+    }
+  };
 
   // ========== COMPONENT RENDER ==========
   return (
@@ -298,7 +346,7 @@ const ResetPassPage: React.FC = () => {
             </div>
 
             {/* New password field with strength meter */}
-            <div className="form-group">
+            <div className="form-group" style={{ position: 'relative' }}>
               <label 
                 className="form-label" 
                 htmlFor="password"
@@ -311,81 +359,18 @@ const ResetPassPage: React.FC = () => {
                   <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="2" />
                 </svg>
                 <input
-  type={showPassword ? "text" : "password"}
-  id="password"
-  className="form-input"
-  value={passwordResetData.password}
-  onChange={handleInputChange('password')}
-  placeholder="Create a new password"
-  required
-  aria-required="true"
-  aria-invalid={errors.some(e => e.includes('Password must') || e.includes('password is'))}
-  onFocus={() => setShowTooltip(true)}
-  onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
-/>
-
-{showTooltip && (
-  <div className="tooltip-box">
-    <div className="tooltip-strength">
-      <span>Password Strength</span>
-      <span>{passwordStrength.label || 'Enter password'}</span>
-    </div>
-    <div className="tooltip-bar">
-      <div
-        className="tooltip-bar-fill"
-        style={{
-          width: `${(passwordStrength.score / 5) * 100}%`,
-          backgroundColor:
-            passwordStrength.score >= 4
-              ? '#2ecc71'
-              : passwordStrength.score === 3
-              ? '#f1c40f'
-              : passwordStrength.score === 2
-              ? '#f39c12'
-              : passwordStrength.score === 1
-              ? '#e74c3c'
-              : '#ccc',
-        }}
-      />
-    </div>
-
-    <strong style={{ display: 'block', marginBottom: '0.5rem' }}>
-      Password must contain:
-    </strong>
-    <ul className="tooltip-checklist">
-      {[
-        { label: 'At least 8 characters', satisfied: passwordResetData.password.length >= 8 },
-        { label: 'Uppercase letter', satisfied: /[A-Z]/.test(passwordResetData.password) },
-        { label: 'Lowercase letter', satisfied: /[a-z]/.test(passwordResetData.password) },
-        { label: 'Number', satisfied: /[0-9]/.test(passwordResetData.password) },
-        { label: 'Special character', satisfied: /[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) },
-      ].map((item, idx) => (
-        <li key={idx} className={item.satisfied ? 'met' : ''}>
-          <span
-            style={{
-              width: '20px',
-              height: '20px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '50%',
-              backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
-              color: item.satisfied ? '#2ecc71' : '#888',
-              fontSize: '14px',
-              marginRight: '0.5rem',
-              border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa',
-            }}
-          >
-            {item.satisfied ? '✓' : ''}
-          </span>
-          {item.label}
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className="form-input"
+                  value={passwordResetData.password}
+                  onChange={handleInputChange('password')}
+                  placeholder="Create a new password"
+                  required
+                  aria-required="true"
+                  aria-invalid={errors.some(e => e.includes('Password must') || e.includes('password is'))}
+                  onFocus={() => setShowTooltip(true)}
+                  onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
+                />
                 {/* Password visibility toggle */}
                 <button 
                   type="button" 
@@ -407,7 +392,94 @@ const ResetPassPage: React.FC = () => {
                   )}
                 </button>
               </div>
-              
+
+              {/* Password helper text */}
+              {passwordResetData.password && getPasswordHelperText() && (
+                <div className="helper-text" style={{ 
+                  color: '#ff0000', 
+                  fontSize: '0.85rem',
+                  fontWeight: 'bold', 
+                  marginTop: '4px' 
+                }}>
+                  {getPasswordHelperText()}
+                </div>
+              )}
+
+              {/* Tooltip */}
+              {showTooltip && (
+                <div className="tooltip-box tooltip-fade">
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontWeight: 'bold',
+                      color: '#555',
+                      fontSize: '0.70rem',
+                      marginBottom: '0.25rem'
+                    }}>
+                      <span>Password Strength</span>
+                      <span style={{ color: getStrengthColor(passwordStrength.score) }}>
+                        {passwordStrength.label || 'Enter password'}
+                        {passwordStrength.score < PasswordStrength.VeryStrong && passwordResetData.password && " (Not Acceptable)"}
+                      </span>
+                    </div>
+                    <div style={{
+                      height: '6px',
+                      width: '100%',
+                      borderRadius: '4px',
+                      backgroundColor: '#ddd',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${(passwordStrength.score / 5) * 100}%`,
+                        backgroundColor: getStrengthColor(passwordStrength.score),
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </div>
+                  </div>
+                  <strong style={{
+                    display: 'block',
+                    marginBottom: '0.5rem',
+                    color: '#444',
+                    fontSize: '1rem'
+                  }}>Password must contain:</strong>
+                  <ul style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: 0
+                  }}>
+                    {[
+                      { label: 'At least 8 characters', satisfied: passwordResetData.password.length >= 8 },
+                      { label: 'Uppercase letter', satisfied: /[A-Z]/.test(passwordResetData.password) },
+                      { label: 'Lowercase letter', satisfied: /[a-z]/.test(passwordResetData.password) },
+                      { label: 'Number', satisfied: /[0-9]/.test(passwordResetData.password) },
+                      { label: 'Special character', satisfied: /[!@#$%^&*(),.?":{}|<>]/.test(passwordResetData.password) }
+                    ].map((item, idx) => (
+                      <li key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '0.4rem'
+                      }}>
+                        <span style={{
+                          width: '20px',
+                          height: '20px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+                          color: item.satisfied ? '#2ecc71' : '#888',
+                          fontSize: '14px',
+                          marginRight: '0.5rem',
+                          border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
+                        }}>{item.satisfied ? '✓' : ''}</span>
+                        <span style={{ color: item.satisfied ? '#2ecc71' : '#444' }}>{item.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Password confirmation field */}
@@ -462,7 +534,11 @@ const ResetPassPage: React.FC = () => {
             <button 
               type="submit" 
               className="reset-button" 
-              disabled={isLoading}
+              disabled={isResetDisabled}
+              style={{
+                opacity: isResetDisabled ? 0.7 : 1,
+                cursor: isResetDisabled ? 'not-allowed' : 'pointer'
+              }}
             >
               {isLoading ? (
                 <>

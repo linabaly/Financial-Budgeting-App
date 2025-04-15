@@ -31,17 +31,17 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
   // Function to get color based on progress percentage
   const getColorForPercentage = (percentage: number) => {
     if (percentage < 0.3) return { 
-      main: "#ff6b6b", 
-      light: "rgba(255, 107, 107, 0.3)", 
-      text: "#ff6b6b" 
+      main: "#dc143c", // ← crimson red
+      light: "rgba(220, 20, 60, 0.3)", 
+      text: "#dc143c" 
     };
     if (percentage < 0.7) return { 
-      main: "#ffc107", 
-      light: "rgba(255, 206, 86, 0.3)", 
-      text: "#ffc107" 
+      main: "#ffdf64", // ← pastel yellow
+      light: "rgba(255, 223, 100, 0.3)", 
+      text: "#ffdf64" 
     };
     return { 
-      main: "#2ecc71", 
+      main: "#2ecc71", // ← emerald green
       light: "rgba(46, 204, 113, 0.3)", 
       text: "#2ecc71" 
     };
@@ -63,9 +63,9 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
       
       // Add percentage on the left with dynamic color
       labelDiv.append("span")
-        .style("color", colors.text)
-        .style("font-weight", "600")
-        .text(`${progressPercent}%`);
+  .attr("class", `progress-percent ${getLevelClass(progressPercent / 100)}`)
+  .text(`${progressPercent}%`);
+
       
       // Add goal on the right
       labelDiv.append("span")
@@ -167,4 +167,11 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
   );
 };
 
+function getLevelClass(percentage: number): string {
+  if (percentage < 0.3) return 'low';
+  if (percentage < 0.7) return 'medium';
+  return 'high';
+}
+
 export default SavingsProgress;
+

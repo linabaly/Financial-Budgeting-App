@@ -16,12 +16,16 @@ import {
   faCamera,
   faTimes,
   faArrowLeft,
-  faChartPie
+  faChartPie,
+  faSun,  // Add this for theme icons
+  faMoon   // Add this for theme icons
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   faGoogle, 
   faApple 
 } from '@fortawesome/free-brands-svg-icons';
+import { ThemeProvider } from './Dashboard/components/ThemeContext';
+import './theme.css'; // Import theme CSS file
 
 // Add all icons to library
 library.add(
@@ -34,6 +38,8 @@ library.add(
   faTimes,
   faArrowLeft,
   faChartPie,
+  faSun, // Add sun icon for light mode
+  faMoon, // Add moon icon for dark mode
   faGoogle,
   faApple
 );
@@ -140,7 +146,6 @@ export const simulateLoading = (callback: () => void, setIsLoading: React.Dispat
 };
 
 function App() {
-
   const [notification, setNotification] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -152,129 +157,128 @@ function App() {
     window.addEventListener('show-notification', handleNotification);
     return () => window.removeEventListener('show-notification', handleNotification);
   }, []);
-  
 
   return (
     <Router>
       <ErrorBoundary>
-        <Suspense fallback={<LoadingFallback />}>
-          {/* Global notification container */}
-          {notification && (
-  <div className="save-notification show">
-    {notification}
-  </div>
-)}
+        {/* Wrap entire app with ThemeProvider */}
+        <ThemeProvider>
+          <Suspense fallback={<LoadingFallback />}>
+            {/* Global notification container */}
+            {notification && (
+              <div className="save-notification show">
+                {notification}
+              </div>
+            )}
+            
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/reset-password" element={<ResetPassPage />} />
 
-          
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/reset-password" element={<ResetPassPage />} />
+              {/* Protected Routes */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/insights" 
+                element={
+                  <ProtectedRoute>
+                    <BudgetInsights />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/transactions" 
+                element={
+                  <ProtectedRoute>
+                    <Transactions />
+                  </ProtectedRoute>
+                } 
+              />
 
-            {/* Protected Routes */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/insights" 
-              element={
-                <ProtectedRoute>
-                  <BudgetInsights />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/transactions" 
-              element={
-                <ProtectedRoute>
-                  <Transactions />
-                </ProtectedRoute>
-              } 
-            />
+              {/* Profile Routes */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/account-settings"
+                element={
+                  <ProtectedRoute>
+                    <AccountSettings onSave={() => {
+                      showNotification('Account settings updated successfully!');
+                    }} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/financial-goals"
+                element={
+                  <ProtectedRoute>
+                    <FinancialGoals onSave={() => {
+                      showNotification('Financial goals updated successfully!');
+                    }} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/notification-preferences"
+                element={
+                  <ProtectedRoute>
+                    <NotificationPreferences onSave={() => {
+                      showNotification('Notification preferences updated successfully!');
+                    }} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/personal-info"
+                element={
+                  <ProtectedRoute>
+                    <PersonalInfo onSave={() => {
+                      showNotification('Personal information updated successfully!');
+                    }} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/security-settings"
+                element={
+                  <ProtectedRoute>
+                    <SecuritySettings onSave={() => {
+                      showNotification('Security settings updated successfully!');
+                    }} />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Profile Routes */}
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/account-settings"
-              element={
-                <ProtectedRoute>
-                  <AccountSettings onSave={() => {
-                    // This would be handled by the component's internal loading state
-                    // and the global notification service
-                    showNotification('Account settings updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/financial-goals"
-              element={
-                <ProtectedRoute>
-                  <FinancialGoals onSave={() => {
-                    showNotification('Financial goals updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/notification-preferences"
-              element={
-                <ProtectedRoute>
-                  <NotificationPreferences onSave={() => {
-                    showNotification('Notification preferences updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/personal-info"
-              element={
-                <ProtectedRoute>
-                  <PersonalInfo onSave={() => {
-                    showNotification('Personal information updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/security-settings"
-              element={
-                <ProtectedRoute>
-                  <SecuritySettings onSave={() => {
-                    showNotification('Security settings updated successfully!');
-                  }} />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* 404 Not Found Route */}
-            <Route 
-              path="*" 
-              element={
-                <div className="not-found-page">
-                  <h1>404 - Page Not Found</h1>
-                  <p>The page you are looking for does not exist.</p>
-                  <button onClick={() => window.location.href = '/'}>
-                    Go to Home
-                  </button>
-                </div>
-              } 
-            />
-          </Routes>
-        </Suspense>
+              {/* 404 Not Found Route */}
+              <Route 
+                path="*" 
+                element={
+                  <div className="not-found-page">
+                    <h1>404 - Page Not Found</h1>
+                    <p>The page you are looking for does not exist.</p>
+                    <button onClick={() => window.location.href = '/'}>
+                      Go to Home
+                    </button>
+                  </div>
+                } 
+              />
+            </Routes>
+          </Suspense>
+        </ThemeProvider>
       </ErrorBoundary>
     </Router>
   );

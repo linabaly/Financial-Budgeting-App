@@ -37,9 +37,10 @@ enum PasswordStrength {
  * Validates the registration form data
  * 
  * @param form - The form data to validate
+ * @param passwordStrength - The current password strength
  * @returns An array of error messages, empty if validation passes
  */
-const validateRegistration = (form: RegistrationForm): string[] => {
+const validateRegistration = (form: RegistrationForm, passwordStrength: PasswordStrength): string[] => {
   const errors: string[] = [];
 
   if (!form.email.trim()) {
@@ -56,6 +57,8 @@ const validateRegistration = (form: RegistrationForm): string[] => {
     errors.push("Password is required");
   } else if (form.password.length < 6) {
     errors.push("Password must be at least 6 characters long");
+  } else if (passwordStrength < PasswordStrength.VeryStrong) {
+    errors.push("Password strength must be 'Very Strong'");
   }
 
   if (!form.repeatPassword.trim()) {
@@ -149,7 +152,7 @@ export default function RegisterPage() {
   const handleRegister = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     setErrors([]);
-    const validationErrors = validateRegistration(formData);
+    const validationErrors = validateRegistration(formData, passwordStrength);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
@@ -172,10 +175,23 @@ export default function RegisterPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [formData, navigate]);
+  }, [formData, navigate, passwordStrength]);
 
   const requirementsStatus = getPasswordRequirementsStatus(formData.password);
 
+  // Generate helper text based on password strength
+  const getPasswordHelperText = () => {
+    if (formData.password && passwordStrength < PasswordStrength.VeryStrong) {
+      return "Password must have 'Very Strong' strength to register";
+    }
+    return "";
+  };
+
+  // Determine if the register button should be disabled based on password strength
+  const isRegisterDisabled = isLoading || (formData.password && passwordStrength < PasswordStrength.VeryStrong);
+
+  // Should show not acceptable suffix - only when password exists and is less than Very Strong
+  const shouldShowNotAcceptable = formData.password.length > 0 && passwordStrength < PasswordStrength.VeryStrong;
 
   // ========== COMPONENT RENDER ==========
   return (
@@ -266,121 +282,132 @@ export default function RegisterPage() {
 
             {/* Password field with strength indicator */}
             <div className="form-group" style={{ position: 'relative' }}>
-  <label htmlFor="password" className="form-label">Password</label>
-  <div className="input-wrapper">
-    <svg className="input-icon" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M7 11V7C7 4.24 9.24 2 12 2s5 2.24 5 5v4" stroke="currentColor" strokeWidth="2" />
-    </svg>
-    <input
-      type={showPassword ? "text" : "password"}
-      id="password"
-      className="form-input"
-      value={formData.password}
-      onChange={handleInputChange}
-      placeholder="Create a password"
-      required
-      onFocus={() => setShowTooltip(true)}
-      onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
-    />
-    <button
-      type="button"
-      className="password-toggle"
-      onClick={togglePasswordVisibility}
-      aria-label={showPassword ? "Hide password" : "Show password"}
-    >
-      {showPassword ? (
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
-          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-          <path d="M3 21L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
-          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-        </svg>
-      )}
-    </button>
-  </div>
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <div className="input-wrapper">
+                <svg className="input-icon" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
+                  <path d="M7 11V7C7 4.24 9.24 2 12 2s5 2.24 5 5v4" stroke="currentColor" strokeWidth="2" />
+                </svg>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className={`form-input ${formData.password && passwordStrength < PasswordStrength.VeryStrong ? 'input-warning' : ''}`}
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Create a password"
+                  required
+                  onFocus={() => setShowTooltip(true)}
+                  onBlur={() => setTimeout(() => setShowTooltip(false), 200)}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                      <path d="M3 21L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" strokeWidth="2" />
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  )}
+                </button>
+              </div>
 
-  {/* Tooltip */}
-  {showTooltip && (
-    <div
-      className="tooltip-box tooltip-fade"
-    >
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontWeight: 'bold',
-          color: '#555',
-          fontSize: '0.70rem',
-          marginBottom: '0.25rem'
-        }}>
-          <span>Password Strength</span>
-          <span>{getStrengthDescription(passwordStrength)}</span>
-        </div>
-        <div style={{
-          height: '6px',
-          width: '100%',
-          borderRadius: '4px',
-          backgroundColor: '#ddd',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            height: '100%',
-            width: `${(Object.values(requirementsStatus).filter(Boolean).length / 5) * 100}%`,
-            backgroundColor: getStrengthColor(passwordStrength),
-            transition: 'width 0.3s ease'
-          }} />
-        </div>
-      </div>
-      <strong style={{
-        display: 'block',
-        marginBottom: '0.5rem',
-        color: '#444',
-        fontSize: '1rem'
-      }}>Password must contain:</strong>
-      <ul style={{
-        listStyle: 'none',
-        padding: 0,
-        margin: 0
-      }}>
-        {[{ label: 'At least 8 characters', satisfied: requirementsStatus.length },
-          { label: 'Uppercase letter', satisfied: requirementsStatus.uppercase },
-          { label: 'Lowercase letter', satisfied: requirementsStatus.lowercase },
-          { label: 'Number', satisfied: requirementsStatus.number },
-          { label: 'Special character', satisfied: requirementsStatus.specialChar }].map((item, idx) => (
-          <li key={idx} style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '0.4rem'
-          }}>
-            <span style={{
-              width: '20px',
-              height: '20px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '50%',
-              backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
-              color: item.satisfied ? '#2ecc71' : '#888',
-              fontSize: '14px',
-              marginRight: '0.5rem',
-              border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
-            }}>{item.satisfied ? '✓' : ''}</span>
-            <span style={{ color: item.satisfied ? '#2ecc71' : '#444' }}>{item.label}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
+              {/* Password helper text */}
+              {formData.password && getPasswordHelperText() && (
+                <div className="helper-text" style={{ 
+                  color: '#ff0000', 
+                  fontSize: '0.85rem',
+                  fontWeight: 'bold', 
+                  marginTop: '4px' 
+                }}>
+                  {getPasswordHelperText()}
+                </div>
+              )}
 
-
-
-</div>
-
+              {/* Tooltip */}
+              {showTooltip && (
+                <div className="tooltip-box tooltip-fade">
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontWeight: 'bold',
+                      color: '#555',
+                      fontSize: '0.70rem',
+                      marginBottom: '0.25rem'
+                    }}>
+                      <span>Password Strength</span>
+                      <span style={{ color: getStrengthColor(passwordStrength) }}>
+                        {getStrengthDescription(passwordStrength)}
+                        {shouldShowNotAcceptable && " (Not Acceptable)"}
+                      </span>
+                    </div>
+                    <div style={{
+                      height: '6px',
+                      width: '100%',
+                      borderRadius: '4px',
+                      backgroundColor: '#ddd',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${(Object.values(requirementsStatus).filter(Boolean).length / 5) * 100}%`,
+                        backgroundColor: getStrengthColor(passwordStrength),
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </div>
+                  </div>
+                  <strong style={{
+                    display: 'block',
+                    marginBottom: '0.5rem',
+                    color: '#444',
+                    fontSize: '1rem'
+                  }}>Password must contain:</strong>
+                  <ul style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: 0
+                  }}>
+                    {[{ label: 'At least 8 characters', satisfied: requirementsStatus.length },
+                      { label: 'Uppercase letter', satisfied: requirementsStatus.uppercase },
+                      { label: 'Lowercase letter', satisfied: requirementsStatus.lowercase },
+                      { label: 'Number', satisfied: requirementsStatus.number },
+                      { label: 'Special character', satisfied: requirementsStatus.specialChar }].map((item, idx) => (
+                      <li key={idx} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '0.4rem'
+                      }}>
+                        <span style={{
+                          width: '20px',
+                          height: '20px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          backgroundColor: item.satisfied ? '#c6f6d5' : '#ddd',
+                          color: item.satisfied ? '#2ecc71' : '#888',
+                          fontSize: '14px',
+                          marginRight: '0.5rem',
+                          border: item.satisfied ? '1.5px solid #2ecc71' : '1.5px solid #aaa'
+                        }}>{item.satisfied ? '✓' : ''}</span>
+                        <span style={{ color: item.satisfied ? '#2ecc71' : '#444' }}>{item.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
 
             {/* Password confirmation field */}
             <div className="form-group">
@@ -429,11 +456,15 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Submit button with loading state */}
+            {/* Submit button with loading state and password strength check */}
             <button 
               type="submit" 
               className="register-button" 
-              disabled={isLoading}
+              disabled={isRegisterDisabled}
+              style={{
+                opacity: isRegisterDisabled ? 0.7 : 1,
+                cursor: isRegisterDisabled ? 'not-allowed' : 'pointer'
+              }}
             >
               {isLoading ? (
                 <>
