@@ -76,7 +76,7 @@ export default class Route {
   }
 
   protected handleError(error: HTTPResponseError, res: Response) {
-    console.error(error);
+    console.error(error, res);
     res.status(error.status).json({
       // code: error.code,
       text_code: error.text_code,
