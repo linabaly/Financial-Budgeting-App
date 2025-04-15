@@ -11,7 +11,7 @@ interface Transaction {
   id: string;
   name: string;
   date: string;
-  amount: string;
+  amount: number;
   category: string;
   type: string;
 }
@@ -21,7 +21,7 @@ interface Transaction {
  */
 interface TransactionFormData {
   name: string;
-  amount: string;
+  amount: number;
   category: string;
   type: string;
   date: string;
@@ -42,7 +42,7 @@ const categoryColors: {[key: string]: string} = {
   Food: '#27ae60',
   Rent: '#e74c3c',
   Utilities: '#3498db',
-  Health: '#9b59b6',
+  Healthcare: '#9b59b6',
   Entertainment: '#f39c12',
   Personal: '#1abc9c',
   Transport: '#2980b9',
@@ -82,7 +82,7 @@ const Transactions: React.FC = () => {
   const [isNewTransactionOpen, setIsNewTransactionOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState<TransactionFormData>({
     name: '',
-    amount: '',
+    amount: 0,
     category: 'Food',
     type: 'EXPENSE',
     date: new Date().toISOString().split('T')[0]
@@ -146,9 +146,7 @@ const Transactions: React.FC = () => {
           id: transaction.id,
           name: transaction.name,
           date: new Date(transaction.date).toLocaleDateString('en-US'),
-          amount: transaction.type === 'INCOME' ? 
-          `+$${parseFloat(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}` :
-          `-$${parseFloat(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+          amount: parseFloat(transaction.amount),
           category: transaction.category,
           type: transaction.type
         }));
@@ -279,12 +277,12 @@ const Transactions: React.FC = () => {
         // Special handling for amount column to sort numerically
         if (sortConfig.key === 'amount') {
           // Extract numeric values from amounts (remove $ and commas)
-          const amountA = parseFloat(a.amount.replace(/[$,+/-]/g, ''));
-          const amountB = parseFloat(b.amount.replace(/[$,+/-]/g, ''));
+          // const amountA = parseFloat(a.amount.replace(/[$,+/-]/g, ''));
+          // const amountB = parseFloat(b.amount.replace(/[$,+/-]/g, ''));
           
           return sortConfig.direction === 'ascending' 
-            ? amountA - amountB 
-            : amountB - amountA;
+            ? a.amount - b.amount 
+            : b.amount - a.amount;
         }
         
         // For other columns, sort alphabetically
@@ -359,7 +357,7 @@ const Transactions: React.FC = () => {
 
       console.log("Sending transaction with data:", {
         descriptor: newTransaction.name,
-        amount: parseFloat(newTransaction.amount),
+        amount: newTransaction.amount,
         category: newTransaction.category,
         type: newTransaction.type,
         postedAt: new Date(newTransaction.date).toISOString()
@@ -368,7 +366,7 @@ const Transactions: React.FC = () => {
       // create payload for API
       const transactionPayload = {
         descriptor: newTransaction.name,
-        amount: parseFloat(newTransaction.amount),
+        amount: newTransaction.amount,
         category: newTransaction.category,
         type: newTransaction.type,
         postedAt: new Date(newTransaction.date).toISOString()
@@ -387,9 +385,7 @@ const Transactions: React.FC = () => {
         id: createdTransaction.id,
         name: createdTransaction.descriptor,
         date: new Date(createdTransaction.postedAt).toLocaleDateString('en-US'),
-        amount: createdTransaction.type === 'INCOME' ?
-          `+$${formatCurrency(parseFloat(String(createdTransaction.amount)))}` :
-          `-$${formatCurrency(parseFloat(String(createdTransaction.amount)))}`,
+        amount: parseFloat(String(createdTransaction.amount)),
         category: createdTransaction.category,
         type: createdTransaction.type
       };
@@ -398,7 +394,7 @@ const Transactions: React.FC = () => {
       setTransactions(prevTransactions => [formattedTransaction, ...prevTransactions]);
       setNewTransaction({
         name: '',
-        amount: '',
+        amount: 0,
         category: 'Food',
         type: 'EXPENSE',
         date: new Date().toISOString().split('T')[0]
@@ -416,8 +412,8 @@ const Transactions: React.FC = () => {
    * Validate form inputs
    */
   const isFormValid = newTransaction.name.trim() !== '' && 
-                      newTransaction.amount.trim() !== '' && 
-                      parseFloat(newTransaction.amount) > 0 &&
+                      !isNaN(newTransaction.amount) && 
+                      newTransaction.amount > 0 &&
                       newTransaction.type !== '' &&
                       newTransaction.date !== '';
 
@@ -464,7 +460,7 @@ const Transactions: React.FC = () => {
                 <input 
                   type="number" 
                   value={newTransaction.amount} 
-                  onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
+                  onChange={(e) => setNewTransaction({...newTransaction, amount: parseFloat(e.target.value) || 0})}
                   placeholder="0.00"
                   step="0.01"
                   min="0"
@@ -482,7 +478,7 @@ const Transactions: React.FC = () => {
                   <option value="FOOD">Food</option>
                   <option value="RENT">Rent</option>
                   <option value="UTILITIES">Utilities</option>
-                  <option value="HEALTH">Health</option>
+                  <option value="HEALTHCARE">Healthcare</option>
                   <option value="ENTERTAINMENT">Entertainment</option>
                   <option value="PERSONAL">Personal</option>
                   <option value="TRANSPORT">Transport</option>
@@ -556,7 +552,7 @@ const Transactions: React.FC = () => {
           
           {/* Category filters */}
           <div className="category-filters">
-            {['All', 'Food', 'Rent', 'Utilities', 'Health', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
+            {['All', 'Food', 'Rent', 'Utilities', 'Healthcare', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
               <button 
                 key={category}
                 className={`category-filter ${category === selectedCategory ? 'active' : ''}`}
