@@ -33,7 +33,7 @@ export default class Route {
 
   public init() {
     this.router.all("", (req, res, next) => {
-      console.info(`'${req.method}' request from '${req.ip}' to '${req.hostname}${req.path}'.`);
+      console.info(`'${req.method}' request from '${req.ip}' to '${req.originalUrl}'.`);
       if (this.conf.maintenance === true)
         res.status(503).json({
           code: this.constants.codes.MAINTENANCE_OR_UNAVAILABLE,
