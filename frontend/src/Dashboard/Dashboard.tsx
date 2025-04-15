@@ -10,6 +10,7 @@ import SavingsProgress from './components/SavingsProgress';
 import RecurringPayments from './components/RecurringPayments';
 import ExpenseAlerts from './components/ExpenseAlerts';
 import Footer from './components/Footer';
+import ThemeToggle from './components/ThemeToggle';
 
 /**
  * Dashboard Component
@@ -122,6 +123,11 @@ const Dashboard: React.FC = () => {
       <Header />
       
       <main className="main-content">
+        {/* Theme toggle container positioned below header */}
+        <div className="theme-toggle-container">
+          <ThemeToggle />
+        </div>
+        
         {/* User greeting section with date */}
         <div className="greeting-section">
           <div>

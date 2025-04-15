@@ -212,6 +212,18 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+[data-theme='light'] .pie-chart-wrapper svg g path,
+[data-theme='light'] .bar-chart-wrapper svg g path,
+[data-theme='light'] .bar-chart-wrapper svg g rect {
+  stroke: var(--text-primary);
+}
+
+[data-theme='light'] .pie-center-text, .pie-center-subtext {
+  font-family: 'Inter', sans-serif;
+  text-shadow: -var(-text-primary);
+  fill: var(--text-primary) !important;
+}
+
 /* ---------------------------------------------
  * LEGEND COMPONENTS
  * Category legend with interactive items
@@ -671,4 +683,214 @@ text {
   .legend-item:nth-child(n) {
     animation-delay: 0.5s;
   }
+}
+
+/* BudgetInsights Minimal Light Mode CSS */
+
+/* Main content container */
+[data-theme='light'] .insights-content {
+  background-color: #f4f7fa;
+  color: #333333;
+}
+
+/* Header styling */
+[data-theme='light'] .insights-header h3 {
+  background: linear-gradient(90deg, #333333, #666666);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme='light'] .insights-header:hover h3 {
+  text-shadow: 0 0 15px rgba(108, 92, 231, 0.4);
+}
+
+[data-theme='light'] .insights-header::after {
+  background: linear-gradient(90deg, #6c5ce7, #8e44ad, #6c5ce7, #8e44ad);
+}
+
+/* Summary cards */
+[data-theme='light'] .summary-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .summary-card:hover {
+  box-shadow: 0 15px 30px rgba(108, 92, 231, 0.15);
+}
+
+[data-theme='light'] .summary-inner {
+  background: rgba(244, 247, 250, 0.9);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .summary-inner::after {
+  background: radial-gradient(circle, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 70%);
+}
+
+[data-theme='light'] .summary-inner h3 {
+  color: #666666;
+}
+
+[data-theme='light'] .summary-card:hover .summary-inner h3 {
+  color: #333333;
+}
+
+[data-theme='light'] .amount {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .summary-card:hover .amount {
+  text-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+}
+
+[data-theme='light'] .amount.positive { color: #27ae60; }
+[data-theme='light'] .amount.negative { color: #e74c3c; }
+
+/* Chart containers */
+[data-theme='light'] .chart-container {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Pie chart elements */
+[data-theme='light'] .pie-chart-wrapper svg g path:hover {
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+}
+
+[data-theme='light'] .pie-center-text, 
+[data-theme='light'] .pie-center-subtext {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  fill: #333333;
+}
+
+/* Legend components */
+[data-theme='light'] .legend-container {
+  background-color: rgba(248, 249, 250, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .legend-item {
+  border: 1px solid transparent;
+}
+
+[data-theme='light'] .legend-item:hover {
+  background-color: rgba(108, 92, 231, 0.05);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+[data-theme='light'] .legend-color {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .legend-item:hover .legend-color {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Legend category colors */
+[data-theme='light'] .legend-color.rent { background-color: #e74c3c; }
+[data-theme='light'] .legend-color.groceries { background-color: #2ecc71; }
+[data-theme='light'] .legend-color.entertainment { background-color: #e57373; }
+[data-theme='light'] .legend-color.utilities { background-color: #2ed8c7; }
+
+[data-theme='light'] .legend-name {
+  color: #333333;
+}
+
+[data-theme='light'] .legend-value {
+  color: #444444;
+}
+
+/* Bottom section elements */
+[data-theme='light'] .category-details {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .category-details:hover {
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .category-details::before {
+  background: linear-gradient(to bottom, #6c5ce7, #8e44ad);
+}
+
+/* Report container */
+[data-theme='light'] .report-container {
+  background-color: rgba(240, 242, 245, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .report-container.has-content {
+  background-color: rgba(240, 242, 245, 0.9);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .report-container:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .report-container::after {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+}
+
+/* Report typography */
+[data-theme='light'] .report-content {
+  color: #555555;
+}
+
+[data-theme='light'] .report-content h1 {
+  color: #333333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .report-content h2 {
+  color: #3498db;
+}
+
+[data-theme='light'] .report-content h3 {
+  color: #f39c12;
+}
+
+/* Button styles */
+[data-theme='light'] .generate-btn {
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.15);
+}
+
+[data-theme='light'] .generate-btn::before {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='light'] .generate-btn::after {
+  background: linear-gradient(to right, #6c5ce7, #7d5fef);
+}
+
+[data-theme='light'] .generate-btn:hover {
+  box-shadow: 0 10px 25px rgba(108, 92, 231, 0.25);
+}
+
+[data-theme='light'] .generate-btn:hover::after {
+  background: linear-gradient(to right, #7d5fef, #6c5ce7);
+}
+
+[data-theme='light'] .generate-btn:active {
+  box-shadow: 0 3px 10px rgba(108, 92, 231, 0.2);
+}
+
+[data-theme='light'] .btn-icon {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme='light'] .spinner {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+}
+
+/* SVG text styling */
+[data-theme='light'] text {
+  stroke: #ffffff;
+  fill: #333333;
 }
