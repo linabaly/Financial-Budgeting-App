@@ -11,6 +11,7 @@ export interface HTTPResponseError {
   code?: number;
   text_code: keyof typeof Route.prototype.constants.messages | string;
   message?: Error | string;
+  toString(): string;
 }
 
 /**
@@ -87,11 +88,12 @@ export default class Route {
 
   /**
    * This helper method takes an authentication token and authenticates the request. If it can authenticate, it'll return the account. If not, it will return null.
-   * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwards.
+   * Do not attempt to continue responding to the request if this method returns null, as it will write to the response and close it afterwords.
    * After "null" is returned from this function, you should always return from the route function.
    * @author Matthew R
    * @param req The Request object from the router application
    * @param res The Response object from the router application
+   * @param sendUnauthorized Defaults to true, if true the method will auto-write to Response, otherwise it will just perform the auth check.
    * @protected
    */
   protected async authenticate(req: Request, res: Response, sendUnauthorized = true) {
