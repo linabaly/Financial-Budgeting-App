@@ -76,7 +76,7 @@ export default class Route {
   }
 
   protected handleError(error: HTTPResponseError, res: Response) {
-    console.error(error, res);
+    console.error(error);
     res.status(error.status).json({
       // code: error.code,
       text_code: error.text_code,
@@ -102,7 +102,7 @@ export default class Route {
       let token = req.cookies.token || req.headers.authorization;
       // if the token isn't located, throw a client error
       if (!token && sendUnauthorized) {
-        this.sendClientError(res);
+        this.sendUnauthorized(res);
         return null;
       } else if (!token) {
         return null;
@@ -135,8 +135,7 @@ export default class Route {
       return account;
     } catch (error) {
       console.error(error);
-      if (sendUnauthorized) this.sendUnauthorized(res)
-      return null;
+      if (sendUnauthorized) this.sendUnauthorized(res);
     }
   }
 
