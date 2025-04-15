@@ -25,7 +25,7 @@ import {
   faApple 
 } from '@fortawesome/free-brands-svg-icons';
 import { ThemeProvider } from './Dashboard/components/ThemeContext';
-import './theme.css'; // Import theme CSS file
+
 
 // Add all icons to library
 library.add(
