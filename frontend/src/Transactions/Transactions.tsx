@@ -9,7 +9,7 @@ import { API_BASE_URL } from "../config";
  */
 interface Transaction {
   id: string;
-  name: string;
+  descriptor: string;
   date: string;
   amount: number;
   category: string;
@@ -20,7 +20,7 @@ interface Transaction {
  * Interface for the form data 
  */
 interface TransactionFormData {
-  name: string;
+  descriptor: string;
   amount: number;
   category: string;
   type: string;
@@ -39,33 +39,15 @@ interface SortConfig {
  * Map of category names to their corresponding colors for styling
  */
 const categoryColors: {[key: string]: string} = {
-  Food: '#27ae60',
-  Rent: '#e74c3c',
-  Utilities: '#3498db',
-  Healthcare: '#9b59b6',
-  Entertainment: '#f39c12',
-  Personal: '#1abc9c',
-  Transport: '#2980b9',
-  Insurance: '#c0392b'
+  FOOD: '#27ae60',
+  RENT: '#e74c3c',
+  UTILITIES: '#3498db',
+  HEALTHCARE: '#9b59b6',
+  ENTERTAINMENT: '#f39c12',
+  PERSONAL: '#1abc9c',
+  TRANSPORTATION: '#2980b9',
+  INCOME: '#c0392b'
 };
-
-/**
- * Initial transaction data for demonstration
- */
-// const initialTransactions: Transaction[] = [
-//   { id: '#T1234', name: 'Groceries', date: '2025-03-15', amount: '$120.45', category: 'Food' },
-//   { id: '#T1235', name: 'Rent Payment', date: '2025-03-10', amount: '$1,500.00', category: 'Housing' },
-//   { id: '#T1236', name: 'Electricity Bill', date: '2025-03-05', amount: '$85.20', category: 'Utilities' },
-//   { id: '#T1237', name: 'Internet Bill', date: '2025-03-03', amount: '$65.99', category: 'Utilities' },
-//   { id: '#T1238', name: 'Gym Membership', date: '2025-03-01', amount: '$50.00', category: 'Health' },
-//   { id: '#T1239', name: 'Dining Out', date: '2025-02-28', amount: '$78.50', category: 'Entertainment' },
-//   { id: '#T1240', name: 'Shopping', date: '2025-02-25', amount: '$135.75', category: 'Personal' },
-//   { id: '#T1241', name: 'Transportation', date: '2025-02-20', amount: '$45.00', category: 'Transport' },
-//   { id: '#T1242', name: 'Streaming Service', date: '2025-02-15', amount: '$14.99', category: 'Entertainment' },
-//   { id: '#T1243', name: 'Phone Bill', date: '2025-02-10', amount: '$85.00', category: 'Utilities' },
-//   { id: '#T1244', name: 'Insurance', date: '2025-02-05', amount: '$120.00', category: 'Insurance' },
-//   { id: '#T1245', name: 'Coffee', date: '2025-02-01', amount: '$25.30', category: 'Food' },
-// ];
 
 
 /**
@@ -81,7 +63,7 @@ const Transactions: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isNewTransactionOpen, setIsNewTransactionOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState<TransactionFormData>({
-    name: '',
+    descriptor: '',
     amount: 0,
     category: 'Food',
     type: 'EXPENSE',
@@ -119,7 +101,7 @@ const Transactions: React.FC = () => {
         console.log("Making API request to:", `${API_BASE_URL}/transaction`);
         console.log("With headers:", {
           "Content-Type": "application/json",
-          "Authenticated": "token exists: " + !!token
+          "Authorization": "token exists: " + !!token
         });
       
       
@@ -128,7 +110,7 @@ const Transactions: React.FC = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authenticated": token,
+            "Authorization": token,
           },
         });
 
@@ -176,7 +158,7 @@ const Transactions: React.FC = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authenticated": token,
+          "Authorization": token,
         },
       });
       
@@ -211,7 +193,7 @@ const Transactions: React.FC = () => {
       console.log("Making API request to:", `${API_BASE_URL}/transaction`);
       console.log("With headers:", {
         "Content-Type": "application/json",
-        "Authenticated": "token exists: " + !!token
+        "Authorization": "token exists: " + !!token
       });
       console.log("With body:", JSON.stringify(transactionData));
     
@@ -221,7 +203,7 @@ const Transactions: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authenticated": token,
+          "Authorization": token,
         },
         body: JSON.stringify(transactionData)
       });
@@ -255,10 +237,10 @@ const Transactions: React.FC = () => {
    * Filter transactions based on search term and selected category
    */
   const filteredTransactions = transactions.filter(transaction => {
-    const matchesSearch = (
-      transaction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = searchTerm === '' || (
+      (transaction.descriptor?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (transaction.id?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (transaction.category?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
     
     const matchesCategory = selectedCategory === 'All' || transaction.category === selectedCategory;
@@ -276,9 +258,6 @@ const Transactions: React.FC = () => {
       sortableTransactions.sort((a, b) => {
         // Special handling for amount column to sort numerically
         if (sortConfig.key === 'amount') {
-          // Extract numeric values from amounts (remove $ and commas)
-          // const amountA = parseFloat(a.amount.replace(/[$,+/-]/g, ''));
-          // const amountB = parseFloat(b.amount.replace(/[$,+/-]/g, ''));
           
           return sortConfig.direction === 'ascending' 
             ? a.amount - b.amount 
@@ -356,7 +335,7 @@ const Transactions: React.FC = () => {
        */
 
       console.log("Sending transaction with data:", {
-        descriptor: newTransaction.name,
+        descriptor: newTransaction.descriptor,
         amount: newTransaction.amount,
         category: newTransaction.category,
         type: newTransaction.type,
@@ -365,7 +344,7 @@ const Transactions: React.FC = () => {
 
       // create payload for API
       const transactionPayload = {
-        descriptor: newTransaction.name,
+        descriptor: newTransaction.descriptor,
         amount: newTransaction.amount,
         category: newTransaction.category,
         type: newTransaction.type,
@@ -383,7 +362,7 @@ const Transactions: React.FC = () => {
       // Format created transaction for display
       const formattedTransaction = {
         id: createdTransaction.id,
-        name: createdTransaction.descriptor,
+        descriptor: createdTransaction.descriptor,
         date: new Date(createdTransaction.postedAt).toLocaleDateString('en-US'),
         amount: parseFloat(String(createdTransaction.amount)),
         category: createdTransaction.category,
@@ -393,7 +372,7 @@ const Transactions: React.FC = () => {
       // Update transactions state (UI)
       setTransactions(prevTransactions => [formattedTransaction, ...prevTransactions]);
       setNewTransaction({
-        name: '',
+        descriptor: '',
         amount: 0,
         category: 'Food',
         type: 'EXPENSE',
@@ -411,7 +390,7 @@ const Transactions: React.FC = () => {
   /**
    * Validate form inputs
    */
-  const isFormValid = newTransaction.name.trim() !== '' && 
+  const isFormValid = newTransaction.descriptor.trim() !== '' && 
                       !isNaN(newTransaction.amount) && 
                       newTransaction.amount > 0 &&
                       newTransaction.type !== '' &&
@@ -447,8 +426,8 @@ const Transactions: React.FC = () => {
                 <label>Description</label>
                 <input 
                   type="text" 
-                  value={newTransaction.name} 
-                  onChange={(e) => setNewTransaction({...newTransaction, name: e.target.value})}
+                  value={newTransaction.descriptor} 
+                  onChange={(e) => setNewTransaction({...newTransaction, descriptor: e.target.value})}
                   placeholder="e.g. Grocery Shopping"
                   required
                 />
@@ -481,8 +460,8 @@ const Transactions: React.FC = () => {
                   <option value="HEALTHCARE">Healthcare</option>
                   <option value="ENTERTAINMENT">Entertainment</option>
                   <option value="PERSONAL">Personal</option>
-                  <option value="TRANSPORT">Transport</option>
-                  <option value="INSURANCE">Insurance</option>
+                  <option value="TRANSPORTATION">Transportation</option>
+                  <option value="INCOME">Income</option>
                   <option value="OTHER">Other</option>
                   
                 </select>
@@ -552,7 +531,7 @@ const Transactions: React.FC = () => {
           
           {/* Category filters */}
           <div className="category-filters">
-            {['All', 'Food', 'Rent', 'Utilities', 'Healthcare', 'Entertainment', 'Personal', 'Transport', 'Insurance', 'Other'].map(category => (
+            {['All', 'FOOD', 'RENT', 'UTILITIES', 'HEALTHCARE', 'ENTERTAINMENT', 'PERSONAL', 'TRANSPORTATION', 'INCOME', 'OTHER'].map(category => (
               <button 
                 key={category}
                 className={`category-filter ${category === selectedCategory ? 'active' : ''}`}
@@ -633,7 +612,7 @@ const Transactions: React.FC = () => {
                     <td>
                       <div className="transaction-id">{transaction.id}</div>
                     </td>
-                    <td>{transaction.name}</td>
+                    <td>{transaction.descriptor}</td>
                     <td>{transaction.date}</td>
                     <td>
                       <div 
