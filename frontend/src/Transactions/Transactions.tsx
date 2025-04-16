@@ -121,13 +121,13 @@ const Transactions: React.FC = () => {
           throw new Error(err.message || "Failed to fetch transactions");
         }
   
-        const data = await response.json();
+        const data = await response.json(); 
       
         // Format transactions for display
         const formattedTransactions = data.map((transaction: any) => ({
           id: transaction.id,
-          name: transaction.name,
-          date: new Date(transaction.date).toLocaleDateString('en-US'),
+          descriptor: transaction.descriptor,
+          date: new Date(transaction.postedAt).toLocaleDateString('en-US'),
           amount: parseFloat(transaction.amount),
           category: transaction.category,
           type: transaction.type
