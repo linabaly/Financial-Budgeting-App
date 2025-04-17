@@ -35,6 +35,7 @@ export default class TransactionRoute extends Route {
         this.handleServerError(error as Error, res);
       }
     });
+
     this.router.get("/:id", async (req, res) => {
       try {
         if (!req.params.id || typeof req.params.id !== "string") return this.sendClientError(res);
