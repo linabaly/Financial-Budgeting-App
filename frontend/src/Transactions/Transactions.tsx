@@ -65,7 +65,7 @@ const Transactions: React.FC = () => {
   const [newTransaction, setNewTransaction] = useState<TransactionFormData>({
     descriptor: '',
     amount: 0,
-    category: 'Food',
+    category: 'FOOD',
     type: 'EXPENSE',
     date: new Date().toISOString().split('T')[0]
   });
@@ -447,7 +447,7 @@ const Transactions: React.FC = () => {
       setNewTransaction({
         descriptor: '',
         amount: 0,
-        category: 'Food',
+        category: 'FOOD',
         type: 'EXPENSE',
         date: new Date().toISOString().split('T')[0]
       })
