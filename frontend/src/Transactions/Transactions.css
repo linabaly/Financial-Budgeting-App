@@ -546,6 +546,7 @@
     padding: 1.2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 1rem;
+    text-align: left;
   }
   
   /* Table rows */
@@ -666,6 +667,86 @@
     transform: scale(1.1);
     text-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
   }
+
+  /* Delete button styles */
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.delete-btn svg {
+  stroke: #e74c3c;
+  transition: stroke 0.2s;
+}
+
+.delete-btn:hover svg {
+  stroke: #c0392b;
+}
+
+/* Modal overlay styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.modal p {
+  margin-bottom: 24px;
+  color: #666;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.delete-confirm-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.delete-confirm-btn:hover {
+  background-color: #c0392b;
+}
   
   /* No results state */
   .no-results {
@@ -1078,7 +1159,6 @@
 /* Typography & Headings */
 [data-theme='light'] .transactions-header h1 {
   background: linear-gradient(90deg, #333333, #555555);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

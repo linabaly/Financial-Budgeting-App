@@ -70,6 +70,7 @@ const Transactions: React.FC = () => {
     date: new Date().toISOString().split('T')[0]
   });
   const [error, setError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   
   /**
    * Formats a number as currency with 2 decimal places
@@ -231,8 +232,80 @@ const Transactions: React.FC = () => {
     }
   };
 
+  /**
+   * Delete a transaction
+   */
+  const deleteTransaction = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        throw new Error("No token found.");
+      }
+      
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Making DELETE API request to:", `${API_BASE_URL}/transaction/${id}`);
+      console.log("With headers:", {
+        "Content-Type": "application/json",
+        "Authorization": "token exists: " + !!token
+      });
+      
+      const response = await fetch(`${API_BASE_URL}/transaction/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        }
+      });
+      
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to delete transaction");
+      }
+      
+      // Remove transaction from state
+      setTransactions(prevTransactions => 
+        prevTransactions.filter(transaction => transaction.id !== id)
+      );
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error deleting transaction:", error.message);
+      setError(error.message);
+      throw error;
+    }
+  };
 
-  
+  /**
+   * Handle delete transaction click
+   */
+  const handleDeleteTransaction = (id: string) => {
+    setConfirmDelete(id);
+  };
+
+  /**
+   * Confirm delete transaction
+   */
+  const confirmDeleteTransaction = async () => {
+    if (confirmDelete) {
+      try {
+        await deleteTransaction(confirmDelete);
+        setConfirmDelete(null);
+      } catch (error) {
+        // Error handling is done in deleteTransaction function
+      }
+    }
+  };
+
+  /**
+   * Cancel delete confirmation
+   */
+  const cancelDeleteTransaction = () => {
+    setConfirmDelete(null);
+  };
+
   /**
    * Filter transactions based on search term and selected category
    */
@@ -553,16 +626,6 @@ const Transactions: React.FC = () => {
             <table className="transactions-table">
               <thead>
                 <tr>
-                  <th className="sortable" onClick={() => requestSort('id')}>
-                    <div className="th-content">
-                      <span>ID</span>
-                      {sortConfig?.key === 'id' && (
-                        <span className="sort-direction">
-                          {sortConfig.direction === 'ascending' ? '↑' : '↓'}
-                        </span>
-                      )}
-                    </div>
-                  </th>
                   <th className="sortable" onClick={() => requestSort('name')}>
                     <div className="th-content">
                       <span>Name</span>
@@ -593,6 +656,16 @@ const Transactions: React.FC = () => {
                       )}
                     </div>
                   </th>
+                  <th className="sortable" onClick={() => requestSort('type')}>
+                    <div className="th-content">
+                      <span>Type</span>
+                      {sortConfig?.key === 'type' && (
+                        <span className="sort-direction">
+                          {sortConfig.direction === 'ascending' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </div>
+                  </th>
                   <th className="sortable amount-column" onClick={() => requestSort('amount')}>
                     <div className="th-content">
                       <span>Amount</span>
@@ -603,15 +676,13 @@ const Transactions: React.FC = () => {
                       )}
                     </div>
                   </th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               
               <tbody>
                 {currentTransactions.map((transaction, index) => (
                   <tr key={transaction.id + index} className="transaction-row">
-                    <td>
-                      <div className="transaction-id">{transaction.id}</div>
-                    </td>
                     <td>{transaction.descriptor}</td>
                     <td>{transaction.date}</td>
                     <td>
@@ -632,6 +703,20 @@ const Transactions: React.FC = () => {
                     </td>
                     <td className={`amount-column ${transaction.type === 'INCOME' ? 'income-amount' : 'expense-amount'}`}>
                       {transaction.amount}
+                    </td>
+                    <td>
+                      <button 
+                        className="delete-btn"
+                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        aria-label="Delete transaction"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -691,6 +776,30 @@ const Transactions: React.FC = () => {
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
               </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Delete confirmation modal*/}
+        {confirmDelete && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Confirm Deletion</h3>
+              <p>Are you sure you want to delete this transaction? This action cannot be undone.</p>
+              <div className="modal-actions">
+                <button 
+                  className="cancel-btn"
+                  onClick={cancelDeleteTransaction}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="delete-confirm-btn"
+                  onClick={confirmDeleteTransaction}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         )}
