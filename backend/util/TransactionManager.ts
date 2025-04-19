@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { PrismaDBClient as prisma } from "../index";
+import { Account } from "@prisma/client";
 
 export enum TransactionType {
   INCOME = "INCOME",
@@ -14,6 +15,7 @@ export enum TransactionCategory {
   TRANSPORTATION = "TRANSPORTATION",
   HEALTHCARE = "HEALTHCARE",
   OTHER = "OTHER",
+  PERSONAL = "PERSONAL",
   INCOME = "INCOME",
 }
 
@@ -29,6 +31,7 @@ export interface TransactionDetails {
   createdAt?: Date;
 }
 
+// TODO: this should be deleted, filtering should happen on the frontend
 export interface TransactionFilters {
   accountId?: string;
   category?: TransactionCategory;
@@ -53,6 +56,30 @@ export interface TransactionSummary {
       net: number;
     }
   >;
+}
+
+export enum RecurringTransactionFrequency {
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY",
+  BIWEEKLY = "BIWEEKLY",
+  MONTHLY = "MONTHLY",
+  QUARTERLY = "QUARTERLY",
+  BIANNUALLY = "BIANNUALLY",
+  ANNUALLY = "ANNUALLY",
+}
+
+export interface RecurringTransactionDetails {
+  account?: Account;
+  accountId: string;
+  amount: number;
+  category: TransactionCategory;
+  createdAt?: Date;
+  descriptor: string;
+  endDate: Date;
+  frequency: RecurringTransactionFrequency;
+  id: string;
+  startDate?: Date;
+  type: TransactionType;
 }
 
 /**
