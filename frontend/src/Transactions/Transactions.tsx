@@ -25,6 +25,7 @@ interface TransactionFormData {
   category: string;
   type: string;
   date: string;
+  amountInputEmpty?: boolean;
 }
 
 /**
@@ -49,6 +50,12 @@ const categoryColors: {[key: string]: string} = {
   INCOME: '#c0392b'
 };
 
+/**
+ * Helper function to format category name for display
+ */
+const formatCategoryName = (category: string): string => {
+  return category.charAt(0) + category.slice(1).toLowerCase();
+};
 
 /**
  * Transactions Component - Manages displaying, filtering, and sorting financial transactions
@@ -67,7 +74,8 @@ const Transactions: React.FC = () => {
     amount: 0,
     category: 'FOOD',
     type: 'EXPENSE',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    amountInputEmpty: false
   });
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -394,6 +402,17 @@ const Transactions: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
+  /**
+   * Handle category change and update type if needed
+   */
+  const handleCategoryChange = (category: string) => {
+    // If category is INCOME, force type to be INCOME too
+    if (category === 'INCOME') {
+      setNewTransaction({...newTransaction, category, type: 'INCOME'});
+    } else {
+      setNewTransaction({...newTransaction, category});
+    }
+  };
   
   /**
    * Add a new transaction to the list
@@ -510,9 +529,40 @@ const Transactions: React.FC = () => {
               <div className="form-group">
                 <label>Amount ($)</label>
                 <input 
-                  type="number" 
-                  value={newTransaction.amount} 
-                  onChange={(e) => setNewTransaction({...newTransaction, amount: parseFloat(e.target.value) || 0})}
+                  type="number"
+                  value={newTransaction.amountInputEmpty ? "" : newTransaction.amount.toString()}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (inputValue === '') {
+                      setNewTransaction({
+                        ...newTransaction,
+                        amountInputEmpty: true,
+                        amount: 0
+                      });
+                    } else {
+                      const numValue = parseFloat(inputValue);
+                      if (!isNaN(numValue)) {
+                        setNewTransaction({
+                          ...newTransaction,
+                          amount: numValue,
+                          amountInputEmpty: false
+                        });
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    // When field loses focus, reset the empty state
+                    setNewTransaction({
+                      ...newTransaction,
+                      amountInputEmpty: false
+                    });
+                  }}
+                  onFocus={(e) => {
+                    // Select all text when focused with default value
+                    if (newTransaction.amount === 0 && !newTransaction.amountInputEmpty) {
+                      e.target.select();
+                    }
+                  }}
                   placeholder="0.00"
                   step="0.01"
                   min="0"
@@ -525,7 +575,7 @@ const Transactions: React.FC = () => {
                 <label>Category</label>
                 <select 
                   value={newTransaction.category}
-                  onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value})}
+                  onChange={(e) => handleCategoryChange(e.target.value)}
                 >
                   <option value="FOOD">Food</option>
                   <option value="RENT">Rent</option>
@@ -546,6 +596,7 @@ const Transactions: React.FC = () => {
                 <select 
                   value={newTransaction.type}
                   onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value})}
+                  disabled={newTransaction.category === 'INCOME'}
                 >
                   <option value="EXPENSE">Expense</option>
                   <option value="INCOME">Income</option>
@@ -604,17 +655,27 @@ const Transactions: React.FC = () => {
           
           {/* Category filters */}
           <div className="category-filters">
-            {['All', 'FOOD', 'RENT', 'UTILITIES', 'HEALTHCARE', 'ENTERTAINMENT', 'PERSONAL', 'TRANSPORTATION', 'INCOME', 'OTHER'].map(category => (
+            <button 
+              key="All"
+              className={`category-filter ${selectedCategory === 'All' ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedCategory('All');
+                setCurrentPage(1);
+              }}
+            >
+              All
+            </button>
+            {Object.keys(categoryColors).map(category => (
               <button 
                 key={category}
                 className={`category-filter ${category === selectedCategory ? 'active' : ''}`}
-                style={category !== 'All' ? {borderColor: categoryColors[category]} : {}}
+                style={{borderColor: categoryColors[category]}}
                 onClick={() => {
                   setSelectedCategory(category);
-                  setCurrentPage(1); // Reset to first page when filtering
+                  setCurrentPage(1); 
                 }}
               >
-                {category}
+                {formatCategoryName(category)}
               </button>
             ))}
           </div>
@@ -693,7 +754,7 @@ const Transactions: React.FC = () => {
                           color: categoryColors[transaction.category]
                         }}
                       >
-                        {transaction.category}
+                        {formatCategoryName(transaction.category)}
                       </div>
                     </td>
                     <td>
@@ -702,7 +763,7 @@ const Transactions: React.FC = () => {
                       </div>
                     </td>
                     <td className={`amount-column ${transaction.type === 'INCOME' ? 'income-amount' : 'expense-amount'}`}>
-                      {transaction.amount}
+                      {formatCurrency(transaction.amount)}
                     </td>
                     <td>
                       <button 
