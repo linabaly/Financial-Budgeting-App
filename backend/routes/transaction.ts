@@ -55,16 +55,14 @@ export default class TransactionRoute extends Route {
     this.router.post("/", async (req, res) => {
       try {
         // validator checks for required fields and their types
-        if (!req.body.amount || isNaN(Number(req.body.amount)) || !req.body.descriptor) {
-          this.handleError(
-            {
-              status: 400,
-              text_code: "CLIENT_ERROR",
-              message: `Value of '!req.body.amount': ${!req.body.amount} | Value of '!req.body.descriptor': ${!req.body.descriptor} | Value of 'isNaN()...: ${isNaN(Number(req.body.amount))}`,
-            },
-            res
-          );
-          return;
+        if (
+          !req.body.amount ||
+          isNaN(Number(req.body.amount)) ||
+          !req.body.descriptor ||
+          !req.body.type ||
+          !req.body.category
+        ) {
+          return this.sendClientError(res);
         }
         // authenticate the account
         const account = await this.authenticate(req, res);
