@@ -7,6 +7,7 @@ enum TransactionCategory {
   HEALTHCARE
   OTHER
   INCOME
+  PERSONAL
 }
 
 model Budget {
