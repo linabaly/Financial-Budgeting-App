@@ -119,9 +119,10 @@ export default class TransactionRoute extends Route {
         };
 
         if (req.body.amount) updateDetails.amount = req.body.amount;
-        if (req.body.category) updateDetails.category = req.body.category;
-        if (req.body.descriptor) updateDetails.descriptor = req.body.descriptor;
-        if (req.body.type) updateDetails.type = req.body.type;
+        if (req.body.category) updateDetails.category = req.body.category.trim().toUpperCase();
+        if (req.body.descriptor)
+          updateDetails.descriptor = req.body.descriptor.trim().toUpperCase();
+        if (req.body.type) updateDetails.type = req.body.type.trim().toUpperCase();
 
         const updateQuery = await PrismaDBClient.transaction.update({
           where: { id: transaction.id },
