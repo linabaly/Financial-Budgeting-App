@@ -3,6 +3,7 @@ import './Transactions.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
 import { API_BASE_URL } from "../config";
+import TotalBalance from '../Dashboard/components/TotalBalance';
 
 /**
  * Transaction interface to define the shape of transaction data
@@ -79,7 +80,8 @@ const Transactions: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-  
+  const [transactionChanged, setTransactionChanged] = useState(false);
+
   /**
    * Formats a number as currency with 2 decimal places
    * @param amount - The number to format
@@ -143,6 +145,7 @@ const Transactions: React.FC = () => {
         }));
     
         setTransactions(formattedTransactions);
+        setTransactionChanged(prev => !prev);
       } catch (error: any) {
         console.error("Error fetching transactions:", error.message);
         setError(error.message);
@@ -301,6 +304,7 @@ const Transactions: React.FC = () => {
       try {
         await deleteTransaction(confirmDelete);
         setConfirmDelete(null);
+        setTransactionChanged(prev => !prev);
       } catch (error) {
         // Error handling is done in deleteTransaction function
       }
