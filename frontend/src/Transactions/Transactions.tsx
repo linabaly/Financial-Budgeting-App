@@ -48,7 +48,8 @@ const categoryColors: {[key: string]: string} = {
   ENTERTAINMENT: '#f39c12',
   PERSONAL: '#1abc9c',
   TRANSPORTATION: '#2980b9',
-  INCOME: '#c0392b'
+  INCOME: '#c0392b', 
+  OTHER: '#34495e'
 };
 
 /**
@@ -304,11 +305,12 @@ const Transactions: React.FC = () => {
       try {
         await deleteTransaction(confirmDelete);
         setConfirmDelete(null);
-        setTransactionChanged(prev => !prev);
+        
       } catch (error) {
         // Error handling is done in deleteTransaction function
       }
     }
+    setTransactionChanged(prev => !prev);
   };
 
   /**
