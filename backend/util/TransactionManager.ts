@@ -142,4 +142,96 @@ export default class TransactionManager {
     }
     return prisma.transaction.delete({ where: { id: transactionID } });
   }
+
+  /**
+   * This method returns all associated/related RecurringTransactions for the specified Account
+   * @author Matthew R
+   * @param accountID The ID for the Account entry to search recurring transactions related to
+   */
+  public static async getAssociatedRecurringTransactionsForAccount(accountID: string) {
+    const recurringTransactions = await prisma.recurringTransaction.findMany({
+      where: { account: { id: accountID } },
+    });
+    if (!recurringTransactions || recurringTransactions?.length === 0) {
+      return null;
+    }
+    return recurringTransactions;
+  }
+
+  /**
+   * This method returns a RecurringTransaction object from the database using its ID
+   * @author Matthew R
+   * @param id The ID of the RecurringTransaction in which to fetch
+   */
+  public static async getRecurringTransactionByID(id: string) {
+    const recurringTransaction = await prisma.recurringTransaction.findUnique({
+      where: { id },
+    });
+    if (!recurringTransaction) return null;
+    return recurringTransaction;
+  }
+
+  /**
+   * This method creates a new RecurringTransaction and saves it in the database
+   * @author Matthew R
+   * @param recurringTransaction The constructed recurring transaction object
+   */
+  public static async createRecurringTransaction(
+    recurringTransaction: RecurringTransactionDetails
+  ) {
+    // check required fields and return an error if one or more of them are not specified
+    if (
+      !recurringTransaction.amount ||
+      !recurringTransaction.descriptor ||
+      !recurringTransaction.type ||
+      !recurringTransaction.category ||
+      !recurringTransaction.accountId ||
+      !recurringTransaction.frequency
+    ) {
+      throw new Error(
+        `Expected 'recurringTransaction.amount', 'recurringTransaction.descriptor', 'recurringTransaction.type', 'recurringTransaction.category', 'recurringTransaction.frequency', and 'recurringransaction.accountId' however one or more was not supplied.`
+      );
+    }
+    // The query to send to the database is built here
+    const query = {
+      id: uuid(),
+      amount: recurringTransaction.amount,
+      descriptor: recurringTransaction.descriptor,
+      type: recurringTransaction.type,
+      category: recurringTransaction.category,
+      // if the transaction post date is not specified then we default to the current time
+      startDate: recurringTransaction.startDate
+        ? new Date(recurringTransaction.startDate)
+        : new Date(),
+      account: {
+        connect: { id: recurringTransaction.accountId },
+      },
+      // if the transaction created at date is not specified then we default to the current time
+      createdAt: recurringTransaction.createdAt ?? new Date(),
+      endDate: recurringTransaction.endDate || null,
+      frequency: recurringTransaction.frequency,
+    };
+    try {
+      // execute the query and return the result from the ORM
+      return prisma.recurringTransaction.create({ data: query });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public static async updateRecurringTransactionByID() {}
+
+  /**
+   * This method deletes a RecurringTransaction from the database using its ID.
+   * @author Matthew R
+   * @param id The ID of the recurring transaction which is to be deleted.
+   */
+  public static async deleteRecurringTransactionByID(id: string) {
+    const transaction = this.getTransactionById(id);
+    if (!transaction) {
+      throw new Error(`Recurring Transaction '${id}' does not exist.`);
+    }
+    return prisma.transaction.delete({ where: { id } });
+  }
 }
