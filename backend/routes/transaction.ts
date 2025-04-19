@@ -76,7 +76,7 @@ export default class TransactionRoute extends Route {
           category: req.body.category,
           descriptor: req.body.descriptor.trim(),
           postedAt: req.body.postedAt ? new Date(req.body.postedAt) : new Date(),
-          type: req.body.type,
+          type: req.body.type.trim().toUpperCase(),
         };
         const createQuery = await TransactionManager.createTransaction(passedTransactionDetails);
         // 201 CREATED
