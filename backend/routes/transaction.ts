@@ -73,8 +73,8 @@ export default class TransactionRoute extends Route {
         const passedTransactionDetails: TransactionDetails = {
           accountID: account.id,
           amount: Number(req.body.amount),
-          category: req.body.category,
-          descriptor: req.body.descriptor.trim(),
+          category: req.body.category.trim().toUpperCase(),
+          descriptor: req.body.descriptor.trim().toUpperCase(),
           postedAt: req.body.postedAt ? new Date(req.body.postedAt) : new Date(),
           type: req.body.type.trim().toUpperCase(),
         };
