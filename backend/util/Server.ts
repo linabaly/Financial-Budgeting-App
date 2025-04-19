@@ -87,6 +87,7 @@ export default class Server {
         },
       })
     );
+    return this.listen;
   }
 
   /**
