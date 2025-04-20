@@ -1,53 +1,94 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { incomeExpenseData } from '../utils/chartUtils';
+import { API_BASE_URL } from '../../config';
+
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+interface MonthlyData {
+  month: string;
+  income: number;
+  expense: number;
+}
 
 const IncomeExpenseChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
-  
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [data, setData] = useState<MonthlyData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    if (chartRef.current) {
-      // Make sure to use the available height effectively
-      const updateChart = () => {
-        // First clear any existing content
-        d3.select(chartRef.current).selectAll("*").remove();
-        
-        // Then generate the chart with our custom implementation
-        generateIncomeExpenseChart();
-      };
-      
-      // Initial render
-      updateChart();
-      
-      // Also update on resize for responsiveness
-      const handleResize = () => {
-        updateChart();
-      };
-      
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, []);
-  
-  // Custom implementation of the income expense chart
-  const generateIncomeExpenseChart = () => {
-    if (!chartRef.current) return;
-    
-    const containerWidth = chartRef.current.clientWidth;
-    const containerHeight = chartRef.current.clientHeight;
-    
-    const margin = { top: 40, right: 65, bottom: 40, left: 65 };
-    const width = containerWidth - margin.left - margin.right;
-    const height = containerHeight - margin.top - margin.bottom;
-    
-    // Create SVG
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const res = await fetch(`${API_BASE_URL}/transaction`, {
+          headers: {
+            "Authorization": token,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const transactions = await res.json();
+
+        const monthly: MonthlyData[] = MONTH_NAMES.map(m => ({
+          month: m,
+          income: 0,
+          expense: 0
+        }));
+
+        transactions.forEach((tx: any) => {
+          const date = new Date(tx.postedAt);
+          if (date.getFullYear() === year) {
+            const m = date.getMonth();
+            const amt = parseFloat(tx.amount);
+            if (tx.type === "INCOME") monthly[m].income += amt;
+            if (tx.type === "EXPENSE") monthly[m].expense += amt;
+          }
+        });
+
+        setData(monthly);
+      } catch (e: any) {
+        console.error(e.message);
+        setError(e.message);
+      }
+    };
+
+    fetchData();
+  }, [year]);
+
+  useEffect(() => {
+    if (chartRef.current && data.length > 0) drawChart();
+  }, [data]);
+
+  const drawChart = () => {
+    d3.select(chartRef.current).selectAll("*").remove();
+    const margin = { top: 30, right: 30, bottom: 40, left: 60 };
+    const width = chartRef.current!.clientWidth - margin.left - margin.right;
+    const height = 320;
+
     const svg = d3.select(chartRef.current)
       .append("svg")
-      .attr("width", containerWidth)
-      .attr("height", containerHeight)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .style("font-family", "sans-serif")
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
-    
+
+    const x = d3.scalePoint()
+      .domain(data.map(d => d.month))
+      .range([0, width])
+      .padding(0.5);
+
+    const maxY = d3.max(data, d => Math.max(d.income, d.expense)) || 100;
+
+    const y = d3.scaleLinear()
+      .domain([0, maxY * 1.1])
+      .range([height, 0])
+      .nice();
+
+    // Add Legend
+        
     // Create legend
     const legendG = svg.append("g")
       .attr("transform", `translate(0, -20)`);
@@ -85,161 +126,104 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("fill", "#fff")
       .attr("font-size", "20px")
       .text("Expenses");
-    
-    // Title
-    svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", -26)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#fff")
-      .attr("font-size", "22px")
-      .text("Income vs. Expenses");
-    
-    // Define scales
-    const x = d3.scaleBand()
-      .domain(incomeExpenseData.map(d => d.date))
-      .range([0, width])
-      .padding(0.4);
-    
-    const yMax = d3.max(incomeExpenseData, d => Math.max(d.income, d.expense)) || 1500;
-    const yMin = 0; // Start from 0
-    
-    const y = d3.scaleLinear()
-      .domain([yMin, yMax * 1.1]) // Add 10% padding at the top
-      .range([height, 0]);
-    
-    // Create the x-axis with larger styling
+
+    // Tooltip
+    const tooltip = d3.select(chartRef.current)
+      .append("div")
+      .style("position", "absolute")
+      .style("background", "#111")
+      .style("color", "#fff")
+      .style("padding", "6px 10px")
+      .style("border-radius", "4px")
+      .style("font-size", "14px")
+      .style("pointer-events", "none")
+      .style("opacity", 0);
+
+    const lineIncome = d3.line<MonthlyData>()
+      .x(d => x(d.month)!)
+      .y(d => y(d.income))
+      .curve(d3.curveMonotoneX);
+
+    const lineExpense = d3.line<MonthlyData>()
+      .x(d => x(d.month)!)
+      .y(d => y(d.expense))
+      .curve(d3.curveMonotoneX);
+
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#2ecc71")
+      .attr("stroke-width", 3)
+      .attr("d", lineIncome);
+
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#ff6b6b")
+      .attr("stroke-width", 3)
+      .attr("d", lineExpense);
+
+    // Dots
+    const drawDots = (key: 'income' | 'expense', color: string) => {
+      svg.selectAll(`.${key}-dot`)
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", `${key}-dot`)
+        .attr("cx", d => x(d.month)!)
+        .attr("cy", d => y(d[key]))
+        .attr("r", 5)
+        .attr("fill", color)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`<strong>${d.month}</strong><br/>${key.charAt(0).toUpperCase() + key.slice(1)}: $${d[key].toFixed(2)}`)
+            .style("left", event.offsetX + "px")
+            .style("top", event.offsetY - 40 + "px")
+            .transition().duration(200).style("opacity", 0.9);
+        })
+        .on("mouseout", () => {
+          tooltip.transition().duration(200).style("opacity", 0);
+        });
+    };
+
+    drawDots("income", "#2ecc71");
+    drawDots("expense", "#ff6b6b");
+
+    // Axes
     svg.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x))
       .selectAll("text")
-      .style("font-size", "18px")  // Increased x-axis label size
-      .style("fill", "#ccc")
-      .style("text-anchor", "middle")
-      .attr("dy", "1.5em"); // Push labels slightly down
+      .attr("fill", "#ccc")
+      .style("font-size", "14px");
 
-    
-    // Create the y-axis with larger dollar sign labels
     svg.append("g")
-      .call(
-        d3.axisLeft(y)
-          .tickFormat(d => `$${d}`)
-          .tickSize(0) // Remove tick marks
-          .ticks(6)
-      )
-      .call(g => g.select(".domain").remove()) // Remove domain line
+      .call(d3.axisLeft(y).tickFormat(d => `$${d}`))
       .selectAll("text")
-      .style("font-size", "18px")  // Increased y-axis label size
-      .style("fill", "#aaa")
-      .style("text-anchor", "end");
-    
-    // Add horizontal grid lines
-    svg.selectAll(".grid-line")
-      .data(y.ticks(6))
-      .enter()
-      .append("line")
-      .attr("class", "grid-line")
-      .attr("x1", 0)
-      .attr("x2", width)
-      .attr("y1", d => y(d))
-      .attr("y2", d => y(d))
-      .attr("stroke", "#444")
-      .attr("stroke-dasharray", "2,2")
-      .attr("stroke-width", 1);
-    
-    // Add zero baseline
-    svg.append("line")
-      .attr("x1", 0)
-      .attr("x2", width)
-      .attr("y1", height)
-      .attr("y2", height)
-      .attr("stroke", "#555")
-      .attr("stroke-width", 1);
-    
-    // Create the lines
-    const incomeLine = d3.line<{date: string, income: number, expense: number}>()
-      .x(d => (x(d.date) || 0) + x.bandwidth() / 2)
-      .y(d => y(d.income))
-      .curve(d3.curveMonotoneX);
-    
-    const expenseLine = d3.line<{date: string, income: number, expense: number}>()
-      .x(d => (x(d.date) || 0) + x.bandwidth() / 2)
-      .y(d => y(d.expense))
-      .curve(d3.curveMonotoneX);
-    
-    // Add the income path
-    svg.append("path")
-      .datum(incomeExpenseData)
-      .attr("fill", "none")
-      .attr("stroke", "#2ecc71")
-      .attr("stroke-width", 3)
-      .attr("d", incomeLine);
-    
-    // Add the expense path
-    svg.append("path")
-      .datum(incomeExpenseData)
-      .attr("fill", "none")
-      .attr("stroke", "#ff6b6b")
-      .attr("stroke-width", 3)
-      .attr("d", expenseLine);
-    
-    // Add income dots
-    svg.selectAll(".income-dot")
-      .data(incomeExpenseData)
-      .enter()
-      .append("circle")
-      .attr("class", "income-dot")
-      .attr("cx", d => (x(d.date) || 0) + x.bandwidth() / 2)
-      .attr("cy", d => y(d.income))
-      .attr("r", 5)
-      .attr("fill", "#2ecc71");
-    
-    // Add expense dots
-    svg.selectAll(".expense-dot")
-      .data(incomeExpenseData)
-      .enter()
-      .append("circle")
-      .attr("class", "expense-dot")
-      .attr("cx", d => (x(d.date) || 0) + x.bandwidth() / 2)
-      .attr("cy", d => y(d.expense))
-      .attr("r", 5)
-      .attr("fill", "#ff6b6b");
-    
-    // Add final values at the right edge
-    const lastData = incomeExpenseData[incomeExpenseData.length - 1];
-    
-    // Income value
-    svg.append("text")
-      .attr("x", width + 5)
-      .attr("y", y(lastData.income))
-      .attr("dy", "0.35em")
-      .style("fill", "#2ecc71")
-      .style("font-size", "16px")
-      .text(`$${lastData.income}`);
-    
-    // Expense value
-    svg.append("text")
-      .attr("x", width + 5)
-      .attr("y", y(lastData.expense))
-      .attr("dy", "0.35em")
-      .style("fill", "#ff6b6b")
-      .style("font-size", "16px")
-      .text(`$${lastData.expense}`);
+      .attr("fill", "#ccc")
+      .style("font-size", "14px");
+    // Remove inner tick lines
+    svg.selectAll(".tick line").remove();
   };
-  
+
   return (
-    <div 
-      ref={chartRef} 
-      className="income-expense-chart-container" 
-      style={{ 
-        backgroundColor: "#2A2A2A", 
-        borderRadius: "12px", 
-        height: "100%", 
-        width: "100%",
-        padding: "20px",
-        boxSizing: "border-box"
-      }}
-    />
+    <div style={{ padding: '1rem', position: 'relative' }}>
+      {/* Header & Year Toggle */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button onClick={() => setYear(prev => prev - 1)}>&larr;</button>
+          <span style={{ fontSize: '1.6rem', fontWeight: 600}}>Income vs Expense – {year}</span>
+          <button onClick={() => setYear(prev => prev + 1)} disabled={year >= new Date().getFullYear()}>&rarr;</button>
+        </div>
+      </div>
+
+      {/* Chart or Error */}
+      {error ? (
+        <div style={{ color: '#e74c3c', fontSize: '1.4rem' }}>Add Transactions to Load Chart</div>
+      ) : (
+        <div ref={chartRef} style={{ height: '360px', position: 'relative' }} />
+      )}
+    </div>
   );
 };
 
