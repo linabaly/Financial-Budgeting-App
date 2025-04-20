@@ -367,7 +367,7 @@
    
    .progress {
      height: 100%;
-     background-color: #ff6b6b;
+     background-color: rgba(220, 20, 60, 0.3);
      border-radius: 4px;
      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
    }
@@ -473,7 +473,7 @@
    }
    
    .legend-color.expense {
-     background-color: #ff6b6b;
+     background-color: rgba(220, 20, 60, 0.3);
    }
    
    .legend-label {
@@ -736,7 +736,7 @@
    .payment-amount {
      font-size: 1.2rem;
      font-weight: 600;
-     color: #ff6b6b;
+     color: rgba(220, 20, 60, 0.3);
      transition: all 0.3s ease;
      animation: softPulse 3s infinite ease-in-out;
    }
