@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from './ThemeContext';
 import './Header.css';
 // Import the logo - adjust the path if needed
 
@@ -16,6 +17,7 @@ import './Header.css';
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme } = useTheme();
   
   // State management
   const [scrolled, setScrolled] = useState(false); // Controls header appearance on scroll
@@ -56,10 +58,14 @@ const Header: React.FC = () => {
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
-        {/* Logo and Brand Identity - replaced text with SVG logo */}
+        {/* Logo that changes with theme */}
         <div className="logo-container" onClick={handleLogoClick}>
           <div className="logo">
-            <img src="public/icons/logo.png" alt="Finovators Logo" className="logo-image" />
+            <img
+              src={theme === 'light' ? '/icons/logo2.png' : '/icons/logo.png'}
+              alt="Finovators Logo"
+              className="logo-image"
+            />
           </div>
         </div>
         

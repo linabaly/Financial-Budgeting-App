@@ -354,37 +354,37 @@
 /* Add these styles to your existing Header.css file */
 
 .logo-image {
-  height: 28px; /* Reduced height */
-  width: auto;
-  background-color: transparent; /* This ensures no background */
-  margin: 0; /* Remove any default margins */
-  padding: 0; /* Remove any default padding */
+  height: 120px;           /* Set a consistent, balanced height */
+  width: auto;            /* Maintains aspect ratio */
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
-.logo-image {
-  height: 120px; /* Adjust height as needed */
-  width: 250px; /* Adjust width as needed */
-  /* If your logo needs a specific background treatment */
-  background-color: transparent; /* This ensures no background */
+@media (max-width: 480px) {
+  .logo-image {
+    height: 32px;
+  }
 }
+
 
 .logo {
   display: flex;
   align-items: center;
   cursor: pointer;
   transition: transform 0.2s ease;
-  margin: 0; /* Remove any default margins */
-  padding: 0; /* Remove any default padding */
+  margin: 0;
+  padding: 0;
 }
 
 .logo:hover {
   transform: scale(1.05);
 }
 
-/* Adjust logo container spacing */
 .logo-container {
   display: flex;
   align-items: center;
-  padding: 0; /* Remove any default padding */
-  margin-right: 10px; /* Reduced spacing between logo and navigation */
+  padding: 0;
+  margin-right: 10px;
 }
