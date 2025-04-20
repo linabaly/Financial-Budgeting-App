@@ -103,9 +103,10 @@ const generateMonthlyChart = (
 
   // Y-axis 
   svg.append("g")
-    .call(d3.axisLeft(y).tickValues([])) 
-    .select(".domain") 
-    .attr("stroke", "#ccc");
+      .call(d3.axisLeft(y).tickFormat(d => `$${d}`))
+      .selectAll("text")
+      .attr("fill", "#ccc")
+      .style("font-size", "14px");
 
   // Remove inner tick lines
   svg.selectAll(".tick line").remove();
@@ -172,7 +173,7 @@ const MonthlyChart: React.FC = () => {
         {/* Year Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button onClick={() => setYear(prev => prev - 1)}>&larr;</button>
-          <span style={{ fontSize: '1.8rem', fontWeight: 600, color: '#eee' }}>Expenses – {year}</span>
+          <span style={{ fontSize: '1.8rem', fontWeight: 600 }}>Expenses – {year}</span>
           <button onClick={() => setYear(prev => prev + 1)} disabled={year >= new Date().getFullYear()}>&rarr;</button>
         </div>
 
@@ -185,7 +186,7 @@ const MonthlyChart: React.FC = () => {
       </div>
 
       {error ? (
-        <div style={{ color: 'red' }}>Error: {error}</div>
+        <div className="error-message" style={{ color: '#e74c3c', position: 'relative', zIndex: 1, fontSize: '1.5rem' }}>Add Transactions to Render a Graph</div>
       ) : (
         <div ref={chartRef} style={{ height: '350px', position: 'relative' }} />
       )}

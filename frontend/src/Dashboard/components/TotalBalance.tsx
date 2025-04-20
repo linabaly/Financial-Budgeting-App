@@ -192,7 +192,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
       ref={cardRef}
       style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px' }}
     >
-      <div className="label" style={{ marginBottom: '0.5rem', color: '#aaa', position: 'relative', zIndex: 1 }}>
+      <div className="label" style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
         Total Balance – {monthLabel}
       </div>
 
@@ -205,7 +205,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
       {isLoading ? (
         <div className="loading-indicator" style={{ position: 'relative', zIndex: 1 }}>Loading...</div>
       ) : error ? (
-        <div className="error-message" style={{ color: '#e74c3c', position: 'relative', zIndex: 1 }}>Error loading balance</div>
+        <div className="error-message" style={{ color: '#e74c3c', position: 'relative', fontSize: '1.1rem', zIndex: 1 }}>Add Transactions</div>
       ) : (
         <>
           <div className="balance-amount" style={{ position: 'relative', zIndex: 1 }}>
@@ -213,7 +213,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
           </div>
           <div className="balance-growth" style={{ color: balanceData.growth >= 0 ? '#2ecc71' : '#e74c3c', marginTop: '0.25rem', position: 'relative', zIndex: 1 }}>
             {balanceData.growth >= 0 ? '↑' : '↓'} {Math.abs(balanceData.growth).toFixed(2)}%
-            <span style={{ fontSize: '0.8em', color: '#aaa', marginLeft: '0.5rem' }}>vs last month</span>
+            <span style={{ fontSize: '0.8em', marginLeft: '0.5rem' }}>vs last month</span>
           </div>
         </>
       )}
