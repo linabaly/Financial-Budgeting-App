@@ -6,7 +6,7 @@ import TransactionManager, {
   TransactionType,
 } from "../util/TransactionManager";
 import Route from "../util/Route";
-import { PrismaDBClient } from "../index";
+import { PrismaDBClient } from "../index"; // TODO: this likely is not required
 import { Server } from "../util";
 
 /**
@@ -24,9 +24,8 @@ export default class RecurringTransactionRoute extends Route {
       try {
         const account = await this.authenticate(req, res);
         if (!account) return;
-        const recurringTransactions = await TransactionManager.getAssociatedTransactionsForAccount(
-          account.id
-        );
+        const recurringTransactions =
+          await TransactionManager.getAssociatedRecurringTransactionsForAccount(account.id);
         if (!recurringTransactions || recurringTransactions.length < 1) {
           res.sendStatus(204);
           return;
@@ -63,8 +62,7 @@ export default class RecurringTransactionRoute extends Route {
           isNaN(Number(req.body.amount)) ||
           !req.body.descriptor ||
           !req.body.frequency ||
-          !req.body.endDate ||
-          !req.body.startDate
+          !req.body.endDate
         ) {
           return this.sendClientError(res);
         }
@@ -75,12 +73,11 @@ export default class RecurringTransactionRoute extends Route {
         const passedRecurringTransactionDetails: RecurringTransactionDetails = {
           endDate: new Date(req.body.endDate),
           frequency: req.body.frequency,
-          id: "",
           accountId: account.id,
           amount: Number(req.body.amount),
           category: req.body.category,
           descriptor: req.body.descriptor.trim(),
-          startDate: req.body.startDate ? new Date(req.body.postedAt) : new Date(),
+          startDate: req.body.startDate ? new Date(req.body.startDate) : new Date(),
           type: req.body.type,
         };
         const createQuery = await TransactionManager.createRecurringTransaction(

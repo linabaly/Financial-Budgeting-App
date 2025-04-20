@@ -77,7 +77,7 @@ export interface RecurringTransactionDetails {
   descriptor: string;
   endDate: Date;
   frequency: RecurringTransactionFrequency;
-  id: string;
+  id?: string;
   startDate?: Date;
   type: TransactionType;
 }
