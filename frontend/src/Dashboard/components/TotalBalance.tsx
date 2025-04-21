@@ -27,7 +27,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
 
   // Navigation state
   const today = new Date();
-  const [selectedMonthOffset, setSelectedMonthOffset] = useState(0); 
+  const [selectedMonthOffset, setSelectedMonthOffset] = useState(0);
 
   // For keeping all transactions locally
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -86,7 +86,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
       const month = postedDate.getMonth();
       const year = postedDate.getFullYear();
 
-      const txIsBeforeOrEqualToTarget = 
+      const txIsBeforeOrEqualToTarget =
         year < targetYear || (year === targetYear && month <= targetMonth);
 
       if (txIsBeforeOrEqualToTarget) {
@@ -187,19 +187,31 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
   const isCurrentMonth = selectedMonthOffset === 0;
 
   return (
-    <div 
-      className="total-balance-card" 
+    <div
+      className="total-balance-card"
       ref={cardRef}
-      style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px' }}
+      style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px', width: '100%', maxWidth: '100%', boxSizing: 'border-box'}}
     >
-      <div className="label" style={{ marginBottom: '0.5rem', position: 'relative', zIndex: 1 }}>
-        Total Balance – {monthLabel}
-      </div>
-
-      {/* Arrows */}
-      <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: '0.5rem', zIndex: 2 }}>
-        <button onClick={() => setSelectedMonthOffset(offset => offset - 1)}>&larr;</button>
-        <button onClick={() => setSelectedMonthOffset(offset => Math.min(offset + 1, 0))} disabled={isCurrentMonth}>&rarr;</button>
+      <div
+        className="balance-header"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '0.5rem',
+          flexWrap: 'wrap',
+          gap: '0.5rem',
+          zIndex: 1,
+          position: 'relative'
+        }}
+      >
+        <div className="label">
+          Total Balance – {monthLabel}
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button onClick={() => setSelectedMonthOffset(offset => offset - 1)}>&larr;</button>
+          <button onClick={() => setSelectedMonthOffset(offset => Math.min(offset + 1, 0))} disabled={isCurrentMonth}>&rarr;</button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -211,7 +223,7 @@ const TotalBalance: React.FC<TotalBalanceProps> = ({ onTransactionChange = false
           <div className="balance-amount" style={{ position: 'relative', zIndex: 1 }}>
             ${displayedBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <div className="balance-growth" style={{ color: balanceData.growth >= 0 ? '#2ecc71' : '#e74c3c', marginTop: '0.25rem', position: 'relative', zIndex: 1 }}>
+          <div className="balance-growth" style={{ color: balanceData.growth >= 0 ? '#2ecc71' : '#dc143c', marginTop: '0.25rem', position: 'relative', zIndex: 1 }}>
             {balanceData.growth >= 0 ? '↑' : '↓'} {Math.abs(balanceData.growth).toFixed(2)}%
             <span style={{ fontSize: '0.8em', marginLeft: '0.5rem' }}>vs last month</span>
           </div>

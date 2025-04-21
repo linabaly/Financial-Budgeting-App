@@ -285,6 +285,9 @@
      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
      cursor: pointer;
      position: relative;
+     overflow: hidden;
+     max-width: 100%;
+    box-sizing: border-box;
    }
    
    .total-balance-card::after {
@@ -300,7 +303,7 @@
    }
    
    .total-balance-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
     box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
   }  
    
@@ -318,13 +321,12 @@
      font-size: 2.6rem;
      font-weight: 700;
      margin-bottom: 0.25rem;
-     transition: none;
    }
    
    .balance-growth {
      font-size: 1.6rem;
      color: #2ecc71;
-     transition: transform 0.3s ease, text-shadow 0.3s ease;
+     transition: transform 0.3s, text-shadow 0.3s ease;
    }
    
    .total-balance-card:hover .balance-growth {
@@ -1195,10 +1197,23 @@
       gap: 0.5rem; /* Reduced from 1.5rem to minimize spacing */
     }
     
-    /* Improve section headers at tablet size */
+    /* Total Balance Card */
     .section-header {
       margin-bottom: 1rem;
       font-size: 1.3rem;
+    }
+
+    .total-balance-card {
+      padding: 1.2rem;
+    }
+  
+    .label,
+    .balance-growth {
+      font-size: 1.4rem;
+    }
+  
+    .balance-amount {
+      font-size: 2.2rem;
     }
     
     /* Add appropriate spacing between chart and widgets */

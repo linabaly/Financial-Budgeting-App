@@ -118,7 +118,7 @@ const IncomeExpenseChart: React.FC = () => {
       .attr("cx", 5)
       .attr("cy", 0)
       .attr("r", 5)
-      .attr("fill", "#ff6b6b");
+      .attr("fill", "#dc143c");
     
     expenseLegend.append("text")
       .attr("x", 15)
@@ -159,7 +159,7 @@ const IncomeExpenseChart: React.FC = () => {
     svg.append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#ff6b6b")
+      .attr("stroke", "#dc143c")
       .attr("stroke-width", 3)
       .attr("d", lineExpense);
 
@@ -187,7 +187,7 @@ const IncomeExpenseChart: React.FC = () => {
     };
 
     drawDots("income", "#2ecc71");
-    drawDots("expense", "#ff6b6b");
+    drawDots("expense", "#dc143c");
 
     // Axes
     svg.append("g")
@@ -195,24 +195,24 @@ const IncomeExpenseChart: React.FC = () => {
       .call(d3.axisBottom(x))
       .selectAll("text")
       .attr("fill", "#ccc")
-      .style("font-size", "14px");
+      .style("font-size", "18px");
 
     svg.append("g")
       .call(d3.axisLeft(y).tickFormat(d => `$${d}`))
       .selectAll("text")
       .attr("fill", "#ccc")
-      .style("font-size", "14px");
+      .style("font-size", "16px");
     // Remove inner tick lines
     svg.selectAll(".tick line").remove();
   };
 
   return (
-    <div style={{ padding: '1rem', position: 'relative' }}>
+    <div className='income-expense-chart-container' style={{ padding: '1rem', position: 'relative' }}>
       {/* Header & Year Toggle */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button onClick={() => setYear(prev => prev - 1)}>&larr;</button>
-          <span style={{ fontSize: '1.6rem', fontWeight: 600}}>Income vs Expense – {year}</span>
+          <span className='label' style={{ fontSize: '1.6rem', fontWeight: 600}}>Income vs Expense – {year}</span>
           <button onClick={() => setYear(prev => prev + 1)} disabled={year >= new Date().getFullYear()}>&rarr;</button>
         </div>
       </div>
