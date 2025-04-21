@@ -2,45 +2,16 @@ import * as d3 from 'd3';
 import React from 'react';
 
 /**
- * Represents an expense category for the pie chart visualization
+ * Expense category structure used for visualizations and analysis
  */
-interface ExpenseCategory {
-  id: string;          // Unique identifier for the category
-  category: string;    // Display name of the category
-  value: number;       // Monetary value of the expense
-  color: string;       // Color used to represent this category
-  percentage: number;  // Percentage of total expenses
+export interface ExpenseCategory {
+  id: string;                      // Unique identifier for category styling and referencing
+  category: string;                // Display name 
+  value: number;                   // Monetary amount
+  color: string;                   // HEX color code for visualizations
+  percentage: number;              // Pre-calculated percentage of total expenses
+  type?: 'needs' | 'wants' | 'savings'; // Optional category type for 50-30-20 budgeting rule
 }
-
-/**
- * Sample expense data for the pie chart
- */
-const expenseData: ExpenseCategory[] = [
-  { id: 'rent', category: 'Rent', value: 1500, color: '#e74c3c', percentage: 48.8 },
-  { id: 'groceries', category: 'Groceries', value: 600, color: '#2ecc71', percentage: 24.3 },
-  { id: 'entertainment', category: 'Entertainment', value: 200, color: '#e57373', percentage: 12.3 },
-  { id: 'utilities', category: 'Utilities', value: 300, color: '#2ed8c7', percentage: 14.6 }
-];
-
-/**
- * Represents monthly spending data for comparison chart
- */
-interface MonthlyComparison {
-  month: string;       // Month name (abbreviated)
-  suggested: number;   // Suggested/budgeted amount
-  actual: number;      // Actual amount spent
-}
-
-/**
- * Sample monthly comparison data for the bar chart
- */
-const monthlyData: MonthlyComparison[] = [
-  { month: 'Jan', suggested: 2.8, actual: 4.8 },
-  { month: 'Feb', suggested: 4.3, actual: 3.6 },
-  { month: 'Mar', suggested: 2.7, actual: 3.5 },
-  { month: 'Apr', suggested: 2.8, actual: 4.1 },
-  { month: 'May', suggested: 2.9, actual: 4.5 }
-];
 
 /**
  * Generates an enhanced pie chart showing expense distribution with improved visuals and animations
@@ -50,15 +21,21 @@ const monthlyData: MonthlyComparison[] = [
  */
 export const generateEnhancedPieChart = (
   container: HTMLDivElement,
-  expenses: ExpenseCategory[] = expenseData
+  expenses: ExpenseCategory[]
 ): void => {
+  // Existing pie chart code (unchanged)
   // Clear any previous chart content
   d3.select(container).selectAll('*').remove();
  
-  // Define chart dimensions based on container size
+  // Define chart dimensions based on container size and number of categories
   const width = container.clientWidth;
   const height = container.clientHeight;
-  const radius = Math.min(width, height) / 2.0;
+  
+  // Scale the radius dynamically based on number of categories
+  // More categories = larger chart to ensure legibility
+  const categoryCount = expenses.length;
+  const scaleFactor = Math.min(1.0 + (categoryCount - 4) * 0.05, 1.3); // Max 30% increase for many categories
+  const radius = Math.min(width, height) / 2.0 * scaleFactor;
 
   // Calculate total expenses for center text display
   const totalAmount = expenses.reduce((sum, expense) => sum + expense.value, 0);
@@ -212,7 +189,12 @@ export const generateEnhancedPieChart = (
       if (container.parentNode) {
         d3.select(container.parentNode as HTMLElement)
           .selectAll('.legend-item')
-          .filter((datum: unknown) => (datum as ExpenseCategory).id === (d as d3.PieArcDatum<ExpenseCategory>).data.id)
+          .filter((legendData: unknown) => {
+            if (legendData && typeof legendData === 'object' && 'id' in legendData) {
+              return (legendData as ExpenseCategory).id === datum.data.id;
+            }
+            return false;
+          })
           .transition()
           .duration(200)
           .style('transform', 'translateX(10px) scale(1.05)')
@@ -253,8 +235,9 @@ export const generateEnhancedPieChart = (
       }
     });
  
-  // Add percentage labels on the pie slices
+  // Add percentage labels on the pie slices (only for slices >= 5%)
   arcs
+    .filter(d => d.data.percentage >= 5) // Only show percentages for segments >= 5%
     .append('text')
     .attr('transform', d => {
       const pos = labelArc.centroid(d);
@@ -269,7 +252,7 @@ export const generateEnhancedPieChart = (
     .attr('text-anchor', 'middle')
     .text(d => `${d.data.percentage.toFixed(1)}%`) // Show percentage on all segments
     .style('fill', '#ffffff') // White text for contrast
-    .style('font-size', '14px') // Increased from 12px to 16px
+    .style('font-size', '16px')
     .style('font-weight', 'bold')
     // Add text shadow for better readability against colored backgrounds
     .style('text-shadow', '0 1px 3px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 1)')
@@ -326,150 +309,401 @@ export const generateEnhancedPieChart = (
 };
 
 /**
- * Generates a bar chart comparing suggested vs actual spending by month
+ * Financial best practice recommended allocation percentages for various expense categories
+ * These values determine the suggested spending amounts based on monthly income
+ */
+export const recommendedAllocationPercentages: { [key: string]: number } = {
+  'rent': 30,       // 30% of income for housing
+  'food': 15,       // 15% of income for food
+  'utilities': 10,  // 10% of income for utilities
+  'transportation': 10, // 10% of income for transportation
+  'healthcare': 5,  // 5% of income for healthcare
+  'entertainment': 5, // 5% of income for entertainment
+  'personal': 5,    // 5% of income for personal expenses
+  'other': 5,       // 5% of income for other expenses
+  // Total: 85% of income, leaving 15% for savings/investments
+};
+
+/**
+ * Generates a bar chart showing actual expense categories vs recommended amounts based on income
  * 
  * @param containerRef - React ref to the DOM element to render the chart in
- * @param data - Optional monthly comparison data (uses default if not provided)
+ * @param data - Expense category data to display
+ * @param monthlyIncome - User's monthly income used to calculate recommended spending
  */
 export const generateMonthlyComparisonChart = (
   containerRef: React.RefObject<HTMLDivElement | null>,
-  data: MonthlyComparison[] = monthlyData
+  data: ExpenseCategory[],
+  monthlyIncome: number = 0
 ): void => {
-  // Early return if container reference is invalid
-  if (!containerRef.current) return;
+  // Early return if container reference is invalid or data is empty
+  if (!containerRef.current || data.length === 0) return;
   
   // Clear any existing chart
   d3.select(containerRef.current).selectAll('*').remove();
   
+  // Filter out any income categories for expense chart
+  const expenseData = data.filter(item => item.id !== 'income');
+  
+  // Skip if no expense data available
+  if (expenseData.length === 0) {
+    d3.select(containerRef.current)
+      .append('div')
+      .attr('class', 'no-data-message')
+      .style('text-align', 'center')
+      .style('padding', '40px 0')
+      .text('No expense data available for this month');
+    return;
+  }
+  
   // Set up chart dimensions and margins
-  const margin = { top: 20, right: 60, bottom: 30, left: 40 };
+  const margin = { top: 50, right: 20, bottom: 80, left: 60 };
   const width = containerRef.current.clientWidth - margin.left - margin.right;
-  const height = containerRef.current.clientHeight - margin.top - margin.bottom;
+  const height = 300 - margin.top - margin.bottom;
   
   // Create the SVG container with proper positioning
   const svg = d3.select(containerRef.current)
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
+    .attr('width', containerRef.current.clientWidth)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
   
-  // Create scales for positioning
-  // X scale for months (categorical)
-  const x0 = d3.scaleBand()
-    .domain(data.map(d => d.month))
-    .rangeRound([0, width])
-    .paddingInner(0.1);
+  // Add title
+  svg.append('text')
+    .attr('x', width / 2)
+    .attr('y', -margin.top / 2)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '24px')
+    .style('font-weight', 'bold')
+    .style('fill', '#fff')
+    .text('Actual vs Suggested Spending');
   
-  // X1 scale for grouped bars (suggested vs. actual)
+  // Calculate the total of all expenses for reference
+  const totalExpenses = expenseData.reduce((sum, d) => sum + d.value, 0);
+  
+  // Create data with both actual and suggested values based on monthly income
+  const combinedData = expenseData.map(d => {
+    // Get the recommended percentage for this category (default to 5% if not specified)
+    const recommendedPercentage = recommendedAllocationPercentages[d.id] || 5;
+    
+    // Calculate suggested amount based on monthly income
+    const suggestedAmount = monthlyIncome * (recommendedPercentage / 100);
+    
+    // Calculate actual percentage of income
+    const actualPercentageOfIncome = monthlyIncome > 0 ? (d.value / monthlyIncome) * 100 : 0;
+    
+    return {
+      category: d.category,
+      categoryId: d.id,
+      values: [
+        { 
+          name: 'Actual', 
+          value: d.value, 
+          color: d.color,
+          percentOfIncome: actualPercentageOfIncome 
+        },
+        { 
+          name: 'Suggested', 
+          value: suggestedAmount, 
+          color: '#8884d8',
+          percentOfIncome: recommendedPercentage
+        }
+      ]
+    };
+  });
+  
+  // Create scales for positioning
+  // X scale for categories
+  const x0 = d3.scaleBand()
+    .domain(combinedData.map(d => d.category))
+    .range([0, width])
+    .padding(0.2);
+  
+  // X1 scale for grouped bars (actual vs suggested)
   const x1 = d3.scaleBand()
-    .domain(['suggested', 'actual'])
-    .rangeRound([0, x0.bandwidth()])
+    .domain(['Actual', 'Suggested'])
+    .range([0, x0.bandwidth()])
     .padding(0.05);
   
-  // Y scale for monetary values
+  // Find the maximum value for the y-axis scale
+  const maxValue = d3.max(combinedData, d => d3.max(d.values, v => v.value)) || 0;
+  
+  // Y scale for monetary values (add 10% padding at top)
   const y = d3.scaleLinear()
-    .domain([0, 5]) // Fixed domain for consistent scale
+    .domain([0, maxValue * 1.1])
     .range([height, 0]);
   
-  // Add X axis with styled labels
+  // Add x-axis
   svg.append('g')
     .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x0))
     .selectAll('text')
-    .attr('font-size', '18px')  // Increased from 10px to 24px
-    .attr('fill', '#aaa')
-    .attr('dy', '1em');  // Adjust vertical positioning
+    .style('text-anchor', 'end')
+    .style('fill', '#aaa')
+    .style('font-size', '16px') 
+    .attr('dx', '-.8em')
+    .attr('dy', '.15em')
+    .attr('transform', 'rotate(-45)');
   
-  // Add Y axis with styled labels
+  // Add y-axis
   svg.append('g')
-    .call(
-      d3.axisLeft(y)
-        .tickFormat(d => `${d.toFixed(1)}`)  // Format with dollar sign
-        .ticks(5)  // Reduce number of ticks for clarity
-    )
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => `${d}`))
     .selectAll('text')
-    .attr('font-size', '16px')  // Increased from 10px to 24px
-    .attr('fill', '#aaa')
-    .attr('dx', '-0.5em');  // Adjust horizontal positioning
+    .style('fill', '#aaa')
+    .style('font-size', '16px'); 
+
+  // Add y-axis label
+  svg.append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', -margin.left + 15)
+    .attr('x', -height / 2)
+    .attr('text-anchor', 'middle')
+    .style('fill', '#aaa')
+    .style('font-size', '16px')
+    .text('Amount ($)');
   
-  // Remove axis lines for a cleaner look
-  svg.selectAll('.domain, .tick line')
-    .remove();
+  // Create the gradient defs for bar styling
+  const defs = svg.append('defs');
   
-  // Create groups for each month's data
-  const monthGroup = svg.selectAll('.month')
-    .data(data)
+  // Add gradient for the suggested bars
+  const suggestedGradient = defs.append('linearGradient')
+    .attr('id', 'suggested-gradient')
+    .attr('x1', '0%')
+    .attr('y1', '0%')
+    .attr('x2', '0%')
+    .attr('y2', '100%');
+  
+  suggestedGradient.append('stop')
+    .attr('offset', '0%')
+    .attr('stop-color', '#8884d8')
+    .attr('stop-opacity', 1);
+  
+  suggestedGradient.append('stop')
+    .attr('offset', '100%')
+    .attr('stop-color', '#8884d8')
+    .attr('stop-opacity', 0.7);
+  
+  // Add gradients for each category's actual bars
+  expenseData.forEach((d, i) => {
+    const gradient = defs.append('linearGradient')
+      .attr('id', `bar-gradient-${i}`)
+      .attr('x1', '0%')
+      .attr('y1', '0%')
+      .attr('x2', '0%')
+      .attr('y2', '100%');
+    
+    gradient.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', d.color)
+      .attr('stop-opacity', 1);
+    
+    gradient.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', d.color)
+      .attr('stop-opacity', 0.7);
+  });
+  
+  // Add category groups
+  const categoryGroup = svg.selectAll('.category-group')
+    .data(combinedData)
     .enter().append('g')
-    .attr('transform', d => `translate(${x0(d.month) || 0},0)`);
+    .attr('class', 'category-group')
+    .attr('transform', d => `translate(${x0(d.category)},0)`);
   
-  // Add suggested spending bars (green)
-  monthGroup.append('rect')
-    .attr('x', () => x1('suggested') || 0)
-    .attr('y', d => y(d.suggested))
+  // Add bars for each value (actual and suggested)
+  categoryGroup.selectAll('.bar')
+    .data(d => d.values)
+    .enter()
+    .append('rect')
+    .attr('class', 'bar')
+    .attr('x', d => x1(d.name)!)
     .attr('width', x1.bandwidth())
-    .attr('height', d => height - y(d.suggested))
-    .attr('fill', '#2ecc71') // Green for suggested amounts
-    .attr('rx', 6) // Increased rounded corners
-    .attr('ry', 6);
+    .attr('y', height) // Start from bottom for animation
+    .attr('height', 0) // Start with height 0 for animation
+    .attr('fill', (d, i) => i === 0 ? 
+      `url(#bar-gradient-${combinedData.findIndex(item => item.values.includes(d))})` : 
+      'url(#suggested-gradient)')
+    .attr('rx', 6) // Rounded corners
+    .attr('ry', 6)
+    .attr('stroke', 'rgba(255, 255, 255, 0.1)')
+    .attr('stroke-width', 1)
+    .transition()
+    .duration(800)
+    .delay((_, i, nodes) => {
+      // Get the parent index to stagger by category
+      const parentIndex = Array.from(nodes).indexOf(nodes[i]);
+      return (parentIndex % 2) * 100 + Math.floor(parentIndex / 2) * 300;
+    })
+    .attr('y', d => y(d.value))
+    .attr('height', d => height - y(d.value));
   
-  // Add actual spending bars (red)
-  monthGroup.append('rect')
-    .attr('x', () => x1('actual') || 0)
-    .attr('y', d => y(d.actual))
-    .attr('width', x1.bandwidth())
-    .attr('height', d => height - y(d.actual))
-    .attr('fill', '#e74c3c') // Red for actual spending
-    .attr('rx', 6) // Increased rounded corners
-    .attr('ry', 6);
+  // Format value for display
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  };
   
-  // Add value labels above each bar
-  monthGroup.selectAll('.value-label')
-    .data(d => [
-      { type: 'suggested', value: d.suggested },
-      { type: 'actual', value: d.actual }
-    ])
+  // Add value labels on top of bars
+  categoryGroup.selectAll('.bar-label')
+    .data(d => d.values)
     .enter()
     .append('text')
-    .attr('class', 'value-label')
-    .attr('x', d => (x1(d.type) || 0) + x1.bandwidth() / 2)
-    .attr('y', d => y(d.value) - 10)
+    .attr('class', 'bar-label')
+    .attr('x', d => x1(d.name)! + x1.bandwidth() / 2)
+    .attr('y', d => y(d.value) - 5)
     .attr('text-anchor', 'middle')
-    .attr('font-size', '14px')  // Increased from 8px to 18px
-    .attr('fill', '#fff')
-    .text(d => `${d.value.toFixed(1)}`);
+    .style('font-size', '16px')
+    .style('fill', '#fff')
+    .style('font-weight', 'bold')
+    .style('opacity', 0) // Start invisible for animation
+    .text(d => formatCurrency(d.value))
+    .transition()
+    .duration(800)
+    .delay((_, i, nodes) => {
+      // Get the parent index to stagger by category
+      const parentIndex = Array.from(nodes).indexOf(nodes[i]);
+      return 400 + (parentIndex % 2) * 100 + Math.floor(parentIndex / 2) * 300;
+    })
+    .style('opacity', 1);
   
-  // Add legend to explain bar colors
+  // Add legend
   const legend = svg.append('g')
-    .attr('transform', `translate(${width - 240}, -10)`);
-  
-  // Suggested spending legend item
-  legend.append('rect')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', 20)
-    .attr('height', 20)
-    .attr('fill', '#2ecc71');
-  
-  legend.append('text')
-    .attr('x', 25)
-    .attr('y', 15)
-    .attr('font-size', '16px')
-    .attr('fill', '#aaa')
-    .text('Suggested');
+    .attr('class', 'legend')
+    .attr('transform', `translate(${width / 2 - 100}, ${height + 50})`);
   
   // Actual spending legend item
   legend.append('rect')
-    .attr('x', 150)
-    .attr('y', 0)
-    .attr('width', 20)
-    .attr('height', 20)
-    .attr('fill', '#e74c3c');
+    .attr('x', 0)
+    .attr('width', 18)
+    .attr('height', 18)
+    .attr('fill', expenseData[0].color)
+    .attr('rx', 3)
+    .attr('ry', 3);
   
   legend.append('text')
-    .attr('x', 175)
-    .attr('y', 15)
-    .attr('font-size', '16px')
-    .attr('fill', '#aaa')
-    .text('Actual Spend');
+    .attr('x', 24)
+    .attr('y', 9)
+    .attr('dy', '.35em')
+    .style('font-size', '16px')
+    .style('fill', '#fff')
+    .text('Actual Spending');
+  
+  // Suggested spending legend item
+  legend.append('rect')
+    .attr('x', 150)
+    .attr('width', 18)
+    .attr('height', 18)
+    .attr('fill', '#8884d8')
+    .attr('rx', 3)
+    .attr('ry', 3);
+  
+  legend.append('text')
+    .attr('x', 174)
+    .attr('y', 9)
+    .attr('dy', '.35em')
+    .style('font-size', '16px')
+    .style('fill', '#fff')
+    .text('Suggested Spending');
+  
+  // Add hover interactions with enhanced tooltip showing income percentages
+  categoryGroup.selectAll('.bar')
+    .on('mouseover', function(event, d: any) {
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr('opacity', 0.8)
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2);
+      
+      // Highlight corresponding label
+      const barIndex = d.name === 'Actual' ? 0 : 1;
+      const categoryIndex = combinedData.findIndex(item => item.values.includes(d));
+      
+      categoryGroup.selectAll('.bar-label')
+        .filter((labelData: any, i) => {
+          const labelCategory = Math.floor(i / 2);
+          const labelType = i % 2;
+          return labelCategory === categoryIndex && labelType === barIndex;
+        })
+        .transition()
+        .duration(200)
+        .style('font-size', '13px')
+        .attr('y', (labelData: any) => y(labelData.value) - 10);
+      
+      // Get category info for tooltip
+      const categoryData = combinedData[categoryIndex];
+      const recommendedPercentage = recommendedAllocationPercentages[categoryData.categoryId] || 5;
+      
+      // Show enhanced tooltip with percentage info and income-based comparisons
+      const tooltip = d3.select(containerRef.current)
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('position', 'absolute')
+        .style('background-color', 'rgba(0, 0, 0, 0.8)')
+        .style('color', '#fff')
+        .style('padding', '8px 12px')
+        .style('border-radius', '4px')
+        .style('font-size', '12px')
+        .style('pointer-events', 'none')
+        .style('top', `${event.pageY - 80}px`)
+        .style('left', `${event.pageX - 100}px`)
+        .style('opacity', 0)
+        .style('z-index', '1000')
+        .style('box-shadow', '0px 3px 8px rgba(0, 0, 0, 0.3)');
+      
+      // Determine comparison text
+      let comparisonText = '';
+      if (d.name === 'Actual') {
+        const diff = d.percentOfIncome - recommendedPercentage;
+        if (Math.abs(diff) < 1) {
+          comparisonText = 'Right on target! 👍';
+        } else if (diff > 0) {
+          comparisonText = `${diff.toFixed(1)}% over recommended 🔺`;
+        } else {
+          comparisonText = `${Math.abs(diff).toFixed(1)}% under recommended 🔽`;
+        }
+      }
+      
+      tooltip.html(`
+        <div style="font-weight: bold; margin-bottom: 5px; font-size: 13px;">
+          ${categoryData.category} (${d.name})
+        </div>
+        <div>Amount: ${formatCurrency(d.value)}</div>
+        <div style="margin-bottom: ${d.name === 'Actual' ? '0' : '5px'};">
+          ${d.name === 'Actual' 
+            ? `Actual: ${d.percentOfIncome.toFixed(1)}% of income` 
+            : `Target: ${recommendedPercentage}% of income`}
+        </div>
+        ${d.name === 'Actual' && monthlyIncome > 0 
+          ? `<div style="margin-top: 5px; font-style: italic;">${comparisonText}</div>` 
+          : ''}
+      `);
+      
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', 1);
+    })
+    .on('mouseout', function() {
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr('opacity', 1)
+        .attr('stroke', 'rgba(255, 255, 255, 0.1)')
+        .attr('stroke-width', 1);
+      
+      // Reset all labels
+      categoryGroup.selectAll('.bar-label')
+        .transition()
+        .duration(200)
+        .style('font-size', '11px')
+        .attr('y', (d: any) => y(d.value) - 5);
+      
+      // Remove tooltip
+      d3.select(containerRef.current).selectAll('.tooltip').remove();
+    });
 };
