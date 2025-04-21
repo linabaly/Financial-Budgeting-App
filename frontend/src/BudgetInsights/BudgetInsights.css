@@ -894,3 +894,64 @@ text {
   stroke: #ffffff;
   fill: #333333;
 }
+
+.report-content {
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(100, 100, 255, 0.15);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #f5f5f5;
+}
+
+.report-content h2,
+.report-content h3 {
+  color: #ffcc00;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.report-content ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.report-content li {
+  margin-bottom: 0.5rem;
+}
+
+span.highlight-wants {
+  color: #ff66cc;
+  font-weight: bold;
+}
+
+span.highlight-needs {
+  color: #66ffcc;
+  font-weight: bold;
+}
+
+span.highlight-savings {
+  color: #66ccff;
+  font-weight: bold;
+}
+
+span.budget-amount {
+  font-weight: bold;
+  color: #fff;
+}
+
+.full-width-report {
+  width: 100%;
+  max-width: 100%;
+}
+
+.report-content {
+  transition: opacity 0.4s ease-in-out;
+  animation: fadeInReport 0.5s ease;
+}
+
+@keyframes fadeInReport {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

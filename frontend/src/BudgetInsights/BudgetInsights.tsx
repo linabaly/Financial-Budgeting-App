@@ -238,155 +238,35 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
    * Generates an AI financial insights report based on the 50-30-20 rule
    * Analyzes current spending patterns and provides personalized recommendations
    */
-  const generateAiReport = () => {
+  const generateAiReport = async () => {
     setIsGenerating(true);
-    
-    // Simulate API call delay (would be a real API call in production)
-    setTimeout(() => {
-      // Calculate current spending allocation by category type
-      const needsTotal = expenseData
-        .filter(item => item.type === 'needs')
-        .reduce((sum, item) => sum + item.value, 0);
-      
-      const wantsTotal = expenseData
-        .filter(item => item.type === 'wants')
-        .reduce((sum, item) => sum + item.value, 0);
-      
-      const savingsTotal = totalSaved;
-      
-      // Calculate percentage of income for each category
-      const needsPercentage = monthlyIncome > 0 ? (needsTotal / monthlyIncome) * 100 : 0;
-      const wantsPercentage = monthlyIncome > 0 ? (wantsTotal / monthlyIncome) * 100 : 0;
-      const savingsPercentage = monthlyIncome > 0 ? (savingsTotal / monthlyIncome) * 100 : 0;
-      
-      // Define 50-30-20 rule targets
-      const needsIdeal = 50;
-      const wantsIdeal = 30;
-      const savingsIdeal = 20;
-      
-      // Calculate deviation from ideal targets
-      const needsDifference = needsPercentage - needsIdeal;
-      const wantsDifference = wantsPercentage - wantsIdeal;
-      const savingsDifference = savingsPercentage - savingsIdeal;
-      
-      // Use the same recommended percentages as defined in insightChartUtils
-      // for consistency between the chart and the report
-      const suggestedPercentages = recommendedAllocationPercentages;
-      
-      // Calculate category analysis
-      const categoryAnalysis = expenseData
-        .filter(cat => cat.id !== 'income') // Exclude income from analysis
-        .map(cat => {
-          const suggestedPercentage = suggestedPercentages[cat.id as keyof typeof suggestedPercentages] || 5;
-          const suggestedAmount = monthlyIncome * (suggestedPercentage / 100);
-          const actualAmount = cat.value;
-          const difference = actualAmount - suggestedAmount;
-          const percentDifference = suggestedAmount > 0 ? (difference / suggestedAmount) * 100 : 0;
-          
-          return {
-            category: cat.category,
-            actual: actualAmount,
-            suggested: suggestedAmount,
-            difference,
-            percentDifference
-          };
-        })
-        .filter(cat => Math.abs(cat.percentDifference) > 20) // Only include significant differences
-        .sort((a, b) => Math.abs(b.percentDifference) - Math.abs(a.percentDifference)); // Sort by largest difference
-      
-      // Generate category-specific recommendations
-      const categoryRecommendations = categoryAnalysis.map(cat => {
-        const isOverspending = cat.difference > 0;
-        
-        if (isOverspending) {
-          return `- **${cat.category}**: Spending ${cat.percentDifference.toFixed(0)}% more than suggested ($${cat.actual.toFixed(0)} vs suggested $${cat.suggested.toFixed(0)}). Consider ${
-            cat.category === 'Rent' ? 'looking for more affordable housing options or getting a roommate' :
-            cat.category === 'Food' ? 'meal planning, buying groceries in bulk, or reducing dining out' :
-            cat.category === 'Entertainment' ? 'finding free or low-cost alternatives for entertainment' :
-            cat.category === 'Transportation' ? 'using public transportation, carpooling, or biking when possible' :
-            cat.category === 'Personal' ? 'creating a dedicated budget for personal expenses and sticking to it' :
-            cat.category === 'Utilities' ? 'reducing energy consumption or negotiating better rates with providers' :
-            cat.category === 'Healthcare' ? 'reviewing your healthcare plans for more cost-effective options' :
-            'reviewing your spending in this category for potential savings'
-          }.`;
-        } else {
-          return `- **${cat.category}**: Good job! You're spending ${Math.abs(cat.percentDifference).toFixed(0)}% less than suggested ($${cat.actual.toFixed(0)} vs suggested $${cat.suggested.toFixed(0)}), which helps with your overall budget.`;
-        }
-      }).join('\n');
-      
-      // Generate the financial report with markdown formatting
-      const newReport = `
-# Financial Insights: 50-30-20 Rule Analysis
-
-## Your Current Allocation
-- **Needs:** $${needsTotal.toFixed(2)} (${needsPercentage.toFixed(1)}% of income)
-- **Wants:** $${wantsTotal.toFixed(2)} (${wantsPercentage.toFixed(1)}% of income)
-- **Savings:** $${savingsTotal.toFixed(2)} (${savingsPercentage.toFixed(1)}% of income)
-
-## Ideal 50-30-20 Allocation
-- **Needs (50%):** $${(monthlyIncome * 0.5).toFixed(2)}
-- **Wants (30%):** $${(monthlyIncome * 0.3).toFixed(2)}
-- **Savings (20%):** $${(monthlyIncome * 0.2).toFixed(2)}
-
-## Key Observations
-${needsDifference > 5 ? `- ⚠️ Your spending on needs is ${needsDifference.toFixed(1)}% higher than recommended.` : 
-  needsDifference < -5 ? `- 👍 Your spending on needs is ${Math.abs(needsDifference).toFixed(1)}% lower than the 50% recommendation, which gives you flexibility.` :
-  `- ✅ Your spending on needs is very close to the ideal 50% target.`}
-
-${wantsDifference > 5 ? `- ⚠️ Your discretionary spending is ${wantsDifference.toFixed(1)}% higher than recommended.` : 
-  wantsDifference < -5 ? `- 👍 Your discretionary spending is ${Math.abs(wantsDifference).toFixed(1)}% lower than the 30% recommendation, showing good restraint.` :
-  `- ✅ Your discretionary spending is very close to the ideal 30% target.`}
-
-${savingsDifference > 5 ? `- 🎉 Your savings rate is ${savingsDifference.toFixed(1)}% higher than recommended - excellent job!` : 
-  savingsDifference < -5 ? `- ⚠️ Your savings rate is ${Math.abs(savingsDifference).toFixed(1)}% lower than the 20% recommendation.` :
-  `- ✅ Your savings rate is very close to the ideal 20% target.`}
-
-## Category Analysis 
-### Based on Monthly Income: $${monthlyIncome.toFixed(2)}
-${categoryRecommendations || '- All your category spending is within reasonable ranges of the suggested amounts.'}
-
-## Personalized Recommendations
-
-${needsPercentage > 60 ? `### Optimizing Essential Expenses
-Your spending on essential needs is significantly higher than the recommended 50%. Consider:
-- Exploring more affordable housing options (your largest expense)
-- Negotiating utility bills or finding more economical plans
-- Meal planning to reduce grocery expenses
-- Refinancing any high-interest debt` : ''}
-
-${wantsPercentage > 35 ? `### Managing Discretionary Spending
-Your "wants" category exceeds the 30% recommendation. Try:
-- Creating a separate fun money account with a fixed monthly transfer
-- Implementing a 24-hour rule before making non-essential purchases
-- Finding free or low-cost alternatives for entertainment
-- Using cash-back or rewards programs for discretionary purchases` : ''}
-
-${savingsPercentage < 15 ? `### Boosting Your Savings
-Your current savings rate is below the recommended 20%. Consider:
-- Setting up automatic transfers to savings on payday
-- Starting with small increases (1-2% of income) to your savings rate
-- Exploring higher-yield savings options
-- Looking for additional income opportunities` : 
- savingsPercentage > 25 ? `### Maximizing Your Savings
-You're exceeding the 20% savings target, which is excellent! Consider:
-- Diversifying your savings into different investment vehicles
-- Creating specific savings buckets for short, medium, and long-term goals
-- Exploring tax-advantaged savings options
-- Ensuring you have an adequate emergency fund before focusing on other savings goals` : ''}
-
-## Action Plan
-1. ${needsPercentage > 50 ? `Reduce needs spending by $${((needsPercentage - 50) * monthlyIncome / 100).toFixed(2)} per month` : `Maintain your current spending on needs`}
-2. ${wantsPercentage > 30 ? `Reduce discretionary spending by $${((wantsPercentage - 30) * monthlyIncome / 100).toFixed(2)} per month` : `Maintain your current level of discretionary spending`}
-3. ${savingsPercentage < 20 ? `Increase savings by $${((20 - savingsPercentage) * monthlyIncome / 100).toFixed(2)} per month` : `Continue your excellent savings habits`}
-
-The 50-30-20 rule is a guideline, not a strict requirement. Your unique financial situation may require different allocations, but this analysis provides a starting point for optimizing your financial health.
-      `;
-      
-      setReport(newReport);
-      setIsGenerating(false);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Missing token");
+  
+      const response = await fetch(`${API_BASE_URL}/insights/transactions-gpt`, {
+        method: "GET",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to fetch AI report");
+      }
+  
+      const html = await response.text();
+      setReport(html); // Save HTML directly
       setReportGenerated(true);
-    }, 2000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsGenerating(false);
+    }
   };
+  
   
   /**
    * Transforms markdown text into appropriate React elements
@@ -512,7 +392,7 @@ The 50-30-20 rule is a guideline, not a strict requirement. Your unique financia
           </div>
           
           {/* AI Financial Analysis */}
-          <div className="category-details">
+          <div className="category-details full-width-report">
             <div className="insights-header">
               <h3>Financial Analysis</h3>
               
@@ -540,11 +420,10 @@ The 50-30-20 rule is a guideline, not a strict requirement. Your unique financia
               </button>
             </div>
             
-            <div className={`report-container ${reportGenerated ? 'has-content' : ''}`}>
-              <div className="report-content">
-                {report.split('\n').map(renderMarkdownLine)}
-              </div>
-            </div>
+            <div
+  className="report-content"
+  dangerouslySetInnerHTML={{ __html: report }}
+></div>
           </div>
         </div>
       </main>
