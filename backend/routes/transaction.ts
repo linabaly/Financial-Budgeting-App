@@ -6,7 +6,6 @@ import TransactionManager, {
 import Route from "../util/Route";
 import { PrismaDBClient } from "../index";
 import { Server } from "../util";
-import { dispatchEmailNotifications } from "../util/EmailDispatcher";
 
 /**
  * @author Matthew R
@@ -43,6 +42,7 @@ export default class TransactionRoute extends Route {
         if (!account) return;
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendClientError(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
         if (transaction.accountID !== account.id) return this.sendForbidden(res);
         res.status(200).json(transaction);
         return;
@@ -53,6 +53,7 @@ export default class TransactionRoute extends Route {
 
     this.router.post("/", async (req, res) => {
       try {
+        // validator checks for required fields and their types
         if (
           !req.body.amount ||
           isNaN(Number(req.body.amount)) ||
@@ -62,9 +63,10 @@ export default class TransactionRoute extends Route {
         ) {
           return this.sendClientError(res);
         }
+        // authenticate the account
         const account = await this.authenticate(req, res);
         if (!account) return;
-
+        // form the database query
         const passedTransactionDetails: TransactionDetails = {
           accountID: account.id,
           amount: Number(req.body.amount),
@@ -73,18 +75,8 @@ export default class TransactionRoute extends Route {
           postedAt: req.body.postedAt ? new Date(req.body.postedAt) : new Date(),
           type: req.body.type.trim().toUpperCase(),
         };
-
         const createQuery = await TransactionManager.createTransaction(passedTransactionDetails);
-
-        const prefs = await PrismaDBClient.notificationPreference.findUnique({
-          where: { accountId: account.id }
-        });
-
-        if (prefs?.emailTransactionUpdates && prefs.frequency === "real-time") {
-          console.log(`📧 Real-time transaction email triggered for ${account.email}`);
-          await dispatchEmailNotifications({ isScheduled: false, accountId: account.id, eventType: "transaction" });
-        }
-
+        // 201 CREATED
         res.status(201).json(createQuery);
         return;
       } catch (error) {
@@ -94,39 +86,45 @@ export default class TransactionRoute extends Route {
 
     this.router.patch("/:id", async (req, res) => {
       try {
+        // check if the required parameters are present
         if (!req.params.id) return this.sendClientError(res);
+        // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
         if (!account) return;
+        // check if the transaction requested can be located
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendNotFound(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
         if (transaction.accountID !== account.id) return this.sendForbidden(res);
+        // if type is submitted to update, ensure that the submitted type is typeof TransactionType
         if (req.body.type && !Object.values(TransactionType).includes(req.body.type)) {
           return this.sendClientError(res);
         }
+        // if category is submitted to update, ensure that the submitted category is typeof TransactionCategory
         if (req.body.category && !Object.values(TransactionCategory).includes(req.body.category)) {
           return this.sendClientError(res);
         }
 
         const updateDetails: {
           id: string;
-          amount?: number;
-          category?: TransactionCategory;
-          descriptor?: string;
-          type?: TransactionType;
+          amount?: number | undefined;
+          category?: TransactionCategory | undefined;
+          descriptor?: string | undefined;
+          type?: TransactionType | undefined;
         } = {
           id: transaction.id,
         };
 
         if (req.body.amount) updateDetails.amount = req.body.amount;
         if (req.body.category) updateDetails.category = req.body.category.trim().toUpperCase();
-        if (req.body.descriptor) updateDetails.descriptor = req.body.descriptor.trim().toUpperCase();
+        if (req.body.descriptor)
+          updateDetails.descriptor = req.body.descriptor.trim().toUpperCase();
         if (req.body.type) updateDetails.type = req.body.type.trim().toUpperCase();
 
         const updateQuery = await PrismaDBClient.transaction.update({
           where: { id: transaction.id },
           data: updateDetails,
         });
-
         res.status(200).json(updateQuery);
         return;
       } catch (error) {
@@ -136,11 +134,15 @@ export default class TransactionRoute extends Route {
 
     this.router.delete("/:id", async (req, res) => {
       try {
+        // check if the required parameters are present
         if (!req.params.id) return this.sendClientError(res);
+        // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
         if (!account) return;
+        // check if the transaction requested can be located
         const transaction = await TransactionManager.getTransactionById(req.params.id);
         if (!transaction) return this.sendNotFound(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
         if (transaction.accountID !== account.id) return this.sendForbidden(res);
 
         try {

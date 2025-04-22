@@ -8,7 +8,6 @@
 //   createdAt    DateTime @default(now())
 //   accountId    String
 // }
-
 import { AccountManager } from ".";
 import { Account } from "@prisma/client";
 import { PrismaDBClient as prisma, PrismaDBClient } from "../index";
@@ -42,46 +41,23 @@ export default class GoalManager {
   }
 
   public static async createGoal(accountID: string, goal: GoalDetails) {
-    if (!goal.name || !goal.targetAmount || !accountID) {
-      console.log("MISSING FIELDS:", {
-        name: goal.name,
-        targetAmount: goal.targetAmount,
-        accountID,
-      });
+    if (!goal.name || !goal.targetAmount || !accountID)
       throw new TypeError(
         "Missing required parameters. 'goal.name', 'goal.targetAmount', and 'goal.accountId' are required fields."
       );
-    }
-    
     const account = await AccountManager.getAccount({ id: accountID });
     if (!account) throw new Error(`Account with ID '${accountID}' not found.`);
 
-    // Create base query
-    const passedGoalQuery: {
-      name: string;
-      targetAmount: number;
-      currentSaved: number;
-      createdAt: Date;
-      accountId: string;
-      deadline?: Date;
-    } = {
+    const passedGoalQuery = {
       name: goal.name.trim(),
       targetAmount: Number(goal.targetAmount),
       currentSaved: goal.currentSaved ? Number(goal.currentSaved) : 0,
       createdAt: new Date(),
       accountId: account.id,
+      deadline: goal.deadline ? new Date(goal.deadline) : undefined,
     };
-    
-    // Only add the deadline if it exists
-    if (goal.deadline) {
-      passedGoalQuery.deadline = new Date(goal.deadline);
-    }
 
-    const data: any = { ...passedGoalQuery };
-    if (passedGoalQuery.deadline) {
-      data.deadline = passedGoalQuery.deadline.toISOString();
-    }
-    return PrismaDBClient.goal.create({ data });
+    return PrismaDBClient.goal.create({ data: passedGoalQuery });
   }
 
   public static async updateGoal(goalID: string, g: GoalDetails) {
@@ -90,19 +66,12 @@ export default class GoalManager {
     const goal = await this.getGoal(goalID);
     if (!goal) throw new Error(`Goal with ID '${goalID}' not found.`);
 
-    // Create an empty update object
-    const updateDetails: {
-      name?: string;
-      targetAmount?: number;
-      currentSaved?: number;
-      deadline?: Date;
-    } = {};
-
-    // Only add fields that are provided
-    if (g.name && g.name.length > 0) updateDetails.name = g.name.trim();
-    if (g.targetAmount) updateDetails.targetAmount = Number(g.targetAmount);
-    if (g.currentSaved !== undefined) updateDetails.currentSaved = Number(g.currentSaved);
-    if (g.deadline) updateDetails.deadline = new Date(g.deadline);
+    const updateDetails = {
+      name: g.name && g.name.length > 0 ? g.name.trim() : undefined,
+      targetAmount: g.targetAmount ? Number(g.targetAmount) : undefined,
+      currentSaved: g.currentSaved ? Number(g.currentSaved) : undefined,
+      deadline: g.deadline ? new Date(g.deadline) : undefined,
+    };
 
     return PrismaDBClient.goal.update({
       where: { id: goalID },
