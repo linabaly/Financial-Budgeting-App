@@ -28,6 +28,8 @@ import FinancialGoals from './FinancialGoals';
 import './ProfileStyles.css';
 import { useNotification } from './contexts/NotificationContext';
 
+const API_BASE_URL = "http://localhost:5005";
+
 /**
  * Gets the FontAwesome icon for a section
  * @param section - The section identifier
@@ -137,6 +139,39 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     fetchProfileData();
   }, []);
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("avatar", file);
+  
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5005/account/avatar", {
+        method: "POST",
+        headers: {
+          Authorization: token!,
+        },
+        body: formData
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to upload avatar");
+      }
+  
+      const data = await response.json();
+      setProfileData((prev: any) => ({
+        ...prev,
+        avatarUrl: data.avatarUrl
+      }));
+  
+      showNotification("Profile picture updated!");
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+  };  
+
   return (
     <div className="profile-page">
       {/* Back button */}
@@ -163,9 +198,8 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
           {/* User avatar and name */}
           <div className="profile-avatar">
             <div className="avatar-wrapper">
-              <img 
-                src="/default-avatar.png" 
-                alt="Profile" 
+            <img src={profileData?.avatarUrl ? `${API_BASE_URL}${profileData.avatarUrl}` : "/default-avatar.png"}
+              alt="Profile"
                 onError={(e) => {
                   // Fallback if image doesn't exist
                   (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150';
@@ -176,11 +210,13 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                   <FontAwesomeIcon icon="camera" />
                 </label>
                 <input 
-                  type="file" 
-                  id="avatar-upload" 
-                  accept="image/*" 
-                  style={{display: 'none'}} 
-                />
+                type="file" 
+                id="avatar-upload" 
+                accept="image/*" 
+                style={{display: 'none'}} 
+                onChange={(e) => handleAvatarUpload(e)}
+              />
+
               </div>
             </div>
             <h3>{profileData ? profileData.name || "User" : "Loading..."}</h3>

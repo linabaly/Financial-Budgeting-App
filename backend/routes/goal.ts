@@ -1,5 +1,9 @@
 import { Server, Route, GoalManager } from "../util";
 import { GoalDetails } from "../util/GoalManager";
+import { dispatchEmailNotifications } from "../util/EmailDispatcher";
+import { PrismaClient } from "@prisma/client";
+
+const PrismaDBClient = new PrismaClient();
 
 type PassedGoalDetails = GoalDetails;
 /**
@@ -47,36 +51,57 @@ export default class GoalRoute extends Route {
     });
 
     this.router.post("/", async (req, res) => {
+      console.log("CREATE GOAL BODY:", req.body);
+    
+      const account = await this.authenticate(req, res);
+      if (!account) return;
+    
+      const passedGoalDetails: PassedGoalDetails = {
+        name: req.body.name,
+        targetAmount: req.body.targetAmount,
+        currentSaved: req.body.currentSaved || 0, // default to 0 if missing
+        deadline: req.body.deadline ? new Date(req.body.deadline) : undefined,
+      };
+    
       try {
-        // authenticate the account
-        const account = await this.authenticate(req, res);
-        if (!account) return;
-        // form the database query
-        const passedGoalDetails: PassedGoalDetails = {
-          name: req.body.name,
-          targetAmount: req.body.targetAmount,
-          currentSaved: req.body.currentSaved,
-          deadline: req.body.deadline,
-        };
-
         const createQuery = await GoalManager.createGoal(account.id, passedGoalDetails);
+        const prefs = await PrismaDBClient.notificationPreference.findUnique({
+          where: { accountId: account.id }
+        });
+        
+        const thresholdBreached = (passedGoalDetails.currentSaved ?? 0) > (passedGoalDetails.targetAmount ?? 0);
+
+        console.log("🔍 Notification prefs on goal create:", prefs);
+        console.log("thresholdBreached:", thresholdBreached);
+        console.log("emailBudgetAlerts:", prefs?.emailBudgetAlerts);
+        console.log("frequency:", prefs?.frequency);        
+
+        if (prefs?.emailBudgetAlerts && prefs.frequency === "real-time") {
+          console.log(`📧 Goal update for ${account.email}, sending goal email...`);
+          await dispatchEmailNotifications({
+            isScheduled: false,
+            accountId: account.id,
+            eventType: "goal"
+          });
+        }
+        
+
         // 201 CREATED
         res.status(201).json(createQuery);
       } catch (error) {
-        if (error instanceof TypeError) {
-          return this.handleError(
-            {
-              code: this.constants.codes.CLIENT_ERROR,
-              text_code: "CLIENT_ERROR",
-              status: 400,
-              message: (error as Error).toString(),
-            },
-            res
-          );
-        }
-        return this.handleServerError(error as Error, res);
+        console.error("CREATE GOAL ERROR:", error); // 👈 Add this too
+        return this.handleError(
+          {
+            code: this.constants.codes.CLIENT_ERROR,
+            text_code: "CLIENT_ERROR",
+            status: 400,
+            message: (error as Error).toString(),
+          },
+          res
+        );
       }
     });
+    
 
     this.router.patch("/:id", async (req, res) => {
       try {

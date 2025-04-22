@@ -6,8 +6,9 @@
  */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
+// API configuration
+const API_BASE_URL = "http://localhost:5005";
 
 /**
  * Props for the SecuritySettings component
@@ -29,11 +30,17 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
   });
 
   // State for security toggles
+  // Note: These features may require backend implementation
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [loginAlerts, setLoginAlerts] = useState(true);
   
   // Password strength state
   const [passwordStrength, setPasswordStrength] = useState(0);
+
+  // Loading and error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   /**
    * Updates password field and calculates strength for new passwords
@@ -89,36 +96,103 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
 
   /**
    * Toggles two-factor authentication
+   * Note: This is a placeholder until backend implementation
    */
   const toggleTwoFactor = () => {
+    // For now, just toggle the state locally
     setTwoFactorEnabled(!twoFactorEnabled);
+    setSuccess(`Two-factor authentication ${!twoFactorEnabled ? 'enabled' : 'disabled'}`);
+    
+    // In the future, this would call a backend API
+    onSave();
   };
 
   /**
    * Handles password change submission
    */
-  const changePassword = () => {
+  const changePassword = async () => {
+    // Reset states
+    setError(null);
+    setSuccess(null);
+    
     // Input validation
     if (passwords.newPassword !== passwords.confirmPassword) {
-      alert('New passwords do not match!');
+      setError('New passwords do not match!');
       return;
     }
 
     if (passwords.newPassword.length < 8) {
-      alert('Password must be at least 8 characters');
+      setError('Password must be at least 8 characters');
       return;
     }
-
-    // Call the onSave function passed from the parent
-    onSave();
     
-    // Reset form fields
-    setPasswords({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
-    setPasswordStrength(0);
+    try {
+      setIsLoading(true);
+      
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found. Please log in again.");
+      }
+      
+      // Using the account update endpoint to change password
+      // This assumes your backend can handle password changes through the update endpoint
+      const response = await fetch(`${API_BASE_URL}/account/me`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
+        body: JSON.stringify({
+          currentPassword: passwords.currentPassword,
+          password: passwords.newPassword
+        })        
+      });
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to change password");
+      }
+      
+      // Password changed successfully
+      setSuccess('Password changed successfully');
+      
+      // Call the onSave function passed from the parent
+      onSave();
+      
+      // Reset form fields
+      setPasswords({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      setPasswordStrength(0);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Toggles login alerts setting
+   * Note: This is a placeholder until backend implementation
+   */
+  const toggleLoginAlerts = () => {
+    // For now, just toggle the state locally
+    setLoginAlerts(!loginAlerts);
+    setSuccess(`Login alerts ${!loginAlerts ? 'enabled' : 'disabled'}`);
+    
+    // In the future, this would call a backend API
+    onSave();
+  };
+
+  /**
+   * Ends a session/device
+   * Note: This is a placeholder until backend implementation
+   */
+  const endSession = () => {
+    setSuccess('Session ended successfully');
+    // In the future, this would call an API to invalidate the session
   };
 
   return (
@@ -129,6 +203,11 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
       exit={{ opacity: 0 }}
     >
       <h2>Security Settings</h2>
+      
+      {/* Error and success messages */}
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
+      {isLoading && <div className="loading-indicator">Loading...</div>}
       
       {/* Password change section */}
       <motion.div 
@@ -148,6 +227,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             value={passwords.currentPassword}
             onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
             placeholder="Enter your current password"
+            disabled={isLoading}
           />
         </div>
         
@@ -160,6 +240,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             value={passwords.newPassword}
             onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
             placeholder="Choose a strong password"
+            disabled={isLoading}
           />
           {/* Password strength meter */}
           {passwords.newPassword && (
@@ -191,6 +272,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             value={passwords.confirmPassword}
             onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
             placeholder="Confirm your new password"
+            disabled={isLoading}
           />
           {/* Password match indicator */}
           {passwords.newPassword && passwords.confirmPassword && (
@@ -210,9 +292,9 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           onClick={changePassword}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          disabled={!passwords.currentPassword || !passwords.newPassword || !passwords.confirmPassword}
+          disabled={!passwords.currentPassword || !passwords.newPassword || !passwords.confirmPassword || isLoading}
         >
-          Change Password
+          {isLoading ? 'Changing Password...' : 'Change Password'}
         </motion.button>
       </motion.div>
 
@@ -255,8 +337,9 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
                 className="verify-button"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                disabled={isLoading}
               >
-                I've scanned the QR code
+                {isLoading ? 'Verifying...' : 'I\'ve scanned the QR code'}
               </motion.button>
             </motion.div>
           )}
@@ -275,7 +358,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           <label>Receive email alerts for new device logins</label>
           <div 
             className={`toggle-switch ${loginAlerts ? 'active' : ''}`}
-            onClick={() => setLoginAlerts(!loginAlerts)}
+            onClick={toggleLoginAlerts}
           >
             <div className="toggle-slider"></div>
           </div>
@@ -311,8 +394,10 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
             <div className="session-actions">
               <motion.button 
                 className="end-session-btn"
+                onClick={endSession}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                disabled={isLoading}
               >
                 End Session
               </motion.button>
@@ -321,15 +406,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         </div>
       </motion.div>
       
-      {/* Save button */}
-      <motion.button 
-        className="save-button"
-        onClick={onSave}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Save Security Settings
-      </motion.button>
+      {/* Save button is removed since each section has its own save functionality */}
     </motion.div>
   );
 };

@@ -7,8 +7,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
-// Import your API config
-import { API_BASE_URL } from "../config";
+// API configuration
+const API_BASE_URL = "http://localhost:5005";
 
 /**
  * Props for the PersonalInfo component
@@ -22,8 +22,9 @@ interface PersonalInfoProps {
  * PersonalInfo component for displaying and updating user's personal information
  */
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
-  // State for error handling
+  // State for error handling and loading
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
   // State for form fields
   const [personalInfo, setPersonalInfo] = useState({
@@ -48,6 +49,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
    */
   const handleUpdateInfo = async () => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("token");
       
       if (!token) {
@@ -71,11 +73,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         throw new Error("Failed to update profile");
       }
 
-      // Call the onSave callback to show notification
+      // Call the onSave callback
       onSave();
       setProfileError(null);
     } catch (error: any) {
       setProfileError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,6 +89,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
+        setIsLoading(true);
         const token = localStorage.getItem("token");
         
         if (!token) {
@@ -113,6 +118,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         });
       } catch (error: any) {
         setProfileError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
   
@@ -131,6 +138,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
       {/* Display error message if present */}
       {profileError && <div className="error-message">{profileError}</div>}
       
+      {/* Loading indicator */}
+      {isLoading && <div className="loading-indicator">Loading...</div>}
+      
       {/* Form fields */}
       <div className="form-grid">
         <motion.div 
@@ -146,6 +156,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
             value={personalInfo.name}
             placeholder="Enter your full name"
             onChange={handleInputChange}
+            disabled={isLoading}
           />
         </motion.div>
         
@@ -162,6 +173,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
             value={personalInfo.email}
             placeholder="Enter your email"
             onChange={handleInputChange}
+            disabled={isLoading}
           />
         </motion.div>
       </div>
@@ -172,8 +184,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         onClick={handleUpdateInfo}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        disabled={isLoading}
       >
-        Save Changes
+        {isLoading ? 'Saving...' : 'Save Changes'}
       </motion.button>
     </motion.div>
   );

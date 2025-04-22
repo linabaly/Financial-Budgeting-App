@@ -696,7 +696,9 @@ text {
 /* Header styling */
 [data-theme='light'] .insights-header h3 {
   background: linear-gradient(90deg, #333333, #666666);
+  background-clip: text;
   -webkit-background-clip: text;
+  color: transparent;
   -webkit-text-fill-color: transparent;
 }
 

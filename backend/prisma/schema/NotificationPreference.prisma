@@ -1,0 +1,14 @@
+model NotificationPreference {
+  accountId               String   @id
+  emailWeeklyReport       Boolean  @default(true)
+  emailBudgetAlerts       Boolean  @default(true)
+  emailTransactionUpdates Boolean  @default(false)
+  pushLowBalance          Boolean  @default(true)
+  pushUnusualActivity     Boolean  @default(true)
+  pushGoalProgress        Boolean  @default(false)
+  smsCriticalAlerts       Boolean  @default(false)
+  smsPaymentReminders     Boolean  @default(false)
+  frequency               String   @default("real-time")
+
+  account Account @relation(fields: [accountId], references: [id])
+}
