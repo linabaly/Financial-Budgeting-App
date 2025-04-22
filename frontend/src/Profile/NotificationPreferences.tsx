@@ -49,20 +49,20 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
   // Notification settings state
   const [notifications, setNotifications] = useState<Notifications>({
     emailNotifications: {
-      weeklyReport: true,
-      budgetAlerts: true,
+      weeklyReport: false,
+      budgetAlerts: false,
       transactionUpdates: false
     },
     pushNotifications: {
-      lowBalance: true,
-      unusualActivity: true,
+      lowBalance: false,
+      unusualActivity: false,
       goalProgress: false
     },
     smsNotifications: {
       criticalAlerts: false,
       paymentReminders: false
     }
-  });
+  });  
   
   // Other state
   const [frequencyOption, setFrequencyOption] = useState<string>('real-time');
@@ -75,6 +75,47 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
   useEffect(() => {
     setHasChanges(true);
   }, [notifications, frequencyOption]);
+
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:5005/account/notifications", {
+          headers: {
+            Authorization: token!,
+            "Content-Type": "application/json"
+          }
+        });
+  
+        if (!response.ok) throw new Error("Failed to fetch preferences");
+        const data = await response.json();
+  
+        setNotifications({
+          emailNotifications: {
+            weeklyReport: data.emailWeeklyReport,
+            budgetAlerts: data.emailBudgetAlerts,
+            transactionUpdates: data.emailTransactionUpdates
+          },
+          pushNotifications: {
+            lowBalance: data.pushLowBalance,
+            unusualActivity: data.pushUnusualActivity,
+            goalProgress: data.pushGoalProgress
+          },
+          smsNotifications: {
+            criticalAlerts: data.smsCriticalAlerts,
+            paymentReminders: data.smsPaymentReminders
+          }
+        });
+  
+        setFrequencyOption(data.frequency);
+      } catch (err) {
+        console.error("Error loading preferences:", err);
+      }
+    };
+  
+    fetchPreferences();
+  }, []);
+  
 
   /**
    * Toggle a notification setting
@@ -102,22 +143,41 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
   /**
    * Save notification settings
    */
-  const saveNotificationSettings = () => {
-    // Show loading state
+  const saveNotificationSettings = async () => {
     setIsLoading(true);
-    
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // Call the onSave function passed from the parent
-      onSave();
-      
-      // Hide loading state
-      setIsLoading(false);
-      
-      // Reset changes flag
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch("http://localhost:5005/account/notifications", {
+        method: "PATCH",
+        headers: {
+          "Authorization": token!,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          emailWeeklyReport: notifications.emailNotifications.weeklyReport,
+          emailBudgetAlerts: notifications.emailNotifications.budgetAlerts,
+          emailTransactionUpdates: notifications.emailNotifications.transactionUpdates,
+          pushLowBalance: notifications.pushNotifications.lowBalance,
+          pushUnusualActivity: notifications.pushNotifications.unusualActivity,
+          pushGoalProgress: notifications.pushNotifications.goalProgress,
+          smsCriticalAlerts: notifications.smsNotifications.criticalAlerts,
+          smsPaymentReminders: notifications.smsNotifications.paymentReminders,
+          frequency: frequencyOption
+        })
+      });
+  
+      if (!response.ok) throw new Error("Failed to update settings");
+  
+      onSave(); // Show notification
       setHasChanges(false);
-    }, 1500);
+    } catch (err) {
+      console.error("Error saving settings:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
+  
 
   // Animation variants
   const containerVariants = {

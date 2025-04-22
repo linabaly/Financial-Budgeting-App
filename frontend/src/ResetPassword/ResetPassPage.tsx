@@ -211,7 +211,7 @@ const ResetPassPage: React.FC = () => {
   /**
    * Determine if the reset button should be disabled based on password strength
    */
-  const isResetDisabled = isLoading || (passwordResetData.password && passwordStrength.score < PasswordStrength.VeryStrong);
+  const isResetDisabled = isLoading || (passwordResetData.password !== "" && passwordStrength.score < PasswordStrength.VeryStrong);
   
   /**
    * Handle form submission for password reset
@@ -238,24 +238,22 @@ const ResetPassPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simulated API call delay (would be replaced with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch(`http://localhost:5005/account/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          email: passwordResetData.email, 
+          password: passwordResetData.password 
+        }),  
+      }); 
       
-      // Uncomment for actual API integration
-      // const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ 
-      //     email: passwordResetData.email, 
-      //     password: passwordResetData.password 
-      //   }),  
-      // }); 
-      // 
-      // if (!response.ok) {
-      //   throw new Error('Password reset failed');
-      // }
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || 'Password reset failed');
+      }
+      
 
       // Navigate to login page on successful reset
       navigate("/");

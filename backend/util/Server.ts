@@ -5,6 +5,15 @@ import cors from "cors";
 import { Server as HTTPServer } from "http";
 import { Collection, Route } from ".";
 import cookieParser from "cookie-parser";
+import path from "path";
+
+import fs from "fs";
+
+// Ensure uploads/avatars folder exists
+const avatarDir = path.join(__dirname, "uploads/avatars");
+if (!fs.existsSync(avatarDir)) {
+  fs.mkdirSync(avatarDir, { recursive: true });
+}
 
 /**
  * @author Matthew R
@@ -67,12 +76,15 @@ export default class Server {
       this.app.use(bodyParser.urlencoded({ extended: true }));
       this.app.use(cookieParser());
     }
+  
     this.app.set("trust proxy", "loopback");
+  
     this.app.use(
       cors({
         origin: "*",
       })
     );
+  
     this.app.use(
       helmet({
         crossOriginResourcePolicy: {
@@ -87,8 +99,12 @@ export default class Server {
         },
       })
     );
+  
+    // Serve uploaded avatars
+    this.app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+  
     return this.listen;
-  }
+  }  
 
   /**
    * @author Matthew R

@@ -4,10 +4,13 @@
  * Component for managing financial goals such as savings targets,
  * emergency funds, and other personal finance objectives.
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
+// API URL
+const API_URL = 'http://localhost:5005';
 
 /**
  * Props for the FinancialGoals component
@@ -21,92 +24,223 @@ interface FinancialGoalProps {
  * Financial goal data structure
  */
 interface FinancialGoal {
-  id: number;
+  id: string;
   name: string;
   targetAmount: number;
-  currentAmount: number;
-  targetDate: string;
+  currentSaved: number;
+  deadline: string;
+  createdAt?: string;
+  accountId?: string;
 }
 
 /**
  * FinancialGoals component for managing user financial objectives
  */
 const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
-  // Initial sample goals
-  const [goals, setGoals] = useState<FinancialGoal[]>([
-    {
-      id: 1,
-      name: 'Emergency Fund',
-      targetAmount: 10000,
-      currentAmount: 5500,
-      targetDate: '2025-12-31'
-    },
-    {
-      id: 2,
-      name: 'Vacation Fund',
-      targetAmount: 5000,
-      currentAmount: 2000,
-      targetDate: '2024-08-15'
-    }
-  ]);
+  // State for goals data
+  const [goals, setGoals] = useState<FinancialGoal[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   // New goal form state
   const [newGoal, setNewGoal] = useState({
     name: '',
     targetAmount: 0,
-    targetDate: ''
+    currentSaved: 0,
+    deadline: new Date().toISOString().split('T')[0] // Today's date as default
   });
 
-  // Toggle for add goal form
+  // UI state
   const [isAdding, setIsAdding] = useState(false);
+
+  /**
+   * Fetches all goals for the current user
+   */
+  const fetchGoals = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+      
+      const response = await fetch(`${API_URL}/goal`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      });
+      
+      // Handle empty response (204 No Content)
+      if (response.status === 204) {
+        setGoals([]);
+        return;
+      }
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch goals');
+      }
+      
+      const data = await response.json();
+      setGoals(data);
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while fetching goals');
+      console.error('Error fetching goals:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   /**
    * Adds a new financial goal
    */
-  const addNewGoal = () => {
+  const addNewGoal = async () => {
     // Validate form
-    if (!newGoal.name || newGoal.targetAmount <= 0 || !newGoal.targetDate) {
-      alert('Please fill in all goal details');
+    if (!newGoal.name || newGoal.targetAmount <= 0 || !newGoal.deadline) {
+      setError('Please fill in all goal details');
       return;
     }
 
-    // Create new goal object with ID and currentAmount initialized to 0
-    const goal: FinancialGoal = {
-      id: Date.now(), // Use timestamp as ID
-      ...newGoal,
-      currentAmount: 0
-    };
-
-    // Add to goals array
-    setGoals([...goals, goal]);
-    
-    // Reset form and close it
-    setNewGoal({ name: '', targetAmount: 0, targetDate: '' });
-    setIsAdding(false);
-    
-    // Show success notification
-    onSave();
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+      
+      const response = await fetch(`${API_URL}/goal`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          name: newGoal.name,
+          targetAmount: newGoal.targetAmount,
+          currentSaved: newGoal.currentSaved || 0,
+          deadline: new Date(newGoal.deadline).toISOString()
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create goal');
+      }
+      
+      // Reset form and close it
+      setNewGoal({
+        name: '',
+        targetAmount: 0,
+        currentSaved: 0,
+        deadline: new Date().toISOString().split('T')[0]
+      });
+      setIsAdding(false);
+      
+      // Refresh the goals list
+      await fetchGoals();
+      
+      // Show success notification
+      onSave();
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while creating the goal');
+      console.error('Error creating goal:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /**
    * Updates the progress of an existing goal
    * @param id - The goal ID to update
-   * @param currentAmount - The new current amount
+   * @param currentSaved - The new current amount
    */
-  const updateGoalProgress = (id: number, currentAmount: number) => {
-    setGoals(goals.map(goal => 
-      goal.id === id 
-        ? { ...goal, currentAmount } 
-        : goal
-    ));
+  const updateGoalProgress = async (id: string, currentSaved: number) => {
+    // Find the goal being updated to get its full data
+    const goalToUpdate = goals.find(goal => goal.id === id);
+    if (!goalToUpdate) {
+      setError('Goal not found');
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+      
+      const response = await fetch(`${API_URL}/goal/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          currentSaved: currentSaved
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update goal');
+      }
+      
+      // Update the local state for instant feedback
+      setGoals(goals.map(goal => 
+        goal.id === id 
+          ? { ...goal, currentSaved } 
+          : goal
+      ));
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while updating the goal');
+      console.error('Error updating goal:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /**
    * Deletes a financial goal
    * @param id - The goal ID to delete
    */
-  const deleteGoal = (id: number) => {
-    setGoals(goals.filter(goal => goal.id !== id));
+  const deleteGoal = async (id: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+      
+      const response = await fetch(`${API_URL}/goal/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': token
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete goal');
+      }
+      
+      // Update local state by removing the deleted goal
+      setGoals(goals.filter(goal => goal.id !== id));
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while deleting the goal');
+      console.error('Error deleting goal:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /**
@@ -115,7 +249,7 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
    * @returns The percentage completed (0-100)
    */
   const calculateProgress = (goal: FinancialGoal) => {
-    return Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+    return Math.min((goal.currentSaved / goal.targetAmount) * 100, 100);
   };
 
   /**
@@ -139,8 +273,22 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
     const target = new Date(targetDate);
     const diffTime = target.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return diffDays > 0 ? diffDays : 0; // Don't show negative days
   };
+
+  /**
+   * Format date for display
+   * @param dateString - ISO date string
+   * @returns Formatted date string
+   */
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  // Fetch goals when component mounts
+  useEffect(() => {
+    fetchGoals();
+  }, []);
 
   return (
     <motion.div 
@@ -150,6 +298,13 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
       exit={{ opacity: 0 }}
     >
       <h2>Financial Goals</h2>
+      
+      {/* Error display */}
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
       
       {/* Add goal button */}
       <motion.div 
@@ -162,6 +317,7 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
           onClick={() => setIsAdding(!isAdding)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          disabled={isLoading}
         >
           {isAdding ? 'Cancel' : 'Add New Goal'}
         </motion.button>
@@ -188,6 +344,7 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                   value={newGoal.name}
                   onChange={(e) => setNewGoal({...newGoal, name: e.target.value})}
                   placeholder="e.g., New Car, Home Down Payment"
+                  disabled={isLoading}
                 />
               </div>
               
@@ -200,6 +357,20 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                   value={newGoal.targetAmount || ''}
                   onChange={(e) => setNewGoal({...newGoal, targetAmount: Number(e.target.value)})}
                   placeholder="Enter target amount"
+                  disabled={isLoading}
+                />
+              </div>
+              
+              {/* Current amount field (optional) */}
+              <div className="form-group">
+                <label htmlFor="currentSaved">Current Amount (Optional)</label>
+                <input 
+                  type="number"
+                  id="currentSaved"
+                  value={newGoal.currentSaved || ''}
+                  onChange={(e) => setNewGoal({...newGoal, currentSaved: Number(e.target.value)})}
+                  placeholder="Enter current saved amount"
+                  disabled={isLoading}
                 />
               </div>
               
@@ -209,8 +380,9 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                 <input 
                   type="date"
                   id="targetDate"
-                  value={newGoal.targetDate}
-                  onChange={(e) => setNewGoal({...newGoal, targetDate: e.target.value})}
+                  value={newGoal.deadline}
+                  onChange={(e) => setNewGoal({...newGoal, deadline: e.target.value})}
+                  disabled={isLoading}
                 />
               </div>
               
@@ -220,9 +392,9 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                 onClick={addNewGoal}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                disabled={!newGoal.name || newGoal.targetAmount <= 0 || !newGoal.targetDate}
+                disabled={!newGoal.name || newGoal.targetAmount <= 0 || !newGoal.deadline || isLoading}
               >
-                Create Goal
+                {isLoading ? 'Creating...' : 'Create Goal'}
               </motion.button>
             </div>
           </motion.div>
@@ -238,8 +410,13 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
       >
         <h3>Your Goals</h3>
         
+        {/* Loading indicator */}
+        {isLoading && !isAdding && (
+          <div className="loading-indicator">Loading goals...</div>
+        )}
+        
         {/* Message when no goals exist */}
-        {goals.length === 0 ? (
+        {!isLoading && goals.length === 0 ? (
           <motion.div 
             className="no-goals-message"
             initial={{ opacity: 0 }}
@@ -270,6 +447,7 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                       onClick={() => deleteGoal(goal.id)}
                       whileHover={{ scale: 1.2, color: '#e74c3c' }}
                       whileTap={{ scale: 0.9 }}
+                      disabled={isLoading}
                     >
                       <FontAwesomeIcon icon={faTimes} />
                     </motion.button>
@@ -294,14 +472,14 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                   {/* Goal amount and date details */}
                   <div className="goal-details">
                     <div className="goal-amounts">
-                      <span className="current-amount">${goal.currentAmount.toLocaleString()}</span>
+                      <span className="current-amount">${goal.currentSaved.toLocaleString()}</span>
                       <span className="separator"> / </span>
                       <span className="target-amount">${goal.targetAmount.toLocaleString()}</span>
                     </div>
                     <div className="goal-date">
-                      <span>Target: {new Date(goal.targetDate).toLocaleDateString()}</span>
+                      <span>Target: {formatDate(goal.deadline)}</span>
                       <span className="days-left">
-                        {getRemainingDays(goal.targetDate)} days left
+                        {getRemainingDays(goal.deadline)} days left
                       </span>
                     </div>
                   </div>
@@ -313,8 +491,9 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
                       <span className="currency-symbol">$</span>
                       <input 
                         type="number"
-                        value={goal.currentAmount}
+                        value={goal.currentSaved}
                         onChange={(e) => updateGoalProgress(goal.id, Number(e.target.value))}
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -324,16 +503,6 @@ const FinancialGoals: React.FC<FinancialGoalProps> = ({ onSave }) => {
           </div>
         )}
       </motion.div>
-      
-      {/* Save button */}
-      <motion.button 
-        className="save-button"
-        onClick={onSave}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Save Goals
-      </motion.button>
     </motion.div>
   );
 };

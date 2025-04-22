@@ -8,4 +8,6 @@ model Account {
   goals                 Goal[]
   recurringTransactions RecurringTransaction[]
   transactions          Transaction[]
+  notificationPreference  NotificationPreference?
+  avatarUrl             String?
 }

@@ -7,6 +7,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+// API configuration
+const API_BASE_URL = "http://localhost:5005";
+
 /**
  * Props for the AccountSettings component
  */
@@ -45,6 +48,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     }
   });
 
+  // Loading and error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   /**
    * Updates a top-level setting value
    * @param key - The setting to update
@@ -72,13 +80,44 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
   };
 
   /**
-   * Saves the current settings
+   * Saves the current settings to the backend
    */
-  const saveSettings = () => {
-    // Call the onSave function passed from the parent
-    onSave();
-    
-    // Additional logic can be added here (API calls, etc.)
+  const saveSettings = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      setSuccess(null);
+      
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found. Please log in again.");
+      }
+      
+      // Call API to update account preferences
+      const response = await fetch(`${API_BASE_URL}/account/preferences`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
+        body: JSON.stringify(settings)
+      });
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to save account preferences");
+      }
+      
+      // Success
+      setSuccess("Account preferences saved successfully");
+      
+      // Call the onSave function passed from the parent
+      onSave();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Animation variants for staggered animations
@@ -106,6 +145,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
     >
       <h2>Account Preferences</h2>
       
+      {/* Error and success messages */}
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
+      {isLoading && <div className="loading-indicator">Loading...</div>}
+      
       {/* Display section with language, timezone, etc. */}
       <motion.div 
         className="settings-section"
@@ -122,6 +166,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
               id="language"
               value={settings.language}
               onChange={(e) => handleSettingChange('language', e.target.value)}
+              disabled={isLoading}
             >
               <option value="en">English</option>
               <option value="es">Spanish</option>
@@ -137,6 +182,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
               id="timezone"
               value={settings.timezone}
               onChange={(e) => handleSettingChange('timezone', e.target.value)}
+              disabled={isLoading}
             >
               <option value="UTC-5">Eastern Time (UTC-5)</option>
               <option value="UTC-8">Pacific Time (UTC-8)</option>
@@ -151,6 +197,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
               id="currency"
               value={settings.currency}
               onChange={(e) => handleSettingChange('currency', e.target.value)}
+              disabled={isLoading}
             >
               <option value="USD">US Dollar (USD)</option>
               <option value="EUR">Euro (EUR)</option>
@@ -166,6 +213,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
               id="theme"
               value={settings.theme}
               onChange={(e) => handleSettingChange('theme', e.target.value)}
+              disabled={isLoading}
             >
               <option value="dark">Dark Mode</option>
               <option value="light">Light Mode</option>
@@ -220,8 +268,9 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ onSave }) => {
         onClick={saveSettings}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        disabled={isLoading}
       >
-        Save Account Preferences
+        {isLoading ? 'Saving...' : 'Save Account Preferences'}
       </motion.button>
     </motion.div>
   );
