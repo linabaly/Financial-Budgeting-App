@@ -22,9 +22,7 @@ export default class AccountRoute extends Route {
         cleartextPassword: req.body.password,
       };
 
-      const account = await PrismaDBClient.account.findUnique({
-        where: { email: passedCreds.email },
-      });
+      const account = await AccountManager.getAccount({ email: passedCreds.email });
       if (!account) return;
       if (!(await SecurityManager.verifyPassword(account.password, passedCreds.cleartextPassword)))
         return this.sendUnauthorized(res);
