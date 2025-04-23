@@ -1,10 +1,10 @@
 model Goal {
-  id           String   @id @default(uuid())
-  account      Account  @relation(fields: [accountId], references: [id])
+  id           String    @id @default(uuid())
+  account      Account   @relation(fields: [accountId], references: [id])
   name         String
-  targetAmount Decimal  @default(0) @db.Decimal(10, 2)
-  currentSaved Decimal  @default(0) @db.Decimal(10, 2)
-  deadline     DateTime
-  createdAt    DateTime @default(now())
+  targetAmount Decimal   @default(0) @db.Decimal(10, 2)
+  currentSaved Decimal   @default(0) @db.Decimal(10, 2)
+  deadline     DateTime?
+  createdAt    DateTime  @default(now())
   accountId    String
 }
