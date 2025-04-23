@@ -122,10 +122,10 @@ export default class GoalRoute extends Route {
         // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
         if (!account) return;
-        // check if the transaction requested can be located
+        // check if the goal requested can be located
         const goal = await GoalManager.getGoal(req.params.id);
         if (!goal) return this.sendNotFound(res);
-        // if the requested transaction owner isnt the authenticated user, sent forbidden
+        // if the requested goal owner isnt the authenticated user, sent forbidden
         if (goal.accountId !== account.id) return this.sendForbidden(res);
 
         try {
