@@ -65,9 +65,7 @@ export default class AccountManager {
     }
 
     const accountDetails = await prisma.account.findUnique({ where: { id, email } });
-    if (!accountDetails) {
-      throw new Error(`Account not found.`);
-    }
+    if (!accountDetails) return null;
 
     return accountDetails;
   }
