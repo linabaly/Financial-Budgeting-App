@@ -42,6 +42,7 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
   // Refs for D3 visualizations
   const progressRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
+<<<<<<< HEAD
   const goalAmount = 10000;
   
   const progressPercent = Math.round((currentSavings / goalAmount) * 100);
