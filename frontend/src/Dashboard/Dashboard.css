@@ -611,7 +611,7 @@
      margin-left: auto;
      margin-right: auto;
      height: 40px;
-     width: 150px;
+     width: 100%;
      border: none;
      padding: 0.5rem;
      color: #fff;
@@ -621,7 +621,7 @@
      margin-top: 0.5rem;
      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
      transform-origin: center;
-     position: relative;
+     position: relative; 
    }
   
    .savings-button:hover {
@@ -635,6 +635,74 @@
      box-shadow: 0 2px 4px rgba(108, 92, 231, 0.2);
      background-color: #6c5ce7;
    }
+
+  .create-goal-button {
+    background-color: #6c5ce7;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    width: 100%;
+    border: none;
+    padding: 0.5rem;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: center;
+    position: center;
+   }
+   
+   .create-goal-button:hover {
+     transform: scale(1.1);
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+     background-color: #6c5ce7;
+   }
+   
+   .create-goal-button:active {
+     transform: scale(0.95);
+     box-shadow: 0 2px 4px rgba(108, 92, 231, 0.2);
+     background-color: #6c5ce7;
+   }
+  
+  .delete-goal-button {
+    background-color: #dc143c;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    width: 150px;
+    border: none;
+    padding: 0.5rem;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: center;
+    position: relative;
+   }
+   
+   .delete-goal-button:hover {
+     transform: scale(1.1);
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+     background-color: #dc143c;
+   }
+   
+   .delete-goal-button:active {
+     transform: scale(0.95);
+     box-shadow: 0 2px 4px rgba(220, 20, 60, 0.2);
+     background-color: #dc143c;
+   }
+
+   .delete-goal-button-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+   }
+  
 
    
 /* Savings progress hover glow effect based on percentage */
