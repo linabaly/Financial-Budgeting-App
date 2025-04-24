@@ -451,27 +451,17 @@ const Footer: React.FC = () => {
             
             {/* Contact information with phone and email */}
             <div className="contact-info">
-            <div className="contact-item">
-  <img
-    src="/icons/phone-icon.svg"
-    alt="Phone"
-    className="contact-icon"
-  />
-  <a href="tel:+12345678900" className="contact-link">+1 234-567-8900</a>
+  <div className="contact-item">
+    <img
+      src="/icons/mail-icon.svg"
+      alt="Email"
+      className="contact-icon"
+    />
+    <a href="mailto:contact@finovators.com" className="contact-link">
+      contact@finovators.com
+    </a>
+  </div>
 </div>
-
-<div className="contact-item">
-  <img
-    src="/icons/mail-icon.svg"
-    alt="Email"
-    className="contact-icon"
-  />
-  <a href="mailto:contact@finovators.com" className="contact-link">
-    contact@finovators.com
-  </a>
-</div>
-
-            </div>
             
             {/* Social media links */}
             <div className="social-links">

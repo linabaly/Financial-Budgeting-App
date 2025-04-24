@@ -549,3 +549,60 @@
     vertical-align: middle;
     transition: filter 0.3s ease;
   }
+
+/* Strong override to ensure white text at all times */
+.footer,
+.footer * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.footer .footer-logo .logo-text {
+  -webkit-text-fill-color: white !important;
+  color: white !important;
+}
+
+[data-theme="light"] .footer .footer-logo .logo-text {
+  -webkit-text-fill-color: black !important;
+  color: black !important;
+}
+
+/* Ensure the X icon in light mode is bold black and not overridden by hover styles */
+[data-theme="light"] .footer .social-link svg path {
+  fill: #000 !important;
+  stroke: none !important;
+  filter: none !important;
+}
+
+/* Also ensure on hover the icon remains black and bold */
+[data-theme="light"] .footer .social-link:hover svg path {
+  fill: #000 !important;
+  stroke: none !important;
+  filter: none !important;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: nowrap; /* prevent wrapping */
+  gap: 2rem;
+  justify-content: flex-end;
+}
+
+.footer-link {
+  flex-shrink: 0;
+  min-width: 140px; /* add a fixed width if needed for consistency */
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .footer-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-link {
+    width: 45%;
+    margin: 0.25rem auto;
+  }
+}

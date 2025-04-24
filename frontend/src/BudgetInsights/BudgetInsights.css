@@ -5,7 +5,7 @@
  * Main layout structure, grid, and containers
  * --------------------------------------------- */
 
-  html {
+ html {
   font-size: 18px;
 }
 
@@ -149,6 +149,27 @@
   visibility: visible;
 }
 
+.summary-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.6);
+  text-align: center;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  min-width: 160px;
+  min-height: 160px;
+  max-width: 220px;
+  max-height: 220px;
+  transition: all 0.3s ease;
+  overflow: visible;
+}
+
+
 .summary-card:nth-child(1) .amount { animation-delay: 0.7s; }
 .summary-card:nth-child(2) .amount { animation-delay: 0.8s; }
 .summary-card:nth-child(3) .amount { animation-delay: 0.9s; }
@@ -189,9 +210,12 @@
 }
 
 .pie-chart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 100%;
-  height: 260px;
+  height: 300px;
   border-radius: 12px;
   opacity: 0;
   animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1s;
@@ -218,11 +242,13 @@
   stroke: var(--text-primary);
 }
 
-[data-theme='light'] .pie-center-text, .pie-center-subtext {
+[data-theme='light'] .pie-center-text,
+[data-theme='light'] .pie-center-subtext {
   font-family: 'Inter', sans-serif;
-  text-shadow: -var(-text-primary);
+  text-shadow: none;
   fill: var(--text-primary) !important;
 }
+
 
 /* ---------------------------------------------
  * LEGEND COMPONENTS
@@ -232,6 +258,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 340px;
   background-color: rgba(26, 29, 34, 0.8);
   border-radius: 8px;
   padding: 1rem;
@@ -302,7 +329,7 @@
  * --------------------------------------------- */
  .bar-chart-wrapper {
   width: 100%;
-  height: 400px; /* Increased height */
+  height: 400px;
   opacity: 0;
   animation: chartReveal 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.2s;
 }
@@ -552,6 +579,68 @@ text {
   stroke-width: 0.5px;
   stroke-linejoin: round;
 }
+
+.report-content {
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(100, 100, 255, 0.15);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #f5f5f5;
+}
+
+.report-content h2,
+.report-content h3 {
+  color: #ffcc00;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.report-content ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.report-content li {
+  margin-bottom: 0.5rem;
+}
+
+span.highlight-wants {
+  color: #ff66cc;
+  font-weight: bold;
+}
+
+span.highlight-needs {
+  color: #66ffcc;
+  font-weight: bold;
+}
+
+span.highlight-savings {
+  color: #66ccff;
+  font-weight: bold;
+}
+
+span.budget-amount {
+  font-weight: bold;
+  color: #fff;
+}
+
+.full-width-report {
+  width: 100%;
+  max-width: 100%;
+}
+
+.report-content {
+  transition: opacity 0.4s ease-in-out;
+  animation: fadeInReport 0.5s ease;
+}
+
+@keyframes fadeInReport {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 /* ---------------------------------------------
  * ANIMATIONS
@@ -840,8 +929,17 @@ text {
 
 /* Report typography */
 [data-theme='light'] .report-content {
+  padding: 2rem;
+  background-color: #ffffff; /* ✅ Light background */
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(100, 100, 255, 0.05); /* softened for light theme */
+  font-size: 1.1rem;
+  line-height: 1.6;
   color: #555555;
+  transition: opacity 0.4s ease-in-out;
+  animation: fadeInReport 0.5s ease;
 }
+
 
 [data-theme='light'] .report-content h1 {
   color: #333333;
@@ -891,69 +989,94 @@ text {
   border-top-color: white;
 }
 
-/* SVG text styling */
 [data-theme='light'] text {
   stroke: #ffffff;
   fill: #333333;
 }
 
-.report-content {
-  padding: 2rem;
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(100, 100, 255, 0.15);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #f5f5f5;
+/* Override D3 chart text styles in light mode */
+[data-theme='light'] .bar-chart-wrapper text,
+[data-theme='light'] .bar-chart-wrapper .bar-label,
+[data-theme='light'] .bar-chart-wrapper .tick text,
+[data-theme='light'] .bar-chart-wrapper .legend text,
+[data-theme='light'] .bar-chart-wrapper .legend-label,
+[data-theme='light'] .bar-chart-wrapper .axis-label {
+  fill: #000 !important;
+  color: #000 !important;
+  stroke: none !important;
 }
 
-.report-content h2,
-.report-content h3 {
-  color: #ffcc00;
-  margin-bottom: 0.5rem;
+.bar-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bar-chart-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: -4rem;
+}
+
+.bar-chart-title {
   font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+  text-align: center;
+  margin: 0;
+  margin-bottom: 1.5rem;
 }
 
-.report-content ul {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
+.bar-chart-legend-row {
+  display: flex;
+  justify-content: center;
+  gap: 0rem;
+  transform: translateY(-140px);
 }
 
-.report-content li {
-  margin-bottom: 0.5rem;
+.bar-chart-legend-row .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary, #fff);
 }
 
-span.highlight-wants {
-  color: #ff66cc;
-  font-weight: bold;
+.bar-chart-legend-row .legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
 }
 
-span.highlight-needs {
-  color: #66ffcc;
-  font-weight: bold;
+
+/* Default dark mode */
+.pie-center-subtext {
+  fill: rgba(255, 255, 255, 0.7);
 }
 
-span.highlight-savings {
-  color: #66ccff;
-  font-weight: bold;
+/* Light mode override */
+html[data-theme='light'] .pie-center-subtext {
+  fill: #555555;
 }
 
-span.budget-amount {
-  font-weight: bold;
-  color: #fff;
+.pie-chart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  padding-top: 40px;
+  box-sizing: border-box;
 }
 
-.full-width-report {
-  width: 100%;
-  max-width: 100%;
+.pie-chart-wrapper svg {
+  overflow: visible;
 }
 
-.report-content {
-  transition: opacity 0.4s ease-in-out;
-  animation: fadeInReport 0.5s ease;
+.pie-chart-wrapper svg path {
+  stroke: #000;
+  stroke-width: 1.2;
 }
 
-@keyframes fadeInReport {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}

@@ -31,11 +31,7 @@ export const generateEnhancedPieChart = (
   const width = container.clientWidth;
   const height = container.clientHeight;
   
-  // Scale the radius dynamically based on number of categories
-  // More categories = larger chart to ensure legibility
-  const categoryCount = expenses.length;
-  const scaleFactor = Math.min(1.0 + (categoryCount - 4) * 0.05, 1.3); // Max 30% increase for many categories
-  const radius = Math.min(width, height) / 2.0 * scaleFactor;
+  const radius = Math.min(width, height) / 1.8;
 
   // Calculate total expenses for center text display
   const totalAmount = expenses.reduce((sum, expense) => sum + expense.value, 0);
@@ -284,8 +280,8 @@ export const generateEnhancedPieChart = (
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .text(`${totalAmount.toLocaleString()}`)
-    .style('font-size', '1.4rem') // Increased size
-    .style('fill', '#ff7b72') // Highlighted color for emphasis
+    .style('font-size', '1.4rem')
+    .style('fill', '#ff7b72')
     .style('opacity', 0)
     .transition()
     .duration(800)
@@ -299,7 +295,7 @@ export const generateEnhancedPieChart = (
     .attr('y', 45)
     .attr('text-anchor', 'middle')
     .text('Spent')
-    .style('font-size', '1.2rem') // Increased size
+    .style('font-size', '1.2rem')
     .style('fill', 'rgba(255, 255, 255, 0.7)')
     .style('opacity', 0)
     .transition()
@@ -368,16 +364,6 @@ export const generateMonthlyComparisonChart = (
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
-  
-  // Add title
-  svg.append('text')
-    .attr('x', width / 2)
-    .attr('y', -margin.top / 2)
-    .attr('text-anchor', 'middle')
-    .style('font-size', '24px')
-    .style('font-weight', 'bold')
-    .style('fill', '#fff')
-    .text('Actual vs Suggested Spending');
   
   // Calculate the total of all expenses for reference
   const totalExpenses = expenseData.reduce((sum, d) => sum + d.value, 0);
@@ -474,35 +460,10 @@ export const generateMonthlyComparisonChart = (
     .attr('x2', '0%')
     .attr('y2', '100%');
   
-  suggestedGradient.append('stop')
-    .attr('offset', '0%')
-    .attr('stop-color', '#8884d8')
-    .attr('stop-opacity', 1);
-  
-  suggestedGradient.append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', '#8884d8')
-    .attr('stop-opacity', 0.7);
-  
-  // Add gradients for each category's actual bars
-  expenseData.forEach((d, i) => {
-    const gradient = defs.append('linearGradient')
-      .attr('id', `bar-gradient-${i}`)
-      .attr('x1', '0%')
-      .attr('y1', '0%')
-      .attr('x2', '0%')
-      .attr('y2', '100%');
-    
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', d.color)
-      .attr('stop-opacity', 1);
-    
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', d.color)
-      .attr('stop-opacity', 0.7);
-  });
+  // Suggested gradient (lavender)
+suggestedGradient.append('stop')
+.attr('offset', '0%')
+.attr('stop-color', '#9370DB'); // medium purple
   
   // Add category groups
   const categoryGroup = svg.selectAll('.category-group')
@@ -521,9 +482,7 @@ export const generateMonthlyComparisonChart = (
     .attr('width', x1.bandwidth())
     .attr('y', height) // Start from bottom for animation
     .attr('height', 0) // Start with height 0 for animation
-    .attr('fill', (d, i) => i === 0 ? 
-      `url(#bar-gradient-${combinedData.findIndex(item => item.values.includes(d))})` : 
-      'url(#suggested-gradient)')
+    .attr('fill', d => d.name === 'Actual' ? '#2ecc71' : '#dc143c')
     .attr('rx', 6) // Rounded corners
     .attr('ry', 6)
     .attr('stroke', 'rgba(255, 255, 255, 0.1)')
@@ -574,41 +533,8 @@ export const generateMonthlyComparisonChart = (
   // Add legend
   const legend = svg.append('g')
     .attr('class', 'legend')
-    .attr('transform', `translate(${width / 2 - 100}, ${height + 50})`);
-  
-  // Actual spending legend item
-  legend.append('rect')
-    .attr('x', 0)
-    .attr('width', 18)
-    .attr('height', 18)
-    .attr('fill', expenseData[0].color)
-    .attr('rx', 3)
-    .attr('ry', 3);
-  
-  legend.append('text')
-    .attr('x', 24)
-    .attr('y', 9)
-    .attr('dy', '.35em')
-    .style('font-size', '16px')
-    .style('fill', '#fff')
-    .text('Actual Spending');
-  
-  // Suggested spending legend item
-  legend.append('rect')
-    .attr('x', 150)
-    .attr('width', 18)
-    .attr('height', 18)
-    .attr('fill', '#8884d8')
-    .attr('rx', 3)
-    .attr('ry', 3);
-  
-  legend.append('text')
-    .attr('x', 174)
-    .attr('y', 9)
-    .attr('dy', '.35em')
-    .style('font-size', '16px')
-    .style('fill', '#fff')
-    .text('Suggested Spending');
+    .attr('transform', `translate(${width / 2 - 120}, -40)`)
+
   
   // Add hover interactions with enhanced tooltip showing income percentages
   categoryGroup.selectAll('.bar')
@@ -688,22 +614,25 @@ export const generateMonthlyComparisonChart = (
         .duration(200)
         .style('opacity', 1);
     })
-    .on('mouseout', function() {
+    .on('mouseout', function(event, d: any) {
       d3.select(this)
         .transition()
         .duration(200)
         .attr('opacity', 1)
         .attr('stroke', 'rgba(255, 255, 255, 0.1)')
         .attr('stroke-width', 1);
-      
-      // Reset all labels
-      categoryGroup.selectAll('.bar-label')
+    
+      // Reset only the label for the bar being hovered out
+      d3.select(this.parentNode)
+        .selectAll('.bar-label')
+        .filter((labelData: any) => labelData.name === d.name)
         .transition()
         .duration(200)
-        .style('font-size', '11px')
-        .attr('y', (d: any) => y(d.value) - 5);
-      
+        .style('font-size', '16px') // Set back to default size
+        .attr('y', (labelData: any) => y(labelData.value) - 5);
+    
       // Remove tooltip
       d3.select(containerRef.current).selectAll('.tooltip').remove();
     });
+    
 };
