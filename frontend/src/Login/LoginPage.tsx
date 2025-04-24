@@ -16,6 +16,7 @@
 import React, { useState, useCallback, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { API_BASE_URL } from "../config";
 
 /**
  * Interface defining the structure for login credentials
@@ -123,7 +124,7 @@ export default function LoginPage() {
 
     try {
       // Make API request to authenticate user
-      const response = await fetch("http://localhost:5005/account/login", {
+      const response = await fetch(`${API_BASE_URL}/account/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

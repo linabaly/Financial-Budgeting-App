@@ -8,7 +8,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 // API configuration
-const API_BASE_URL = "http://localhost:5005";
+const API_BASE_URL = "https://finovators.mracs.dev/api";
 
 /**
  * Props for the PersonalInfo component

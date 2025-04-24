@@ -80,7 +80,7 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
     const fetchPreferences = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:5005/account/notifications", {
+        const response = await fetch(`${API_BASE_URL}/account/notifications`, {
           headers: {
             Authorization: token!,
             "Content-Type": "application/json"
@@ -148,7 +148,7 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({ onSav
     try {
       const token = localStorage.getItem("token");
   
-      const response = await fetch("http://localhost:5005/account/notifications", {
+      const response = await fetch(`${API_BASE_URL}/account/notifications`, {
         method: "PATCH",
         headers: {
           "Authorization": token!,

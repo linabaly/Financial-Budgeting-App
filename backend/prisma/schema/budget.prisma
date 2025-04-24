@@ -17,7 +17,7 @@ model Budget {
   accountId String // Foreign Key linking to Account
   createdAt DateTime            @default(now())
   startDate DateTime
-  endDate   DateTime
+  endDate   DateTime?
 
   // Relationship to Account model
   account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)

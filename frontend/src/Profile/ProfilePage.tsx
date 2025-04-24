@@ -28,7 +28,7 @@ import FinancialGoals from './FinancialGoals';
 import './ProfileStyles.css';
 import { useNotification } from './contexts/NotificationContext';
 
-const API_BASE_URL = "http://localhost:5005";
+const API_BASE_URL = "https://finovators.mracs.dev/api";
 
 /**
  * Gets the FontAwesome icon for a section
@@ -114,38 +114,38 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
         if (!token) {
           throw new Error("No token found. Please log in again.");
         }
-        
+
         // Example API call - replace with your actual endpoint
-        const response = await fetch("http://localhost:5005/account/me", {
+        const response = await fetch(`${API_BASE_URL}/account/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: token,
           },
         });
-        
+
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.message || "Failed to fetch profile data");
         }
-        
+
         const data = await response.json();
         setProfileData(data);
       } catch (error: any) {
         setProfileError(error.message);
       }
     };
-    
+
     fetchProfileData();
   }, []);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     const formData = new FormData();
     formData.append("avatar", file);
-  
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5005/account/avatar", {
@@ -155,28 +155,28 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
         },
         body: formData
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to upload avatar");
       }
-  
+
       const data = await response.json();
       setProfileData((prev: any) => ({
         ...prev,
         avatarUrl: data.avatarUrl
       }));
-  
+
       showNotification("Profile picture updated!");
     } catch (error) {
       console.error("Upload failed:", error);
     }
-  };  
+  };
 
   return (
     <div className="profile-page">
       {/* Back button */}
       <div className="profile-back-button">
-        <motion.button 
+        <motion.button
           onClick={handleGoBack}
           whileHover={{ x: -5 }}
           whileTap={{ scale: 0.95 }}
@@ -185,11 +185,11 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
           Back
         </motion.button>
       </div>
-      
+
       {/* Main profile container with sidebar and content area */}
       <div className="profile-container">
         {/* Sidebar with user info and navigation */}
-        <motion.div 
+        <motion.div
           className="profile-sidebar"
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}

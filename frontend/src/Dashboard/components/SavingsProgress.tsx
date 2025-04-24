@@ -4,13 +4,42 @@ import * as d3 from 'd3';
 interface SavingsProgressProps {
   onUpdateClick?: () => void;
   currentSavings?: number;
+  goals?: Goal[];
+  setGoals?: React.Dispatch<React.SetStateAction<Goal[]>>;
 }
+
+export const getColorForPercentage = (percentage: number) => {
+  if (percentage < 30) return {
+    main: "#dc143c", // crimson red
+    light: "rgba(220, 20, 60, 0.3)",
+    text: "#dc143c"
+  };
+  if (percentage < 70) return {
+    main: "#ffdf64", // pastel yellow
+    light: "rgba(255, 223, 100, 0.3)",
+    text: "#ffdf64"
+  };
+  return {
+    main: "#2ecc71", // emerald green
+    light: "rgba(46, 204, 113, 0.3)",
+    text: "#2ecc71"
+  };
+};
 
 const SavingsProgress: React.FC<SavingsProgressProps> = ({ 
   onUpdateClick,
-  currentSavings: propCurrentSavings
+  onCreateGoalClick,
+  onDeadlineReached,
+  currentSavings: propCurrentSavings,
+  goals: propGoals,
+  setGoals: propSetGoals
 }) => {
-  const [currentSavings, setCurrentSavings] = useState(propCurrentSavings || 4500);
+  // State management
+  const [goals, setGoals] = useState<Goal[]>(propGoals || []);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Refs for D3 visualizations
   const progressRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const goalAmount = 10000;
