@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // API URL
-const API_URL = 'http://localhost:5005';
+const API_URL = 'https://finovators.mracs.dev/api';
 
 /**
  * Props for the FinancialGoals component

@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
         if (!token) throw new Error("No token found. Please log in again.");
 
         // Fetch user data from API
-        const response = await fetch("http://localhost:5005/account/me", {
+        const response = await fetch(`${API_BASE_URL}/account/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
