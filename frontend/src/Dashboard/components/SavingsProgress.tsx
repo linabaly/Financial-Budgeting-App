@@ -36,10 +36,10 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
       text: "#dc143c" 
     };
     if (percentage < 0.7) return { 
-      main: "#ffdf64", // ← pastel yellow
-      light: "rgba(255, 223, 100, 0.3)", 
-      text: "#ffdf64" 
-    };
+      main: "#f9a825",
+      light: "rgba(249, 168, 37, 0.3)", 
+      text: "#f9a825" 
+    };    
     return { 
       main: "#2ecc71", // ← emerald green
       light: "rgba(46, 204, 113, 0.3)", 
