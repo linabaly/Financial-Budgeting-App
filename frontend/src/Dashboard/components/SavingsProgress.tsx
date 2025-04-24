@@ -380,7 +380,7 @@ const SavingsProgress: React.FC<SavingsProgressProps> = ({
             </div>
 
             <div>
-              <div >
+              <div>
                 <button
                   className="savings-button"
                   onClick={() => {
