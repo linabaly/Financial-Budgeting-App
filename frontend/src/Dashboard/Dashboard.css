@@ -737,7 +737,7 @@
 }
 
 .progress-percent.medium {
-  color: #ffdf64;
+  color: #f9a825;
 }
 
 .progress-percent.high {
@@ -1815,7 +1815,7 @@
 }
 
 [data-theme='light'] .progress-percent.medium {
-  color: #ffdf64;
+  color: #f9a825;
 }
 
 [data-theme='light'] .current-savings {

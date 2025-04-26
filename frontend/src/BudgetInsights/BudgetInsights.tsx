@@ -95,23 +95,19 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
     const targetYear = targetDate.getFullYear();
 
     // Initialize category accumulators
-    const categories: Record<string, { 
-      id: string, 
-      category: string, 
-      value: number, 
-      color: string, 
-      type: 'needs' | 'wants' | 'savings' 
-    }> = {
-      'food': { id: 'food', category: 'Food', value: 0, color: '#2ecc71', type: 'needs' },
-      'rent': { id: 'rent', category: 'Rent', value: 0, color: '#e74c3c', type: 'needs' },
-      'utilities': { id: 'utilities', category: 'Utilities', value: 0, color: '#2ed8c7', type: 'needs' },
-      'healthcare': { id: 'healthcare', category: 'Healthcare', value: 0, color: '#3498db', type: 'needs' },
-      'entertainment': { id: 'entertainment', category: 'Entertainment', value: 0, color: '#e57373', type: 'wants' },
-      'personal': { id: 'personal', category: 'Personal', value: 0, color: '#9b59b6', type: 'wants' },
-      'transportation': { id: 'transportation', category: 'Transportation', value: 0, color: '#f39c12', type: 'needs' },
-      'income': { id: 'income', category: 'Income', value: 0, color: '#27ae60', type: 'savings' },
-      'other': { id: 'other', category: 'Other', value: 0, color: '#95a5a6', type: 'wants' }
+    const categories: Record<string, ExpenseCategory> = {
+      food:         { id: 'food', category: 'Food', value: 0, color: '#dc143c', type: 'needs', percentage: 0 },        // Neon Green
+      rent:         { id: 'rent', category: 'Rent', value: 0, color: '#00e5ff', type: 'needs', percentage: 0 },        // Crimson Red
+      utilities:    { id: 'utilities', category: 'Utilities', value: 0, color: '#f9e79f', type: 'needs', percentage: 0 }, // Cyan
+      healthcare:   { id: 'healthcare', category: 'Healthcare', value: 0, color: '#1f3f73', type: 'needs', percentage: 0 }, // Royal Blue
+      entertainment:{ id: 'entertainment', category: 'Entertainment', value: 0, color: '#ff6f00', type: 'wants', percentage: 0 }, // Violet
+      personal:     { id: 'personal', category: 'Personal', value: 0, color: '#5b2c6f', type: 'wants', percentage: 0 },  // Electric Purple
+      transportation:{ id: 'transportation', category: 'Transportation', value: 0, color: '#008b8b', type: 'needs', percentage: 0 }, // Amber
+      income:       { id: 'income', category: 'Income', value: 0, color: '#1abc9c', type: 'savings', percentage: 0 },  // Mint Green
+      other:        { id: 'other', category: 'Other', value: 0, color: '#888888', type: 'wants', percentage: 0 }       // Gray fallback
     };
+    
+    
 
     let totalIncome = 0;
     let totalExpense = 0;
@@ -380,15 +376,39 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
         <div className="bottom-container">
           {/* Monthly Comparison Chart */}
           <div className="chart-container bar-chart-container">
-            {isLoading ? (
-              <div className="loading-indicator" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading comparison data...</div>
-            ) : error ? (
-              <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Error loading comparison data</div>
-            ) : expenseData.length === 0 ? (
-              <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No expense data available for this month</div>
-            ) : (
-              <div className="bar-chart-wrapper" ref={barChartRef}></div>
-            )}
+          <div className="bar-chart-header">
+  <h3 className="bar-chart-title">Actual vs Suggested Spending</h3>
+</div>
+
+{isLoading ? (
+  <div className="loading-indicator" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    Loading comparison data...
+  </div>
+) : error ? (
+  <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    Error loading comparison data
+  </div>
+) : expenseData.length === 0 ? (
+  <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    No expense data available for this month
+  </div>
+) : (
+  <>
+    <div className="bar-chart-wrapper" ref={barChartRef}></div>
+    
+    {/* Legend now below the chart */}
+    <div className="bar-chart-legend-row below-legend" style={{ marginTop: '1rem' }}>
+      <div className="legend-item">
+        <div className="legend-color actual" style={{ backgroundColor: '#2ecc71' }}></div>
+        <span>Actual Spending</span>
+      </div>
+      <div className="legend-item">
+        <div className="legend-color suggested" style={{ backgroundColor: '#dc143c' }}></div>
+        <span>Suggested Spending</span>
+      </div>
+    </div>
+  </>
+)}
           </div>
           
           {/* AI Financial Analysis */}

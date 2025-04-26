@@ -45,12 +45,12 @@
   }
   
   .sun-icon svg,
-  .moon-icon svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--toggle-text-light);
-    transition: stroke 0.3s ease;
-  }
+.moon-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: #000;
+  transition: stroke 0.3s ease;
+}
   
   body.dark-theme .sun-icon svg,
   body.dark-theme .moon-icon svg {
