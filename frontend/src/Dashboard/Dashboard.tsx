@@ -1,11 +1,3 @@
-/**
- * Dashboard Component
- * 
- * Main financial dashboard displaying user's financial summary, spending patterns,
- * savings goals, and financial insights. Provides interactive modals for managing
- * savings goals and financial activities.
- */
-
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import Header from './components/Header';
@@ -21,9 +13,7 @@ import Footer from './components/Footer';
 import ThemeToggle from './components/ThemeToggle';
 import { API_BASE_URL } from '../config';
 
-/**
- * Goal interface defining structure for savings goals
- */
+// Define Goal interface
 interface Goal {
   id: string;
   name: string;
@@ -34,21 +24,26 @@ interface Goal {
 }
 
 /**
- * Dashboard functional component
+ * Dashboard Component
+ * 
+ * Main dashboard page displaying financial summary, charts, insights,
+ * and providing modal forms for different financial activities.
  */
 const Dashboard: React.FC = () => {
-  // Modal states
+  // ===== STATE MANAGEMENT =====
+
+  // Modal visibility states
   const [showSavingsModal, setShowSavingsModal] = useState(false);
   const [showCreateGoalModal, setShowCreateGoalModal] = useState(false);
   const [showDeadlineReachedModal, setShowDeadlineReachedModal] = useState<string | null>(null);
 
-  // User data states
+  // User and account related states
   const [currentDate] = useState(new Date());
   const [currentSavings, setCurrentSavings] = useState(4500);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [dashboardError, setDashboardError] = useState<string | null>(null);
 
-  // Goals states
+  // Goals related states
   const [goals, setGoals] = useState<Goal[]>([]);
   const [newGoal, setNewGoal] = useState({
     name: '',
@@ -59,22 +54,27 @@ const Dashboard: React.FC = () => {
     targetAmountInputEmpty: false
   });
 
-  // Update savings modal states
+  // Update savings modal state
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [updatedAmount, setUpdatedAmount] = useState<number>(0);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [updatedAmountInputEmpty, setUpdatedAmountInputEmpty] = useState<boolean>(false);
 
+  // ===== DATA FETCHING =====
+
   /**
-   * Fetches user's account data from API on component mount
+   * Fetch user's account data from API on component mount
+   * Retrieves personal and financial information to populate the dashboard
    */
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        // Get authentication token from local storage
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No token found. Please log in again.");
 
+        // Fetch user data from API
         const response = await fetch(`${API_BASE_URL}/account/me`, {
           method: "GET",
           headers: {
@@ -83,11 +83,13 @@ const Dashboard: React.FC = () => {
           },
         });
 
+        // Handle error responses
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.message || "Failed to fetch dashboard data");
         }
 
+        // Process and store successful response
         const data = await response.json();
         setDashboardData(data);
       } catch (error: any) {
@@ -99,7 +101,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   /**
-   * Fetches user's savings goals from API
+   * Fetch savings goals from API
    */
   const fetchGoals = async () => {
     try {
@@ -116,6 +118,7 @@ const Dashboard: React.FC = () => {
         }
       });
 
+      // Handle empty response (204 No Content)
       if (response.status === 204) {
         setGoals([]);
         return;
@@ -138,8 +141,11 @@ const Dashboard: React.FC = () => {
     fetchGoals();
   }, []);
 
+  // ===== MODAL HANDLERS =====
+
   /**
-   * Closes the savings update modal and resets related states
+   * Close savings modal
+   * Used when clicking outside the modal
    */
   const closeSavingsModal = () => {
     setShowSavingsModal(false);
@@ -149,21 +155,22 @@ const Dashboard: React.FC = () => {
   };
 
   /**
-   * Closes the create goal modal
+   * Close create goal modal
    */
   const closeCreateGoalModal = () => {
     setShowCreateGoalModal(false);
   };
 
   /**
-   * Closes the deadline reached modal
+   * Close deadline reached modal
    */
   const closeDeadlineReachedModal = () => {
     setShowDeadlineReachedModal(null);
   };
 
   /**
-   * Handles the update goal button click, selecting the first goal by default
+   * Handle update goal savings button clicked
+   * Opens the update modal with the selected goal's data
    */
   const handleUpdateGoalClick = () => {
     if (goals.length > 0) {
@@ -174,9 +181,12 @@ const Dashboard: React.FC = () => {
   };
 
   /**
-   * Updates the progress of an existing savings goal
+   * Updates the progress of an existing goal
+   * @param id - The goal ID to update
+   * @param currentSaved - The new current amount
    */
   const updateGoalProgress = async (id: string, currentSaved: number) => {
+    // Find the goal being updated to get its full data
     const goalToUpdate = goals.find(goal => goal.id === id);
     if (!goalToUpdate) {
       setUpdateError('Goal not found');
@@ -208,13 +218,14 @@ const Dashboard: React.FC = () => {
         throw new Error(errorData.message || 'Failed to update goal');
       }
 
-      // Update local state for instant feedback
+      // Update the local state for instant feedback
       setGoals(goals.map(goal =>
         goal.id === id
           ? { ...goal, currentSaved }
           : goal
       ));
 
+      // Close the modal after successful update
       closeSavingsModal();
     } catch (err: any) {
       setUpdateError(err.message || 'An error occurred while updating the goal');
@@ -225,7 +236,7 @@ const Dashboard: React.FC = () => {
   };
 
   /**
-   * Handles the form submission for updating goal progress
+   * Handle the form submission for updating goal progress
    */
   const handleUpdateSavingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -235,19 +246,23 @@ const Dashboard: React.FC = () => {
       return;
     }
 
+    // Validate input
     if (updatedAmount < 0) {
       setUpdateError('Amount cannot be negative');
       return;
     }
 
+    // Call the update function
     updateGoalProgress(selectedGoal.id, updatedAmount);
   };
 
   /**
-   * Handles the creation of a new savings goal
+   * Handle the creation of a new goal
    */
   const handleCreateGoal = async () => {
+    // Validate form
     if (!newGoal.name || newGoal.targetAmount <= 0) {
+      // You could set an error state here to display to the user
       return;
     }
 
@@ -263,6 +278,7 @@ const Dashboard: React.FC = () => {
         currentSaved: newGoal.currentSaved || 0
       };
 
+      // Only add deadline if provided
       if (newGoal.deadline) {
         goalData.deadline = new Date(newGoal.deadline).toISOString();
       }
@@ -281,7 +297,10 @@ const Dashboard: React.FC = () => {
         throw new Error(errorData.message || 'Failed to create goal');
       }
 
+      // Get the newly created goal from the response
       const createdGoal = await response.json();
+
+      // Update local state with the new goal
       setGoals(prevGoals => [createdGoal, ...prevGoals]);
 
       // Reset form
@@ -300,7 +319,7 @@ const Dashboard: React.FC = () => {
   };
 
   /**
-   * Handles acknowledging a goal deadline and opening the create goal modal
+   * Handle acknowledging a goal deadline and opening create goal modal
    */
   const handleDeadlineAcknowledge = () => {
     setShowDeadlineReachedModal(null);
@@ -313,12 +332,12 @@ const Dashboard: React.FC = () => {
       <Header />
 
       <main className="main-content">
-        {/* Theme toggle container */}
+        {/* Theme toggle container positioned below header */}
         <div className="theme-toggle-container">
           <ThemeToggle />
         </div>
 
-        {/* User greeting section */}
+        {/* User greeting section with date */}
         <div className="greeting-section">
           <div>
             <h1>Hello, <span className="name">{dashboardData ? dashboardData.name || "User" : "Loading..."}</span>!</h1>
@@ -333,7 +352,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Financial summary section */}
+        {/* Primary dashboard financial summary */}
         <div className="dashboard-section">
           <div className="left-column">
             <TotalBalance />
@@ -365,6 +384,8 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* === MODAL COMPONENTS === */}
 
         {/* Update Savings Modal */}
         {showSavingsModal && selectedGoal && (

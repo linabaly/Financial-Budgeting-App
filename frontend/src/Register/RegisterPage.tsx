@@ -1,8 +1,9 @@
 /**
  * RegisterPage Component
  * 
- * Handles user registration with form validation, real-time password strength
- * checking, and API integration. Includes interactive feedback and a responsive design.
+ * This component handles user registration with form validation, password strength
+ * checking, and API integration. It presents a registration form with email, name,
+ * and password fields, including visual feedback for password strength.
  */
 
 import React, { useState, useCallback, FormEvent } from "react";
@@ -11,7 +12,7 @@ import { API_BASE_URL } from "../config";
 import "./RegisterPage.css";
 
 /**
- * Defines structure for registration form data
+ * Interface defining the structure for the registration form data
  */
 interface RegistrationForm {
   email: string;
@@ -21,7 +22,7 @@ interface RegistrationForm {
 }
 
 /**
- * Enum for password strength levels
+ * Enum defining password strength levels from None to Very Strong
  */
 enum PasswordStrength {
   None = 0,
@@ -33,7 +34,11 @@ enum PasswordStrength {
 }
 
 /**
- * Validates registration form data and password strength
+ * Validates the registration form data
+ * 
+ * @param form - The form data to validate
+ * @param passwordStrength - The current password strength
+ * @returns An array of error messages, empty if validation passes
  */
 const validateRegistration = (form: RegistrationForm, passwordStrength: PasswordStrength): string[] => {
   const errors: string[] = [];
@@ -66,7 +71,7 @@ const validateRegistration = (form: RegistrationForm, passwordStrength: Password
 };
 
 /**
- * Evaluates password strength based on character variety and length
+ * Evaluates password strength based on length and character variety
  */
 const checkPasswordStrength = (password: string): PasswordStrength => {
   if (!password) return PasswordStrength.None;
@@ -80,9 +85,6 @@ const checkPasswordStrength = (password: string): PasswordStrength => {
   return Math.min(score, 5) as PasswordStrength;
 };
 
-/**
- * Checks which password requirements are met
- */
 const getPasswordRequirementsStatus = (password: string) => ({
   length: password.length >= 8,
   uppercase: /[A-Z]/.test(password),
@@ -91,9 +93,6 @@ const getPasswordRequirementsStatus = (password: string) => ({
   specialChar: /[^A-Za-z0-9]/.test(password)
 });
 
-/**
- * Gets descriptive text for password strength level
- */
 const getStrengthDescription = (strength: PasswordStrength): string => {
   switch (strength) {
     case PasswordStrength.None: return "Enter password";
@@ -106,9 +105,6 @@ const getStrengthDescription = (strength: PasswordStrength): string => {
   }
 };
 
-/**
- * Gets color representation for password strength level
- */
 const getStrengthColor = (strength: PasswordStrength): string => {
   switch (strength) {
     case PasswordStrength.Weak: return '#e74c3c';
@@ -121,7 +117,6 @@ const getStrengthColor = (strength: PasswordStrength): string => {
 };
 
 export default function RegisterPage() {
-  // Form data and UI state
   const [formData, setFormData] = useState<RegistrationForm>({
     email: "",
     name: "",
@@ -137,9 +132,6 @@ export default function RegisterPage() {
 
   const navigate = useNavigate();
 
-  /**
-   * Updates form state and handles password strength checking
-   */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
@@ -149,23 +141,14 @@ export default function RegisterPage() {
     }
   }, []);
 
-  /**
-   * Toggles visibility of the password field
-   */
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
 
-  /**
-   * Toggles visibility of the password confirmation field
-   */
   const toggleRepeatPasswordVisibility = useCallback(() => {
     setShowRepeatPassword(prev => !prev);
   }, []);
 
-  /**
-   * Handles form submission and account creation
-   */
   const handleRegister = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     setErrors([]);
@@ -194,24 +177,30 @@ export default function RegisterPage() {
     }
   }, [formData, navigate, passwordStrength]);
 
-  // Generate helper data for UI
   const requirementsStatus = getPasswordRequirementsStatus(formData.password);
+
+  // Generate helper text based on password strength
   const getPasswordHelperText = () => {
     if (formData.password && passwordStrength < PasswordStrength.VeryStrong) {
       return "Password must have 'Very Strong' strength to register";
     }
     return "";
   };
+
+  // Determine if the register button should be disabled based on password strength
   const isRegisterDisabled = isLoading || (formData.password && passwordStrength < PasswordStrength.VeryStrong);
+
+  // Should show not acceptable suffix - only when password exists and is less than Very Strong
   const shouldShowNotAcceptable = formData.password.length > 0 && passwordStrength < PasswordStrength.VeryStrong;
 
+  // ========== COMPONENT RENDER ==========
   return (
     <div className="register-page">
       <div className="main-container">
-        {/* Animated background */}
+        {/* Background gradient */}
         <div className="background" />
         
-        {/* Registration card */}
+        {/* Registration form card */}
         <div className="register-card">
           <h2 className="register-title">Create Your Account</h2>
           <p className="register-subtitle">Join Finovators and start your journey</p>
@@ -345,7 +334,7 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              {/* Password strength tooltip */}
+              {/* Tooltip */}
               {showTooltip && (
                 <div className="tooltip-box tooltip-fade">
                   <div style={{ marginBottom: '1rem' }}>
@@ -467,7 +456,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Submit button with loading state */}
+            {/* Submit button with loading state and password strength check */}
             <button 
               type="submit" 
               className="register-button" 

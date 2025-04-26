@@ -1,50 +1,87 @@
-/**
- * Footer Component
- * 
- * Responsive site footer with newsletter subscription, navigation links to
- * modals (About, FAQs, Privacy Policy, Legal), and contact information.
- * Includes modal functionality for displaying legal and informational content.
- */
-
 import React, { useState } from 'react';
 import './Footer.css';
 
+/**
+ * Footer Component
+ * 
+ * This component renders the site footer which includes:
+ * - Newsletter signup form
+ * - Branding and navigation links
+ * - Content modals (About, FAQs, Privacy, Legal)
+ * - Contact information and social media links
+ */
 const Footer: React.FC = () => {
-  // Modal and subscription state management
+  // ===== STATE MANAGEMENT =====
+  
+  /**
+   * Track which modal is currently open ('about', 'faqs', 'privacy', 'legal')
+   * null means no modal is open
+   */
   const [showModal, setShowModal] = useState<string | null>(null);
+  
+  /**
+   * Track the email input for the newsletter subscription form
+   */
   const [emailInput, setEmailInput] = useState('');
+  
+  /**
+   * Track whether the user has successfully subscribed to the newsletter
+   * Controls display of success message
+   */
   const [subscribed, setSubscribed] = useState(false);
+  
+  /**
+   * Track which accordion item is expanded in the FAQs modal
+   * null means no item is expanded
+   */
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
-  // Opens modal and resets accordion state
+  // ===== EVENT HANDLERS =====
+  
+  /**
+   * Opens a specific modal and resets the accordion state
+   * @param modalType - Type of modal to open ('about', 'faqs', 'privacy', 'legal')
+   */
   const openModal = (modalType: string) => {
     setShowModal(modalType);
-    setActiveAccordion(null);
+    setActiveAccordion(null); // Reset accordion state when opening a new modal
   };
 
-  // Closes any open modal
+  /**
+   * Closes any open modal
+   */
   const closeModal = () => {
     setShowModal(null);
   };
   
-  // Handles newsletter subscription with basic validation
+  /**
+   * Handles newsletter subscription form submission
+   * Validates email format and shows a temporary success message
+   * @param e - Form submission event
+   */
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
+    // Basic email validation (contains @ and .)
     if (emailInput.includes('@') && emailInput.includes('.')) {
       setSubscribed(true);
       setEmailInput('');
+      // Reset success message after 3 seconds
       setTimeout(() => setSubscribed(false), 3000);
     }
   };
   
-  // Toggles FAQ accordion sections
+  /**
+   * Toggles expansion of an accordion item in the FAQs modal
+   * If the clicked item is already active, it closes it
+   * @param index - Index of the accordion item to toggle
+   */
   const toggleAccordion = (index: number) => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
 
   return (
     <>
-      {/* Modal overlay with dynamic content */}
+      {/* ===== MODAL SECTION ===== */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -90,7 +127,7 @@ const Footer: React.FC = () => {
                     <li><strong>Innovation:</strong> With future goals like AI-powered suggestions and mobile access, we're always evolving.</li>
                   </ul>
                   
-                  <h3>Our Vision</h3>
+                  <h3>Our Vison</h3>
                   <p>We're not just building a budgeting app—we're creating a foundation for lifelong financial wellness. From students navigating their first rent payment to young professionals managing their first paycheck, our platform aims to grow alongside its users and their goals.</p>
                 </div>
               </div>
@@ -178,7 +215,81 @@ const Footer: React.FC = () => {
                   </ul>
                 </div>
                 
-                {/* Additional privacy policy sections omitted for brevity */}
+                <div className="policy-section">
+                  <h3>How We Use Your Information</h3>
+                  <p>We use the information we collect to:</p>
+                  <ul className="policy-list">
+                    <li>Provide, maintain, and improve our services, including to develop new features and functionality</li>
+                    <li>Process transactions and manage your accounts, including synchronizing your financial data with third-party financial institutions</li>
+                    <li>Generate personalized financial insights, recommendations, and alerts based on your financial behavior and goals</li>
+                    <li>Communicate with you about your account, updates, security alerts, and new features</li>
+                    <li>Respond to your inquiries, support requests, feedback, and questions</li>
+                    <li>Protect against fraudulent, unauthorized, or illegal activity on our platform</li>
+                    <li>Analyze usage patterns to improve user experience and optimize our service performance</li>
+                    <li>Comply with legal obligations, including responding to lawful requests from public authorities</li>
+                  </ul>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Information Sharing</h3>
+                  <p>We do not sell your personal information. We may share certain information with:</p>
+                  <ul className="policy-list">
+                    <li><strong>Service Providers:</strong> Third-party vendors who help us operate our platform and provide services to you. These providers are contractually obligated to use your information only for providing services to us and in accordance with this Privacy Policy.</li>
+                    <li><strong>Financial Partners:</strong> Financial institutions and data aggregators necessary to connect your accounts and process transactions. These partners only receive the information needed to provide their specific service.</li>
+                    <li><strong>With Your Consent:</strong> We may share information with third parties when you explicitly consent to such sharing, such as when you choose to share financial reports with a financial advisor.</li>
+                    <li><strong>Legal Requirements:</strong> When required by law, legal process, litigation, or governmental authorities. We may also disclose information about you if we determine that disclosure is necessary to protect the rights, property, or safety of our users or others.</li>
+                    <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, reorganization, sale of assets, or bankruptcy, your information may be transferred or sold as part of that transaction, but only to the extent permitted by law.</li>
+                  </ul>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Data Security</h3>
+                  <p>We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. Our security practices include:</p>
+                  <ul className="policy-list">
+                    <li>256-bit encryption for data transmission and storage, the same level used by major financial institutions</li>
+                    <li>Regular security audits, vulnerability testing, and penetration testing by independent security experts</li>
+                    <li>Employee access controls, background checks, and comprehensive security training</li>
+                    <li>Multi-factor authentication and biometric verification options for account access</li>
+                    <li>Physical, electronic, and procedural safeguards for our systems and facilities</li>
+                    <li>Continuous monitoring for suspicious activities and automated threat detection</li>
+                  </ul>
+                  <p>While we implement these safeguards, no system is 100% secure. We encourage you to take steps to protect your account, such as using strong passwords and enabling two-factor authentication.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Your Privacy Rights</h3>
+                  <p>Depending on your location, you may have rights regarding your personal information, including:</p>
+                  <ul className="policy-list">
+                    <li>Accessing and reviewing your information</li>
+                    <li>Correcting inaccurate information</li>
+                    <li>Deleting your information</li>
+                    <li>Restricting or objecting to certain processing activities</li>
+                    <li>Requesting portability of your information</li>
+                    <li>Withdrawing consent when processing is based on consent</li>
+                    <li>Opting out of certain data sharing practices</li>
+                  </ul>
+                  <p>To exercise these rights, please contact us at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or visit the Privacy Settings section in your account. We will respond to all legitimate requests within 30 days.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Data Retention</h3>
+                  <p>We retain your personal information for as long as your account is active or as needed to provide you services, comply with legal obligations, resolve disputes, and enforce our agreements. If you wish to delete your account, certain information may remain in our records after account deletion as required or permitted by law.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Children's Privacy</h3>
+                  <p>Our services are not intended for children under the age of 18, and we do not knowingly collect data from children under 18. If we learn that we have collected personal information from a child under 18, we will take steps to delete that information as quickly as possible.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Changes to This Policy</h3>
+                  <p>We may update this Privacy Policy from time to time. If we make material changes, we will notify you through the platform or by email prior to the changes becoming effective. We encourage you to review this Privacy Policy periodically for the latest information on our privacy practices.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Contact Us</h3>
+                  <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact our Data Protection Officer at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or by mail at Finovators Privacy Office, 100 Financial Plaza, Suite 500, San Francisco, CA 94103.</p>
+                </div>
               </div>
             )}
             
@@ -186,18 +297,101 @@ const Footer: React.FC = () => {
             {showModal === 'legal' && (
               <div className="modal-body">
                 <h2>Legal & Compliance</h2>
-                {/* Legal content omitted for brevity */}
+                <div className="policy-section">
+                  <h3>Regulatory Compliance</h3>
+                  <p>Finovators is committed to complying with all applicable laws and regulations. Our platform adheres to the following regulatory frameworks:</p>
+                  <ul className="legal-list">
+                    <li><strong>General Data Protection Regulation (GDPR):</strong> For users in the European Economic Area, we comply with GDPR requirements governing personal data collection, processing, and storage. This includes providing rights to access, correct, delete, restrict processing of, and port personal data.</li>
+                    <li><strong>California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA):</strong> For California residents, we honor rights regarding personal information as specified by these laws, including the right to know what personal information is collected, the right to delete personal information, the right to opt-out of the sale of personal information, and the right to non-discrimination for exercising these rights.</li>
+                    <li><strong>Financial Industry Regulatory Authority (FINRA):</strong> While not directly regulated by FINRA, we adhere to industry best practices for financial data handling, reporting, and disclosures. Our advisory team includes FINRA-licensed professionals who ensure our platform meets relevant standards.</li>
+                    <li><strong>Electronic Fund Transfer Act (EFTA) and Regulation E:</strong> We comply with regulations concerning electronic money transfers, error resolution procedures, and related consumer protections when facilitating connections to financial accounts.</li>
+                    <li><strong>Gramm-Leach-Bliley Act (GLBA):</strong> As a financial service provider, we follow GLBA regulations regarding the collection, disclosure, and protection of consumers' nonpublic personal information, including our obligation to notify you about our information-sharing practices.</li>
+                    <li><strong>Consumer Financial Protection Bureau (CFPB) Guidelines:</strong> We adhere to CFPB standards for financial data access, consumer disclosures, and ethical practices in the provision of financial services technology.</li>
+                    <li><strong>State-Specific Financial Regulations:</strong> We maintain compliance with state-level financial regulations across the United States, including money transmitter laws, data breach notification requirements, and specific data protection regulations.</li>
+                  </ul>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Security Standards</h3>
+                  <p>We maintain the highest industry-standard security protocols:</p>
+                  <ul className="legal-list">
+                    <li><strong>SOC 2 Type II Certification:</strong> We undergo regular audits by independent third parties to ensure our systems meet stringent security, availability, processing integrity, confidentiality, and privacy standards.</li>
+                    <li><strong>PCI DSS Compliance:</strong> For any payment-related functions, we adhere to Payment Card Industry Data Security Standards, ensuring that cardholder data is processed, stored, and transmitted with maximum security.</li>
+                    <li><strong>NIST Cybersecurity Framework:</strong> Our security practices follow the National Institute of Standards and Technology Cybersecurity Framework, implementing comprehensive protection, detection, and response measures.</li>
+                    <li><strong>ISO/IEC 27001:2013:</strong> Our information security management system is aligned with this international standard, ensuring systematic management of sensitive company and customer information.</li>
+                    <li><strong>AES-256 Encryption:</strong> All sensitive data is protected using Advanced Encryption Standard with 256-bit keys, both in transit and at rest, ensuring your financial information remains secure.</li>
+                    <li><strong>Multi-Factor Authentication:</strong> Additional security layers are available and encouraged to protect account access, including biometric verification, one-time passcodes, and hardware security keys.</li>
+                    <li><strong>Security Bug Bounty Program:</strong> We collaborate with the security research community through a responsible disclosure program, rewarding identified vulnerabilities to continuously strengthen our security posture.</li>
+                  </ul>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Disclaimer</h3>
+                  <p>Finovators is a financial management tool designed to help you track and analyze your personal finances. Important disclaimers:</p>
+                  <ul className="legal-list">
+                    <li>We are not a financial institution, investment advisor, or credit counselor. While our platform provides financial insights and recommendations, these should not be considered as professional financial advice.</li>
+                    <li>Our platform does not provide tax, legal, or accounting advice. Any tax-related features are for informational purposes only and should not be relied upon for tax preparation or filing purposes.</li>
+                    <li>Insights and recommendations are generated based on your data and general financial principles. They may not account for all aspects of your personal financial situation and should be evaluated against your specific circumstances and goals.</li>
+                    <li>Past performance is not indicative of future results. Any investment projections, market analyses, or similar information provided through our platform are for illustrative purposes only.</li>
+                    <li>While we strive for accuracy in our data aggregation and analysis, we cannot guarantee that all information is error-free. Financial data from third-party sources should be verified with the original source.</li>
+                    <li>You should consult with qualified financial, tax, legal, or accounting professionals before making significant financial decisions or implementing strategies suggested by our platform.</li>
+                  </ul>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Third-Party Services</h3>
+                  <p>Our platform integrates with various third-party services, including financial institutions, payment processors, and data aggregators. These entities have their own terms of service and privacy policies that govern the data shared with them.</p>
+                  <p>When you connect your financial accounts, you are authorizing Finovators to access your account information in accordance with the terms of our service and the respective financial institution's policies. You may need to provide authentication credentials directly to these third parties for account verification purposes.</p>
+                  <p>While we carefully select our integration partners and hold them to high security standards, we are not responsible for the privacy practices, content, or policies of these third parties. We encourage you to review the privacy policies and terms of service of any financial institutions or services you connect to our platform.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Intellectual Property</h3>
+                  <p>All intellectual property rights related to the Finovators platform, including software, design, text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, and other content, are owned by Finovators or its licensors.</p>
+                  <p>Our platform and its content are protected by copyright, trademark, trade secret, and other intellectual property laws. Unauthorized use, reproduction, or distribution of our intellectual property is prohibited and may result in civil and criminal penalties.</p>
+                  <p>We grant users a limited, non-exclusive, non-transferable, revocable license to use our platform for personal or internal business purposes in accordance with our Terms of Service. This license does not include the right to copy, modify, distribute, sell, lease, or create derivative works of our platform or its content.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Service Availability and Modifications</h3>
+                  <p>We strive to ensure that our services are available 24/7, but we do not guarantee uninterrupted access to our platform. Temporary service interruptions may occur due to system maintenance, updates, or factors beyond our control.</p>
+                  <p>We reserve the right to modify, suspend, or discontinue any part of our services at any time without notice. This includes the right to impose limits on certain features or restrict access to parts or all of the platform.</p>
+                  <p>We may also update our Terms of Service, Privacy Policy, and other legal documents periodically. Continued use of our platform after such changes constitutes acceptance of the modified terms.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Dispute Resolution</h3>
+                  <p>In the event of any dispute arising from or relating to our services, we encourage users to first contact our customer support team at <a href="mailto:support@finovators.com">support@finovators.com</a> to seek a resolution.</p>
+                  <p>If the matter cannot be resolved directly, depending on the nature of the dispute and your location, resolution may proceed through arbitration, small claims court, or other legal channels as specified in our Terms of Service.</p>
+                  <p>Any legal proceedings arising from the use of our services shall be governed by and construed in accordance with the laws of the State of California, without giving effect to any choice of law or conflict of law provisions.</p>
+                </div>
+                
+                <div className="policy-section">
+                  <h3>Contact Information</h3>
+                  <p>For legal inquiries or compliance questions, please contact our legal department at <a href="mailto:legal@finovators.com">legal@finovators.com</a>.</p>
+                  
+                  <p>For official notices, correspondence, or legal documents, please send mail to:</p>
+                  <address className="legal-address">
+                    Finovators Legal Department<br />
+                    100 Financial Plaza, Suite 500<br />
+                    San Francisco, CA 94103<br />
+                    United States
+                  </address>
+                  
+                  <p>Our Compliance Officer can be reached directly at <a href="mailto:compliance@finovators.com">compliance@finovators.com</a> or by phone at +1 (800) 123-4567 ext. 2240 during business hours (Monday-Friday, 9am-5pm PT).</p>
+                </div>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Main footer section */}
+      {/* ===== FOOTER SECTION ===== */}
       <footer className="footer">
         <div className="footer-container">
-          {/* Footer top section with branding and links */}
+          {/* Footer Top: Contains branding, subscription form, and navigation links */}
           <div className="footer-top">
+            {/* Branding section */}
             <div className="footer-branding">
               <div className="footer-logo">
                 <h1 className="logo-text">Finovators</h1>
@@ -207,6 +401,7 @@ const Footer: React.FC = () => {
               {/* Newsletter signup form or success message */}
               <div className="newsletter-signup">
                 {subscribed ? (
+                  // Success message shown after subscription
                   <div className="subscribe-success">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -215,6 +410,7 @@ const Footer: React.FC = () => {
                     <span>Thank you for subscribing!</span>
                   </div>
                 ) : (
+                  // Newsletter subscription form
                   <form className="newsletter-form" onSubmit={handleSubscribe}>
                     <input 
                       type="email" 
@@ -234,7 +430,7 @@ const Footer: React.FC = () => {
               </div>
             </div>
             
-            {/* Modal navigation links */}
+            {/* Navigation links that open modals */}
             <div className="footer-nav">
               <button className="footer-link" onClick={() => openModal('about')}>About Us</button>
               <button className="footer-link" onClick={() => openModal('faqs')}>FAQs</button>
@@ -243,54 +439,58 @@ const Footer: React.FC = () => {
             </div>
           </div>
           
-          {/* Footer divider */}
+          {/* Divider between top and bottom sections */}
           <div className="footer-divider"></div>
           
-          {/* Footer bottom section with copyright and contact info */}
+          {/* Footer Bottom: Contains copyright, contact info, and social links */}
           <div className="footer-bottom">
+            {/* Copyright notice with current year */}
             <div className="copyright">
               © {new Date().getFullYear()} Finovators. All rights reserved.
             </div>
             
-            {/* Contact information */}
+            {/* Contact information with phone and email */}
             <div className="contact-info">
-              <div className="contact-item">
-                <img
-                  src="/icons/mail-icon.svg"
-                  alt="Email"
-                  className="contact-icon"
-                />
-                <a href="mailto:contact@finovators.com" className="contact-link">
-                  contact@finovators.com
-                </a>
-              </div>
-            </div>
+  <div className="contact-item">
+    <img
+      src="/icons/mail-icon.svg"
+      alt="Email"
+      className="contact-icon"
+    />
+    <a href="mailto:contact@finovators.com" className="contact-link">
+      contact@finovators.com
+    </a>
+  </div>
+</div>
             
             {/* Social media links */}
             <div className="social-links">
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="30"
-                  height="30"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M4.5 3h3.8l4 5.6L16.6 3H21l-6.9 9.5L21 21h-3.9l-4.3-6L8 21H3l7.3-10L4.5 3z"/>
-                </svg>
-              </a>
+            <div className="social-links">
+            <a
+  href="https://twitter.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="social-link"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M4.5 3h3.8l4 5.6L16.6 3H21l-6.9 9.5L21 21h-3.9l-4.3-6L8 21H3l7.3-10L4.5 3z"/>
+  </svg>
+</a>
 
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
-                <img src="/icons/instagram-icon.svg" alt="Instagram" className="social-icon" />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-link">
-                <img src="/icons/linkedin-icon.svg" alt="LinkedIn" className="social-icon" />
-              </a>
+  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
+    <img src="/icons/instagram-icon.svg" alt="Instagram" className="social-icon" />
+  </a>
+  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-link">
+    <img src="/icons/linkedin-icon.svg" alt="LinkedIn" className="social-icon" />
+  </a>
+</div>
+
             </div>
           </div>
         </div>

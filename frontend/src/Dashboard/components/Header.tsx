@@ -1,11 +1,3 @@
-/**
- * Header Component
- * 
- * Main navigation header with responsive design for the Finovators app.
- * Provides navigation controls, logo display, and mobile menu functionality.
- * Adapts its appearance based on scroll position and current theme.
- */
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
@@ -16,41 +8,33 @@ const Header: React.FC = () => {
   const location = useLocation();
   const { theme } = useTheme();
 
-  // Track scroll position and menu state
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Determine if a navigation item should be highlighted as active
   const isActive = (path: string): boolean => location.pathname === path;
 
-  // Update header appearance on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
+      setScrolled(window.scrollY > 0); // Only remove "scrolled" class if at top
     };
   
-    handleScroll(); // Initialize on mount
+    handleScroll(); // ← Run once on mount in case page isn't at top
+  
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);  
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
-    
-    if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    
+    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  // Navigation handlers
   const handleLogoClick = () => navigate('/dashboard');
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -70,14 +54,14 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile menu toggle button */}
+        {/* Mobile Menu Toggle */}
         {!menuOpen && (
           <div className="mobile-menu-toggle" onClick={() => setMenuOpen(true)}>
             <div className="menu-bar"></div>
           </div>
         )}
 
-        {/* Navigation menu */}
+        {/* Slide-out Menu */}
         <nav ref={menuRef} className={`navigation ${menuOpen ? 'open' : ''}`}>
           <button className={`nav-button ${isActive('/dashboard') ? 'active' : ''}`} onClick={() => handleNavClick('/dashboard')}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -1,9 +1,16 @@
 /**
  * LoginPage Component
  * 
- * Provides a responsive authentication interface with email/password validation,
- * error handling, and loading states. Features a branded welcome section alongside
- * the login form with visual feedback for user interactions.
+ * This file implements a responsive login page with validation, error handling, 
+ * and authentication logic. The page displays a branded welcome message alongside
+ * a login form with email and password inputs.
+ * 
+ * Key features:
+ * - Form validation with error messaging
+ * - Password visibility toggle
+ * - Loading states
+ * - Authentication API integration
+ * - Responsive design for various screen sizes
  */
 
 import React, { useState, useCallback, FormEvent } from "react";
@@ -12,7 +19,9 @@ import "./LoginPage.css";
 import { API_BASE_URL } from "../config";
 
 /**
- * Defines structure for login form data
+ * Interface defining the structure for login credentials
+ * @property {string} login - User's email address
+ * @property {string} password - User's password
  */
 interface LoginCredentials {
   login: string;
@@ -20,15 +29,20 @@ interface LoginCredentials {
 }
 
 /**
- * Validates user credentials before submission
+ * Validates user login credentials
+ * 
+ * @param credentials - The user's login credentials to validate
+ * @returns An array of error messages, empty if validation passes
  */
 const validateLogin = (credentials: LoginCredentials): string[] => {
   const errors: string[] = [];
 
+  // Validate login field (email)
   if (!credentials.login.trim()) {
     errors.push("Login is required");
   }
 
+  // Validate password field
   if (!credentials.password.trim()) {
     errors.push("Password is required");
   } else if (credentials.password.length < 6) {
@@ -41,40 +55,75 @@ const validateLogin = (credentials: LoginCredentials): string[] => {
 /**
  * LoginPage Component
  * 
- * Handles authentication flow including form state management,
- * validation, API integration, and navigation after login.
+ * Renders a login form with validation, error handling, and authentication.
+ * Manages form state, processes user input, and handles the authentication process.
  */
 export default function LoginPage() {
-  // State management
+  // ========== STATE MANAGEMENT ==========
+  
+  // Form data state
   const [credentials, setCredentials] = useState<LoginCredentials>({
     login: "",
     password: ""
   });
+  
+  // UI state
   const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Navigation hook for redirecting after login
   const navigate = useNavigate();
 
+  // ========== EVENT HANDLERS ==========
+
   /**
-   * Handles form submission and authentication
+   * Handles form input changes
+   * Updates the credentials state when input values change
+   * 
+   * @param e - The input change event
+   */
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setCredentials(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  }, []);
+
+  /**
+   * Toggles password visibility between plain text and hidden
+   */
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
+  /**
+   * Handles the sign-in process
+   * Validates input, makes authentication API call, and handles success/failure
+   * 
+   * @param e - The form submission event
    */
   const handleSignIn = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
+    
+    // Reset any previous error messages
     setErrors([]);
-    setIsLoading(true);
-  
+    
+    // Validate user input
     const validationErrors = validateLogin(credentials);
+    
+    // If validation fails, display errors and stop the login process
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
-      setIsLoading(false);
       return;
     }
-  
+
+    // Set loading state to show user that login is processing
+    setIsLoading(true);
+
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-  
+      // Make API request to authenticate user
       const response = await fetch(`${API_BASE_URL}/account/login`, {
         method: "POST",
         headers: {
@@ -84,60 +133,33 @@ export default function LoginPage() {
           email: credentials.login,
           password: credentials.password,
         }),
-        signal: controller.signal,
       });
-  
-      clearTimeout(timeoutId);
-  
+    
+      // Handle unsuccessful response
       if (!response.ok) {
-        let message = "Login failed";
-        try {
-          const data = await response.json();
-          if (data.message) message = data.message;
-        } catch {
-          if (response.status === 401) {
-            message = "Incorrect email or password";
-          }
-        }
-        setErrors([message]);
-        setIsLoading(false);
-        return;
+        const error = await response.json();
+        throw new Error(error.message || "Failed to log in");
       }
-  
+    
+      // Process successful response
       const data = await response.json();
+      
+      // Store authentication data in local storage
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.id);
+    
+      // Navigate to dashboard on successful login
       navigate("/Dashboard");
-  
     } catch (error: any) {
-      if (error.name === "AbortError") {
-        setErrors(["Account not found or invalid login credentials."]);
-      } else {
-        setErrors(["Login failed: " + error.message]);
-      }
+      // Display error message if login fails
+      setErrors(["Login failed: " + error.message]);
     } finally {
+      // Reset loading state regardless of outcome
       setIsLoading(false);
     }
-  }, [credentials, navigate]);  
+  }, [credentials, navigate]);
 
-  /**
-   * Updates form state when input values change
-   */
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    const { id, value } = event.target;
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [id]: value,
-    }));
-  }
-
-  /**
-   * Toggles password visibility between plain text and masked
-   */
-  function togglePasswordVisibility(): void {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  }
-
+  // ========== COMPONENT RENDER ==========
   return (
     <div className="main-container">
       {/* Animated background gradient */}
@@ -148,7 +170,7 @@ export default function LoginPage() {
         <h2 className="login-title">Welcome Back</h2>
         <p className="login-subtitle">Enter your credentials to continue</p>
         
-        {/* Error message display */}
+        {/* Error message display area */}
         {errors.length > 0 && (
           <div 
             role="alert" 
@@ -197,7 +219,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Password input field with visibility toggle */}
+          {/* Password input field with show/hide toggle */}
           <div className="form-group">
             <div className="password-label-wrapper">
               <label 
@@ -207,9 +229,9 @@ export default function LoginPage() {
                 Password
               </label>
               <a 
-                href="mailto:contact@finovators.com"
+                href="/reset-password" 
                 className="forgot-link"
-                aria-label="Email support for password help"
+                aria-label="Forgot password"
               >
                 Forgot password?
               </a>

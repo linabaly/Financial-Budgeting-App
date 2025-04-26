@@ -1,16 +1,13 @@
-/**
- * Transactions Component
- * 
- * Main interface for viewing, managing, and filtering financial transactions.
- * Provides sorting, pagination, and CRUD operations for transaction data.
- */
 import React, { useEffect, useState } from 'react';
 import './Transactions.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
 import { API_BASE_URL } from "../config";
+import TotalBalance from '../Dashboard/components/TotalBalance';
 
-// Type definitions for data structures
+/**
+ * Transaction interface to define the shape of transaction data
+ */
 interface Transaction {
   id: string;
   descriptor: string;
@@ -20,6 +17,9 @@ interface Transaction {
   type: string;
 }
 
+/**
+ * Interface for the form data 
+ */
 interface TransactionFormData {
   descriptor: string;
   amount: number;
@@ -29,12 +29,17 @@ interface TransactionFormData {
   amountInputEmpty?: boolean;
 }
 
+/**
+ * Interface for sort configuration
+ */
 interface SortConfig {
   key: string;
   direction: string;
 }
 
-// Map categories to colors for visual identification
+/**
+ * Map of category names to their corresponding colors for styling
+ */
 const categoryColors: {[key: string]: string} = {
   FOOD: '#27ae60',
   RENT: '#e74c3c',
@@ -47,11 +52,16 @@ const categoryColors: {[key: string]: string} = {
   OTHER: '#34495e'
 };
 
-// Format category name for display (capitalize first letter only)
+/**
+ * Helper function to format category name for display
+ */
 const formatCategoryName = (category: string): string => {
   return category.charAt(0) + category.slice(1).toLowerCase();
 };
 
+/**
+ * Transactions Component - Manages displaying, filtering, and sorting financial transactions
+ */
 const Transactions: React.FC = () => {
   // State management
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +83,11 @@ const Transactions: React.FC = () => {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [transactionChanged, setTransactionChanged] = useState(false);
 
-  // Format currency for display with 2 decimal places
+  /**
+   * Formats a number as currency with 2 decimal places
+   * @param amount - The number to format
+   * @returns A formatted string (e.g., "1,234.56")
+   */
   const formatCurrency = (amount: number): string => {
     return amount.toLocaleString('en-US', {
       minimumFractionDigits: 2,
@@ -81,7 +95,9 @@ const Transactions: React.FC = () => {
     });
   };
 
-  // Fetch all transactions from API
+  /**
+   * Fetch user transactions data
+   */
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -90,7 +106,18 @@ const Transactions: React.FC = () => {
         if (!token) {
           throw new Error("No token found.");
         }
+        /**
+       * !!!! DEBUGGING !!!!
+       */
 
+        console.log("Making API request to:", `${API_BASE_URL}/transaction`);
+        console.log("With headers:", {
+          "Content-Type": "application/json",
+          "Authorization": "token exists: " + !!token
+        });
+      
+      
+  
         const response = await fetch(`${API_BASE_URL}/transaction`, {  
           method: "GET",
           headers: {
@@ -99,6 +126,8 @@ const Transactions: React.FC = () => {
           },
         });
 
+
+  
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.message || "Failed to fetch transactions");
@@ -124,10 +153,12 @@ const Transactions: React.FC = () => {
       }
     };
 
-    fetchTransactions();
+      fetchTransactions();
   }, []);
 
-  // Fetch a single transaction by ID
+  /**
+   * Fetch a specific transaction by ID
+   */
   const fetchTransactionById = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
@@ -158,7 +189,9 @@ const Transactions: React.FC = () => {
     }
   };
 
-  // Create a new transaction
+  /**
+   * Create a new transaction
+   */
   const createTransaction = async (transactionData: any) => {
     try {
       const token = localStorage.getItem("token");
@@ -166,6 +199,18 @@ const Transactions: React.FC = () => {
       if (!token) {
         throw new Error("No token found.");
       }
+
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Making API request to:", `${API_BASE_URL}/transaction`);
+      console.log("With headers:", {
+        "Content-Type": "application/json",
+        "Authorization": "token exists: " + !!token
+      });
+      console.log("With body:", JSON.stringify(transactionData));
+    
+
       
       const response = await fetch(`${API_BASE_URL}/transaction`, {
         method: "POST",
@@ -175,13 +220,22 @@ const Transactions: React.FC = () => {
         },
         body: JSON.stringify(transactionData)
       });
+
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Fetch response:", response);
       
       if (!response.ok) {
         const err = await response.json();
+        console.error("Error response:", err);
         throw new Error(err.message || "Failed to create transaction");
       }
       
       const createdTransaction = await response.json();
+      console.log("Created transaction:", createdTransaction);
+
+
       return createdTransaction;
     } catch (error: any) {
       console.error("Error creating transaction:", error.message);
@@ -190,7 +244,9 @@ const Transactions: React.FC = () => {
     }
   };
 
-  // Delete a transaction by ID
+  /**
+   * Delete a transaction
+   */
   const deleteTransaction = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
@@ -198,6 +254,15 @@ const Transactions: React.FC = () => {
       if (!token) {
         throw new Error("No token found.");
       }
+      
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Making DELETE API request to:", `${API_BASE_URL}/transaction/${id}`);
+      console.log("With headers:", {
+        "Content-Type": "application/json",
+        "Authorization": "token exists: " + !!token
+      });
       
       const response = await fetch(`${API_BASE_URL}/transaction/${id}`, {
         method: "DELETE",
@@ -225,12 +290,16 @@ const Transactions: React.FC = () => {
     }
   };
 
-  // Show delete confirmation dialog
+  /**
+   * Handle delete transaction click
+   */
   const handleDeleteTransaction = (id: string) => {
     setConfirmDelete(id);
   };
 
-  // Execute transaction deletion after confirmation
+  /**
+   * Confirm delete transaction
+   */
   const confirmDeleteTransaction = async () => {
     if (confirmDelete) {
       try {
@@ -244,12 +313,16 @@ const Transactions: React.FC = () => {
     setTransactionChanged(prev => !prev);
   };
 
-  // Cancel delete operation
+  /**
+   * Cancel delete confirmation
+   */
   const cancelDeleteTransaction = () => {
     setConfirmDelete(null);
   };
 
-  // Filter transactions based on search term and selected category
+  /**
+   * Filter transactions based on search term and selected category
+   */
   const filteredTransactions = transactions.filter(transaction => {
     const matchesSearch = searchTerm === '' || (
       (transaction.descriptor?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -262,7 +335,9 @@ const Transactions: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
   
-  // Apply sorting to filtered transactions
+  /**
+   * Sort transactions based on current sort configuration
+   */
   const sortedTransactions = React.useMemo(() => {
     let sortableTransactions = [...filteredTransactions];
     
@@ -290,30 +365,41 @@ const Transactions: React.FC = () => {
     return sortableTransactions;
   }, [filteredTransactions, sortConfig]);
   
-  // Extract unique categories for the category filter
+  /**
+   * Extract unique categories for the category filter
+   */
   const categories = ['All', ...Array.from(new Set(transactions.map(t => t.category)))];
   
-  // Calculate pagination values
+  /**
+   * Calculate pagination values
+   */
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTransactions = sortedTransactions.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
 
-  // Navigate to previous page
+  /**
+   * Navigate to previous page
+   */
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
-  // Navigate to next page
+  /**
+   * Navigate to next page
+   */
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
   
-  // Handle column sorting when header is clicked
+  /**
+   * Handle column sorting
+   * @param key - The column to sort by
+   */
   const requestSort = (key: string) => {
     let direction = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -322,7 +408,9 @@ const Transactions: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  // Handle category selection in new transaction form
+  /**
+   * Handle category change and update type if needed
+   */
   const handleCategoryChange = (category: string) => {
     // If category is INCOME, force type to be INCOME too
     if (category === 'INCOME') {
@@ -332,13 +420,27 @@ const Transactions: React.FC = () => {
     }
   };
   
-  // Add a new transaction
+  /**
+   * Add a new transaction to the list
+   */
   const handleAddTransaction = async () => {
     try {
       // Validate form
       if (!isFormValid) return;
 
-      // Create payload for API
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+
+      console.log("Sending transaction with data:", {
+        descriptor: newTransaction.descriptor,
+        amount: newTransaction.amount,
+        category: newTransaction.category,
+        type: newTransaction.type,
+        postedAt: new Date(newTransaction.date).toISOString()
+      });
+
+      // create payload for API
       const transactionPayload = {
         descriptor: newTransaction.descriptor,
         amount: newTransaction.amount,
@@ -349,6 +451,11 @@ const Transactions: React.FC = () => {
 
       // Call API to create transaction
       const createdTransaction = await createTransaction(transactionPayload);
+      /**
+       * !!!! DEBUGGING !!!!
+       */
+      console.log("Transaction created successfully:", createdTransaction);
+
 
       // Format created transaction for display
       const formattedTransaction = {
@@ -360,7 +467,7 @@ const Transactions: React.FC = () => {
         type: createdTransaction.type
       };
 
-      // Update transactions state and reset form
+      // Update transactions state (UI)
       setTransactions(prevTransactions => [formattedTransaction, ...prevTransactions]);
       setNewTransaction({
         descriptor: '',
@@ -368,20 +475,24 @@ const Transactions: React.FC = () => {
         category: 'FOOD',
         type: 'EXPENSE',
         date: new Date().toISOString().split('T')[0]
-      });
+      })
       setIsNewTransactionOpen(false);
+
     } catch (error: any) {
       console.error("Error adding transaction:", error.message);
       setError(error.message);
     }
+    
   };
 
-  // Check if form is valid for submission
+  /**
+   * Validate form inputs
+   */
   const isFormValid = newTransaction.descriptor.trim() !== '' && 
-                    !isNaN(newTransaction.amount) && 
-                    newTransaction.amount > 0 &&
-                    newTransaction.type !== '' &&
-                    newTransaction.date !== '';
+                      !isNaN(newTransaction.amount) && 
+                      newTransaction.amount > 0 &&
+                      newTransaction.type !== '' &&
+                      newTransaction.date !== '';
 
   return (
     <div className="app">
@@ -400,6 +511,8 @@ const Transactions: React.FC = () => {
             💰 Add Transaction
           </button>
         </div>
+
+         
         
         {/* New transaction form */}
         {isNewTransactionOpen && (
@@ -479,6 +592,7 @@ const Transactions: React.FC = () => {
                   <option value="TRANSPORTATION">Transportation</option>
                   <option value="INCOME">Income</option>
                   <option value="OTHER">Other</option>
+                  
                 </select>
               </div>
 
