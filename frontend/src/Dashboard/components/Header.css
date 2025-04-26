@@ -416,12 +416,9 @@
   }
 }
 
-[data-theme='light'] .header {
-  background: rgba(255, 255, 255, 0.96); /* white-ish background for light mode */
-  color: #111;
-}
-
-[data-theme='light'] .header.scrolled {
-  background: rgba(245, 245, 245, 0.98); /* slightly darker to show scroll */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+/* Small screens */
+@media (max-width: 480px) {
+  .logo-image {
+    height: 32px;
+  }
 }

@@ -1,18 +1,13 @@
 :root {
-  --toggle-bg-light: 
-#e6e6e6;
-  --toggle-bg-dark: 
-#2c2c2c;
-  --toggle-accent-light: 
-#8a4fff;
-  --toggle-accent-dark: 
-#b180ff;
-  --toggle-text-light: 
-#6c757d;
-  --toggle-text-dark: 
-#f0f0f0;
+  --toggle-bg-light: #e6e6e6;
+  --toggle-bg-dark: #2c2c2c;
+  --toggle-accent-light: #8a4fff;
+  --toggle-accent-dark: #b180ff;
+  --toggle-text-light: #6c757d;
+  --toggle-text-dark: #f0f0f0;
 }
 
+/* Base toggle styles */
 .switch-toggle {
   width: 110px;
   height: 56px;
@@ -31,7 +26,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Dark mode styles */
+/* Dark mode toggle background */
 body.dark-theme .switch-toggle {
   background-color: var(--toggle-bg-dark);
   box-shadow: 
@@ -40,6 +35,7 @@ body.dark-theme .switch-toggle {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Icon containers */
 .icon {
   z-index: 2;
   display: flex;
@@ -50,6 +46,7 @@ body.dark-theme .switch-toggle {
   transition: all 0.3s ease;
 }
 
+/* SVG icon styling */
 .sun-icon svg,
 .moon-icon svg {
 width: 24px;
@@ -58,11 +55,13 @@ stroke: #000;
 transition: stroke 0.3s ease;
 }
 
+/* Dark theme icon color adjustment */
 body.dark-theme .sun-icon svg,
 body.dark-theme .moon-icon svg {
   stroke: var(--toggle-text-dark);
 }
 
+/* Toggle slider thumb */
 .toggle-thumb {
   position: absolute;
   top: 3.5px;
@@ -77,6 +76,7 @@ body.dark-theme .moon-icon svg {
     0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
+/* Dark theme thumb styling */
 body.dark-theme .toggle-thumb {
   background-color: var(--toggle-accent-dark);
   box-shadow: 
@@ -84,6 +84,7 @@ body.dark-theme .toggle-thumb {
     0 3px 6px rgba(0, 0, 0, 0.22);
 }
 
+/* Slider position classes */
 .slide-left {
   left: 3px;
   transform: translateX(0);
@@ -94,7 +95,7 @@ body.dark-theme .toggle-thumb {
   transform: translateX(56px);
 }
 
-/* Hover and focus states */
+/* Hover effects */
 .switch-toggle:hover {
   box-shadow: 
     0 6px 8px rgba(0, 0, 0, 0.15),
@@ -107,11 +108,7 @@ body.dark-theme .switch-toggle:hover {
     inset 0 1px 3px rgba(255, 255, 255, 0.15);
 }
 
-/* Ensure smooth icon color transitions */
-.icon svg {
-  transition: stroke 0.3s ease;
-}
-
+/* Container positioning */
 .theme-toggle-container {
   position: absolute;
   top: 2.5rem;
@@ -121,6 +118,7 @@ body.dark-theme .switch-toggle:hover {
   justify-content: flex-end;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .theme-toggle-container {
     top: 0.5rem;

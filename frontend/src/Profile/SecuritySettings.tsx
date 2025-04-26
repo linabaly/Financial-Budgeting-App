@@ -5,10 +5,6 @@
  * password change, two-factor authentication, and login alerts.
  */
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// API configuration
-const API_BASE_URL = 'https://finovators.mracs.dev/api';
 
 /**
  * Enum for password strength levels
@@ -21,6 +17,10 @@ enum PasswordStrength {
   STRONG = 4,
   VERY_STRONG = 5
 }
+import { motion, AnimatePresence } from 'framer-motion';
+
+// API configuration
+const API_BASE_URL = "https://finovators.mracs.dev/api";
 
 /**
  * Props for the SecuritySettings component
@@ -159,14 +159,11 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         },
         body: JSON.stringify({
           currentPassword: passwords.currentPassword,
-          newPassword: passwords.newPassword,
-        }),
-      });          
+          password: passwords.newPassword
+        })        
+      });
       
-      // Check for specific error status codes
-      if (response.status === 401) {
-        throw new Error("Current password is incorrect");
-      } else if (!response.ok) {
+      if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || "Failed to change password");
       }
@@ -189,6 +186,28 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Toggles login alerts setting
+   * Note: This is a placeholder until backend implementation
+   */
+  const toggleLoginAlerts = () => {
+    // For now, just toggle the state locally
+    setLoginAlerts(!loginAlerts);
+    setSuccess(`Login alerts ${!loginAlerts ? 'enabled' : 'disabled'}`);
+    
+    // In the future, this would call a backend API
+    onSave();
+  };
+
+  /**
+   * Ends a session/device
+   * Note: This is a placeholder until backend implementation
+   */
+  const endSession = () => {
+    setSuccess('Session ended successfully');
+    // In the future, this would call an API to invalidate the session
   };
 
   return (
@@ -227,7 +246,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           />
         </div>
         
-        {/* New password field */}
+        {/* New password field with strength indicator */}
         <div className="form-group">
           <label htmlFor="newPassword">New Password</label>
           <input 
@@ -254,55 +273,9 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
                 {getStrengthText(passwordStrength)}
               </span>
             </div>
-
-            {/* Strength Bar */}
-            <div style={{
-              height: '6px',
-              width: '100%',
-              backgroundColor: '#ddd',
-              borderRadius: '4px',
-              overflow: 'hidden',
-              marginBottom: '12px'
-            }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${(Object.values(getPasswordRequirementsStatus(passwords.newPassword)).filter(Boolean).length / 5) * 100}%` }}
-                style={{
-                  height: '100%',
-                  backgroundColor: getStrengthColor(passwordStrength),
-                  transition: 'width 0.4s ease'
-                }}
-              />
-            </div>
-
-            {/* Password Requirements */}
-            <div className="password-requirements" style={{ marginTop: '12px' }}>
-              <h4 style={{ marginBottom: '8px' }}>Password must contain:</h4>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {[
-                  { label: 'At least 8 characters', satisfied: getPasswordRequirementsStatus(passwords.newPassword).length },
-                  { label: 'Uppercase letter', satisfied: getPasswordRequirementsStatus(passwords.newPassword).uppercase },
-                  { label: 'Lowercase letter', satisfied: getPasswordRequirementsStatus(passwords.newPassword).lowercase },
-                  { label: 'Number', satisfied: getPasswordRequirementsStatus(passwords.newPassword).number },
-                  { label: 'Special character', satisfied: getPasswordRequirementsStatus(passwords.newPassword).specialChar }
-                ].map((item, idx) => (
-                  <li key={idx} style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    marginBottom: '4px', 
-                    color: item.satisfied ? '#2ecc71' : '#888'
-                  }}>
-                    <span style={{ marginRight: '8px' }}>
-                      {item.satisfied ? '✓' : '✗'}
-                    </span>
-                    <span>{item.label}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-
+          )}
+        </div>
+        
         {/* Confirm password field with match indicator */}
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirm New Password</label>
@@ -337,6 +310,116 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           {isLoading ? 'Changing Password...' : 'Change Password'}
         </motion.button>
       </motion.div>
+
+      {/* Two-factor authentication section */}
+      <motion.div 
+        className="settings-section"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        <h3>Two-Factor Authentication</h3>
+        
+        {/* 2FA toggle */}
+        <div className="toggle-group">
+          <label>Enable Two-Factor Authentication</label>
+          <div 
+            className={`toggle-switch ${twoFactorEnabled ? 'active' : ''}`}
+            onClick={toggleTwoFactor}
+          >
+            <div className="toggle-slider"></div>
+          </div>
+        </div>
+        
+        {/* 2FA setup instructions - only visible when enabled */}
+        <AnimatePresence>
+          {twoFactorEnabled && (
+            <motion.div 
+              className="two-factor-details"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <p>Download an authenticator app and scan the QR code below:</p>
+              <div className="qr-code-placeholder">
+                <div className="qr-code"></div>
+              </div>
+              <p className="auth-code">Or enter this code: <strong>ABCD-EFGH-IJKL</strong></p>
+              <motion.button 
+                className="verify-button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Verifying...' : 'I\'ve scanned the QR code'}
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+      
+      {/* Login alerts section */}
+      <motion.div 
+        className="settings-section"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <h3>Login Alerts</h3>
+        <div className="toggle-group">
+          <label>Receive email alerts for new device logins</label>
+          <div 
+            className={`toggle-switch ${loginAlerts ? 'active' : ''}`}
+            onClick={toggleLoginAlerts}
+          >
+            <div className="toggle-slider"></div>
+          </div>
+        </div>
+      </motion.div>
+      
+      {/* Device sessions section */}
+      <motion.div 
+        className="settings-section"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.7 }}
+      >
+        <h3>Active Sessions</h3>
+        <div className="sessions-list">
+          {/* Current device session */}
+          <div className="session-item">
+            <div className="session-details">
+              <div className="device-name">Current Browser (Chrome)</div>
+              <div className="session-meta">IP: 192.168.1.1 • Last active: Just now</div>
+            </div>
+            <div className="session-actions">
+              <span className="current-device">Current Device</span>
+            </div>
+          </div>
+          
+          {/* Other device session with end session option */}
+          <div className="session-item">
+            <div className="session-details">
+              <div className="device-name">iPhone 13 Pro (Safari)</div>
+              <div className="session-meta">IP: 192.168.1.2 • Last active: 2 hours ago</div>
+            </div>
+            <div className="session-actions">
+              <motion.button 
+                className="end-session-btn"
+                onClick={endSession}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={isLoading}
+              >
+                End Session
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+      
+      {/* Save button is removed since each section has its own save functionality */}
     </motion.div>
   );
 };

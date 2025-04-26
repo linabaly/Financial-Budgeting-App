@@ -70,6 +70,30 @@ export default class AccountRoute extends Route {
       }
     });
 
+    this.router.put("/reset-password", async (req, res) => {
+      try {
+        if (!req.body.currentPassword || !req.body.newPassword || req.body.newPassword?.length < 1)
+          return this.sendClientError(res);
+        const account = await this.authenticate(req, res);
+        if (!account) return;
+
+        const currentPasswordSecurity = await SecurityManager.verifyPassword(
+          account.password,
+          req.body.currentPassword
+        );
+        if (!currentPasswordSecurity) return this.sendForbidden(res);
+
+        await AccountManager.updateAccount({
+          password: req.body.newPassword.trim(),
+        });
+        res.sendStatus(204);
+        return;
+      } catch (error) {
+        this.handleServerError(error as Error, res);
+        return;
+      }
+    });
+
     this.router.get("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
