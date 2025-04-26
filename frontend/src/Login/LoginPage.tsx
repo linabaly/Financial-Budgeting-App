@@ -250,9 +250,9 @@ export default function LoginPage() {
                 Password
               </label>
               <a 
-                href="/reset-password" 
+                href="mailto:contact@finovators.com?subject=Password%20Help&body=Hi%20Finovators%20Team,%0D%0A%0D%0AI%20need%20help%20resetting%20my%20password.%20My%20account%20email%20is:%20[insert%20your%20email%20here].%0D%0A%0D%0AThank%20you!"
                 className="forgot-link"
-                aria-label="Forgot password"
+                aria-label="Email support for password help"
               >
                 Forgot password?
               </a>

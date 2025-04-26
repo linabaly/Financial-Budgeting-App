@@ -127,57 +127,47 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
    * Handles password change submission
    */
   const changePassword = async () => {
-    // Reset states
     setError(null);
     setSuccess(null);
-    
-    // Input validation
+  
     if (passwords.newPassword !== passwords.confirmPassword) {
       setError('New passwords do not match!');
       return;
     }
-
+  
     if (passwords.newPassword.length < 8) {
       setError('Password must be at least 8 characters');
       return;
     }
-    
+  
     try {
       setIsLoading(true);
-      
+  
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No token found. Please log in again.");
       }
-      
-      // Using the account password endpoint to change password
+  
       const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           currentPassword: passwords.currentPassword,
           newPassword: passwords.newPassword,
         }),
-      });              
-      
-      // Check for specific error status codes
-      if (response.status === 401) {
-        throw new Error("Current password is incorrect");
-      } else if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to change password");
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to change password');
       }
-      
-      // Password changed successfully
+  
       setSuccess('Password changed successfully');
-      
-      // Call the onSave function passed from the parent
       onSave();
-      
-      // Reset form fields
+  
       setPasswords({
         currentPassword: '',
         newPassword: '',
@@ -189,7 +179,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   return (
     <motion.div 
