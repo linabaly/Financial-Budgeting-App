@@ -416,6 +416,13 @@
   }
 }
 
+/* Small screens */
+@media (max-width: 480px) {
+  .logo-image {
+    height: 32px;
+  }
+}
+
 [data-theme='light'] .header {
   background: rgba(255, 255, 255, 0.96); /* white-ish background for light mode */
   color: #111;

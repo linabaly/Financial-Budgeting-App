@@ -11,7 +11,6 @@ import {
   faUser, 
   faCog, 
   faShieldAlt, 
-  faBell, 
   faChartLine,
   faCamera,
   faTimes,
@@ -32,14 +31,13 @@ library.add(
   faUser, 
   faCog, 
   faShieldAlt, 
-  faBell, 
   faChartLine,
   faCamera,
   faTimes,
   faArrowLeft,
   faChartPie,
-  faSun, // Add sun icon for light mode
-  faMoon, // Add moon icon for dark mode
+  faSun,
+  faMoon,
   faGoogle,
   faApple
 );
@@ -115,7 +113,8 @@ class ErrorBoundary extends React.Component<
  * Ensures only authenticated users can access certain routes
  */
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const isAuthenticated = true;
+  // In a real app, you would check actual authentication status
+  const isAuthenticated = true; // Replace with actual authentication check
 
   return isAuthenticated ? (
     <>{children}</>
@@ -207,6 +206,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/profile/financial-goals"
                 element={
@@ -217,6 +217,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/profile/personal-info"
                 element={

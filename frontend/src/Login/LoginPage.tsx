@@ -77,24 +77,55 @@ export default function LoginPage() {
 
   // ========== EVENT HANDLERS ==========
 
+  // ========== EVENT HANDLERS ==========
+
+  // ========== EVENT HANDLERS ==========
+
   /**
    * Handles form input changes
    * Updates the credentials state when input values change
    * 
    * @param e - The input change event
    */
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setCredentials(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  }, []);
+
+  /**
+   * Toggles password visibility between plain text and hidden
+   */
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
+  /**
+   * Handles the sign-in process
+   * Validates input, makes authentication API call, and handles success/failure
+   * 
+   * @param e - The form submission event
+   */
   const handleSignIn = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
+    
+    // Reset any previous error messages
     setErrors([]);
-    setIsLoading(true);
-  
+    
+    // Validate user input
     const validationErrors = validateLogin(credentials);
+    
+    // If validation fails, display errors and stop the login process
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
-      setIsLoading(false);
       return;
     }
-  
+
+    // Set loading state to show user that login is processing
+    setIsLoading(true);
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -127,10 +158,15 @@ export default function LoginPage() {
         setIsLoading(false);
         return;
       }
-  
+    
+      // Process successful response
       const data = await response.json();
+      
+      // Store authentication data in local storage
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.id);
+    
+      // Navigate to dashboard on successful login
       navigate("/Dashboard");
   
     } catch (error: any) {
@@ -142,19 +178,7 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [credentials, navigate]);  
-
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    const { id, value } = event.target;
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [id]: value,
-    }));
-  }
-
-  function togglePasswordVisibility(): void {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  }
+  }, [credentials, navigate]);
 
   // ========== COMPONENT RENDER ==========
   return (
@@ -226,9 +250,9 @@ export default function LoginPage() {
                 Password
               </label>
               <a 
-                href="mailto:contact@finovators.com"
+                href="/reset-password" 
                 className="forgot-link"
-                aria-label="Email support for password help"
+                aria-label="Forgot password"
               >
                 Forgot password?
               </a>

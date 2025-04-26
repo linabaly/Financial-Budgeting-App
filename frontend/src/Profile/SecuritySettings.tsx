@@ -151,17 +151,17 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
       }
       
       // Using the account password endpoint to change password
-      const response = await fetch(`${API_BASE_URL}/account/me`, {
-        method: "PATCH",
+      const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token,
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           currentPassword: passwords.currentPassword,
           newPassword: passwords.newPassword,
         }),
-      });          
+      });              
       
       // Check for specific error status codes
       if (response.status === 401) {

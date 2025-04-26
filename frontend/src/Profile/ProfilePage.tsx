@@ -10,9 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUser, 
-  faCog, 
   faShieldAlt, 
-  faBell, 
   faChartLine,
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
@@ -36,9 +34,7 @@ const API_BASE_URL = 'https://finovators.mracs.dev/api';
 const getSectionIcon = (section: string) => {
   switch(section) {
     case 'personal': return faUser;
-    case 'account': return faCog;
     case 'security': return faShieldAlt;
-    case 'notifications': return faBell;
     case 'goals': return faChartLine;
     default: return faUser;
   }
@@ -57,10 +53,6 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = () => {
   // State to track the active profile section
   const [activeSection, setActiveSection] = useState('personal');
-  
-  // User profile data (would normally come from an API)
-  const [profileData, setProfileData] = useState<any>(null);
-  const [profileError, setProfileError] = useState<string | null>(null);
   
   // Hooks
   const navigate = useNavigate();
@@ -97,41 +89,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
       default:
         return <PersonalInfo onSave={() => handleSaveAction('Personal information updated!')} />;
     }
-  };  
-
-  // Fetch user profile data on component mount
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        
-        if (!token) {
-          throw new Error("No token found. Please log in again.");
-        }
-
-        // Example API call - replace with your actual endpoint
-        const response = await fetch(`${API_BASE_URL}/account/me`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const err = await response.json();
-          throw new Error(err.message || "Failed to fetch profile data");
-        }
-
-        const data = await response.json();
-        setProfileData(data);
-      } catch (error: any) {
-        setProfileError(error.message);
-      }
-    };
-
-    fetchProfileData();
-  }, []);
+  };
 
   return (
     <div className="profile-page">

@@ -21,8 +21,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
-
-    // Force color updates by applying a class to the body
+    
+    // Update body classes for component styling
     if (theme === 'dark') {
       document.body.classList.add('dark-theme');
       document.body.classList.remove('light-theme');
@@ -30,8 +30,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       document.body.classList.add('light-theme');
       document.body.classList.remove('dark-theme');
     }
-
-    // Apply direct styles to critical elements to ensure they update
+    
+    // Apply critical styles directly for immediate visual feedback
     document.body.style.backgroundColor = theme === 'dark' ? '#121212' : '#f8f9fa';
     document.body.style.color = theme === 'dark' ? '#ffffff' : '#212529';
   }, [theme]);
@@ -48,6 +48,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+// Custom hook to use the theme context
 // Custom hook to use the theme context
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
