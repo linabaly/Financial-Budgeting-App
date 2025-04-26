@@ -1,11 +1,11 @@
 /**
- * SecuritySettings Component
+ * SecuritySettings.tsx
  * 
- * Handles user security preferences including password changes,
- * with password strength visualization and validation.
+ * Component for managing user security settings like
+ * password change, two-factor authentication, and login alerts.
  */
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // API configuration
 const API_BASE_URL = 'https://finovators.mracs.dev/api';
@@ -31,7 +31,7 @@ interface SecuritySettingsProps {
 }
 
 /**
- * Component for managing user security settings
+ * SecuritySettings component for user security preferences
  */
 const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
   // State for password form
@@ -42,11 +42,12 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
   });
 
   // State for security toggles
+  // Note: These features may require backend implementation
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [loginAlerts, setLoginAlerts] = useState(true);
   
   // Password strength state
-  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordStrength, setPasswordStrength] = useState(0); // 0 to 5 levels
 
   // Loading and error states
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +56,8 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
 
   /**
    * Updates password field and calculates strength for new passwords
+   * @param field - The password field to update
+   * @param value - The new value
    */
   const handlePasswordChange = (field: string, value: string) => {
     setPasswords(prev => ({
@@ -70,7 +73,9 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
   };
 
   /**
-   * Evaluates password strength based on complexity requirements
+   * Calculates password strength as a percentage (0-100)
+   * @param password - The password to evaluate
+   * @returns A number from 0-100 representing password strength
    */
   const calculatePasswordStrength = (password: string): PasswordStrength => {
     if (!password) return PasswordStrength.NONE;
@@ -88,9 +93,6 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     }
   };  
   
-  /**
-   * Checks which password requirements are satisfied
-   */
   const getPasswordRequirementsStatus = (password: string) => ({
     length: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
@@ -99,9 +101,6 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     specialChar: /[^A-Za-z0-9]/.test(password)
   });
   
-  /**
-   * Returns the appropriate color for the strength meter
-   */
   const getStrengthColor = (strength: PasswordStrength): string => {
     switch (strength) {
       case PasswordStrength.WEAK: return '#e74c3c';
@@ -113,9 +112,6 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
     }
   };  
   
-  /**
-   * Returns the text label for the password strength
-   */
   const getStrengthText = (strength: PasswordStrength): string => {
     switch (strength) {
       case PasswordStrength.WEAK: return 'Weak';
@@ -128,7 +124,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
   };  
 
   /**
-   * Handles password change submission to API
+   * Handles password change submission
    */
   const changePassword = async () => {
     // Reset states
@@ -154,6 +150,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
         throw new Error("No token found. Please log in again.");
       }
       
+      // Using the account password endpoint to change password
       const response = await fetch(`${API_BASE_URL}/account/me`, {
         method: "PATCH",
         headers: {
@@ -243,7 +240,6 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
           />
         </div>
 
-        {/* Password strength meter */}
         {passwords.newPassword && (
           <div className="password-strength-meter" style={{ marginTop: '8px', marginBottom: '12px' }}>
             

@@ -1,15 +1,8 @@
-/**
- * insightChartUtils.ts
- * 
- * Utilities for generating interactive D3.js data visualizations for the budget insights dashboard.
- * Includes pie chart and bar chart generation with animations, tooltips, and interactive elements.
- */
 import * as d3 from 'd3';
 import React from 'react';
 
 /**
  * Expense category structure used for visualizations and analysis
- * Defines the data format for financial categories in charts
  */
 export interface ExpenseCategory {
   id: string;                      // Unique identifier for category styling and referencing
@@ -17,12 +10,11 @@ export interface ExpenseCategory {
   value: number;                   // Monetary amount
   color: string;                   // HEX color code for visualizations
   percentage: number;              // Pre-calculated percentage of total expenses
-  type?: 'needs' | 'wants' | 'savings'; // Category type for 50-30-20 budgeting rule
+  type?: 'needs' | 'wants' | 'savings'; // Optional category type for 50-30-20 budgeting rule
 }
 
 /**
- * Generates an enhanced pie chart showing expense distribution
- * Features include animated segments, hover effects, and dynamic center text
+ * Generates an enhanced pie chart showing expense distribution with improved visuals and animations
  * 
  * @param container - DOM element to render the chart in
  * @param expenses - Expense data to visualize
@@ -31,6 +23,7 @@ export const generateEnhancedPieChart = (
   container: HTMLDivElement,
   expenses: ExpenseCategory[]
 ): void => {
+  // Existing pie chart code (unchanged)
   // Clear any previous chart content
   d3.select(container).selectAll('*').remove();
  
@@ -51,7 +44,7 @@ export const generateEnhancedPieChart = (
     .attr('height', height)
     .attr('viewBox', `0 0 ${width} ${height}`)
     .append('g')
-    .attr('transform', `translate(${width / 2}, ${height / 2})`);
+    .attr('transform', `translate(${width / 2}, ${height / 2})`); // Center the pie chart
     
   // Create visual effects definitions (filters)
   const defs = svg.append('defs');
@@ -95,7 +88,7 @@ export const generateEnhancedPieChart = (
     .padAngle(0.03); // Add space between segments for better visual separation
  
   // Create arc generators for different states and purposes
-  // Main arc for normal state
+  // Main arc for normal state - INCREASED THICKNESS
   const mainArc = d3.arc<d3.PieArcDatum<ExpenseCategory>>()
     .innerRadius(radius * 0.55) // Donut hole size
     .outerRadius(radius * 0.90); // Outer edge of pie
@@ -312,8 +305,8 @@ export const generateEnhancedPieChart = (
 };
 
 /**
- * Recommended allocation percentages for expense categories
- * Based on the 50-30-20 budgeting rule and common financial advice
+ * Financial best practice recommended allocation percentages for various expense categories
+ * These values determine the suggested spending amounts based on monthly income
  */
 export const recommendedAllocationPercentages: { [key: string]: number } = {
   'rent': 30,       // 30% of income for housing
@@ -328,12 +321,11 @@ export const recommendedAllocationPercentages: { [key: string]: number } = {
 };
 
 /**
- * Generates a bar chart comparing actual spending vs recommended amounts
- * Includes interactive tooltips and color-coded comparisons
+ * Generates a bar chart showing actual expense categories vs recommended amounts based on income
  * 
- * @param containerRef - React ref to the DOM element
+ * @param containerRef - React ref to the DOM element to render the chart in
  * @param data - Expense category data to display
- * @param monthlyIncome - User's monthly income for calculating recommended spending
+ * @param monthlyIncome - User's monthly income used to calculate recommended spending
  */
 export const generateMonthlyComparisonChart = (
   containerRef: React.RefObject<HTMLDivElement | null>,
@@ -469,9 +461,9 @@ export const generateMonthlyComparisonChart = (
     .attr('y2', '100%');
   
   // Suggested gradient (lavender)
-  suggestedGradient.append('stop')
-    .attr('offset', '0%')
-    .attr('stop-color', '#9370DB'); // medium purple
+suggestedGradient.append('stop')
+.attr('offset', '0%')
+.attr('stop-color', '#9370DB'); // medium purple
   
   // Add category groups
   const categoryGroup = svg.selectAll('.category-group')
@@ -537,6 +529,12 @@ export const generateMonthlyComparisonChart = (
       return 400 + (parentIndex % 2) * 100 + Math.floor(parentIndex / 2) * 300;
     })
     .style('opacity', 1);
+  
+  // Add legend
+  const legend = svg.append('g')
+    .attr('class', 'legend')
+    .attr('transform', `translate(${width / 2 - 120}, -40)`)
+
   
   // Add hover interactions with enhanced tooltip showing income percentages
   categoryGroup.selectAll('.bar')
@@ -625,15 +623,17 @@ export const generateMonthlyComparisonChart = (
         .attr('stroke-width', 1);
     
       // Reset only the label for the bar being hovered out
-      d3.select(this.parentNode)
+      d3.select(this as Element)
         .selectAll('.bar-label')
         .filter((labelData: any) => labelData.name === d.name)
         .transition()
         .duration(200)
         .style('font-size', '16px') // Set back to default size
         .attr('y', (labelData: any) => y(labelData.value) - 5);
+
     
       // Remove tooltip
       d3.select(containerRef.current).selectAll('.tooltip').remove();
     });
+    
 };

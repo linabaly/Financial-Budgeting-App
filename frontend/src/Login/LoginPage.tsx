@@ -1,9 +1,16 @@
 /**
  * LoginPage Component
  * 
- * Provides a responsive authentication interface with email/password validation,
- * error handling, and loading states. Features a branded welcome section alongside
- * the login form with visual feedback for user interactions.
+ * This file implements a responsive login page with validation, error handling, 
+ * and authentication logic. The page displays a branded welcome message alongside
+ * a login form with email and password inputs.
+ * 
+ * Key features:
+ * - Form validation with error messaging
+ * - Password visibility toggle
+ * - Loading states
+ * - Authentication API integration
+ * - Responsive design for various screen sizes
  */
 
 import React, { useState, useCallback, FormEvent } from "react";
@@ -12,7 +19,9 @@ import "./LoginPage.css";
 import { API_BASE_URL } from "../config";
 
 /**
- * Defines structure for login form data
+ * Interface defining the structure for login credentials
+ * @property {string} login - User's email address
+ * @property {string} password - User's password
  */
 interface LoginCredentials {
   login: string;
@@ -20,15 +29,20 @@ interface LoginCredentials {
 }
 
 /**
- * Validates user credentials before submission
+ * Validates user login credentials
+ * 
+ * @param credentials - The user's login credentials to validate
+ * @returns An array of error messages, empty if validation passes
  */
 const validateLogin = (credentials: LoginCredentials): string[] => {
   const errors: string[] = [];
 
+  // Validate login field (email)
   if (!credentials.login.trim()) {
     errors.push("Login is required");
   }
 
+  // Validate password field
   if (!credentials.password.trim()) {
     errors.push("Password is required");
   } else if (credentials.password.length < 6) {
@@ -41,23 +55,33 @@ const validateLogin = (credentials: LoginCredentials): string[] => {
 /**
  * LoginPage Component
  * 
- * Handles authentication flow including form state management,
- * validation, API integration, and navigation after login.
+ * Renders a login form with validation, error handling, and authentication.
+ * Manages form state, processes user input, and handles the authentication process.
  */
 export default function LoginPage() {
-  // State management
+  // ========== STATE MANAGEMENT ==========
+  
+  // Form data state
   const [credentials, setCredentials] = useState<LoginCredentials>({
     login: "",
     password: ""
   });
+  
+  // UI state
   const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Navigation hook for redirecting after login
   const navigate = useNavigate();
 
+  // ========== EVENT HANDLERS ==========
+
   /**
-   * Handles form submission and authentication
+   * Handles form input changes
+   * Updates the credentials state when input values change
+   * 
+   * @param e - The input change event
    */
   const handleSignIn = useCallback(async (e: FormEvent) => {
     e.preventDefault();
@@ -120,9 +144,6 @@ export default function LoginPage() {
     }
   }, [credentials, navigate]);  
 
-  /**
-   * Updates form state when input values change
-   */
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const { id, value } = event.target;
     setCredentials((prevCredentials) => ({
@@ -131,13 +152,11 @@ export default function LoginPage() {
     }));
   }
 
-  /**
-   * Toggles password visibility between plain text and masked
-   */
   function togglePasswordVisibility(): void {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }
 
+  // ========== COMPONENT RENDER ==========
   return (
     <div className="main-container">
       {/* Animated background gradient */}
@@ -148,7 +167,7 @@ export default function LoginPage() {
         <h2 className="login-title">Welcome Back</h2>
         <p className="login-subtitle">Enter your credentials to continue</p>
         
-        {/* Error message display */}
+        {/* Error message display area */}
         {errors.length > 0 && (
           <div 
             role="alert" 
@@ -197,7 +216,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Password input field with visibility toggle */}
+          {/* Password input field with show/hide toggle */}
           <div className="form-group">
             <div className="password-label-wrapper">
               <label 
@@ -213,6 +232,7 @@ export default function LoginPage() {
               >
                 Forgot password?
               </a>
+
             </div>
             <div className="input-wrapper">
               <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

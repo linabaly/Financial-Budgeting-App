@@ -1,9 +1,8 @@
 /**
- * ProfilePage Component
+ * ProfilePage.tsx
  * 
- * Main container component for the user profile section that manages navigation
- * between different profile areas (personal info, security, financial goals).
- * Handles data fetching and section transitions with animations.
+ * Main container component for the user profile section.
+ * Handles routing between different profile sections and displays the appropriate component.
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +12,7 @@ import {
   faUser, 
   faCog, 
   faShieldAlt, 
+  faBell, 
   faChartLine,
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,13 +29,16 @@ import { useNotification } from './contexts/NotificationContext';
 const API_BASE_URL = 'https://finovators.mracs.dev/api';
 
 /**
- * Maps section identifiers to their corresponding FontAwesome icons
+ * Gets the FontAwesome icon for a section
+ * @param section - The section identifier
+ * @returns The corresponding FontAwesome icon
  */
 const getSectionIcon = (section: string) => {
   switch(section) {
     case 'personal': return faUser;
     case 'account': return faCog;
     case 'security': return faShieldAlt;
+    case 'notifications': return faBell;
     case 'goals': return faChartLine;
     default: return faUser;
   }
@@ -49,13 +52,13 @@ interface ProfilePageProps {
 }
 
 /**
- * Main ProfilePage component that handles section navigation and rendering
+ * The main ProfilePage component
  */
 const ProfilePage: React.FC<ProfilePageProps> = () => {
   // State to track the active profile section
   const [activeSection, setActiveSection] = useState('personal');
   
-  // User profile data state
+  // User profile data (would normally come from an API)
   const [profileData, setProfileData] = useState<any>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
   
@@ -64,14 +67,15 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
   const { showNotification, simulateLoading } = useNotification();
   
   /**
-   * Navigates back to the previous page
+   * Navigate back to the previous page
    */
   const handleGoBack = () => {
     navigate(-1);
   };
   
   /**
-   * Shows a success notification when data is saved
+   * Handles saving data for any profile section
+   * @param message - The success message to display
    */
   const handleSaveAction = (message: string) => {
     simulateLoading(() => {
@@ -95,9 +99,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
     }
   };  
 
-  /**
-   * Fetches user profile data on component mount
-   */
+  // Fetch user profile data on component mount
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -107,6 +109,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
           throw new Error("No token found. Please log in again.");
         }
 
+        // Example API call - replace with your actual endpoint
         const response = await fetch(`${API_BASE_URL}/account/me`, {
           method: "GET",
           headers: {
@@ -146,7 +149,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
 
       {/* Main profile container with sidebar and content area */}
       <div className="profile-container">
-        {/* Sidebar with navigation */}
+        {/* Sidebar with user info and navigation */}
         <motion.div
           className="profile-sidebar"
           initial={{ x: -50, opacity: 0 }}
