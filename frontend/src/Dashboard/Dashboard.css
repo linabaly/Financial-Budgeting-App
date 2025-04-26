@@ -290,26 +290,9 @@
     box-sizing: border-box;
    }
    
-   .total-balance-card::after {
-     content: '';
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     border-radius: 8px;
-     box-shadow: 0 0 0 2px rgba(108, 92, 231, 0);
-     transition: box-shadow 0.3s ease;
-   }
-   
    .total-balance-card:hover {
-    transform: scale(1.02);
     box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
   }  
-   
-   .total-balance-card:hover::after {
-     box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.3);
-   }
    
    .label {
      font-size: 1.6rem;
@@ -347,7 +330,6 @@
   }
   
   .spending-progress:hover {
-    transform: scale(1.05);
     box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
   }  
    
