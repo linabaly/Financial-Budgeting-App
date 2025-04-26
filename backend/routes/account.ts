@@ -70,7 +70,7 @@ export default class AccountRoute extends Route {
       }
     });
 
-    this.router.patch("/reset-password", async (req, res) => {
+    this.router.put("/reset-password", async (req, res) => {
       try {
         if (!req.body.currentPassword || !req.body.newPassword || req.body.newPassword?.length < 1)
           return this.sendClientError(res);
