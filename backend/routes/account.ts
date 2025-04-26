@@ -72,7 +72,8 @@ export default class AccountRoute extends Route {
 
     this.router.patch("/reset-password", async (req, res) => {
       try {
-        if (!req.body.currentPassword || !req.body.newPassword) return this.sendClientError(res);
+        if (!req.body.currentPassword || !req.body.newPassword || req.body.newPassword?.length < 1)
+          return this.sendClientError(res);
         const account = await this.authenticate(req, res);
         if (!account) return;
 
