@@ -1,8 +1,15 @@
+/**
+ * ThemeToggle Component
+ * 
+ * Interactive toggle switch allowing users to switch between light and dark themes.
+ * Features animated icons and a sliding indicator to provide visual feedback.
+ */
 import React from 'react';
 import { useTheme } from './ThemeContext';
 import './ThemeToggle.css';
 
 const ThemeToggle: React.FC = () => {
+  // Access theme state and toggle function from context
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -13,17 +20,17 @@ const ThemeToggle: React.FC = () => {
       title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       onClick={toggleTheme}
     >
-      {/* Left icon - Moon */}
+      {/* Moon icon for dark theme */}
       <div className="icon moon-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       </div>
 
-      {/* Slider circle */}
+      {/* Animated slider indicator */}
       <div className={`toggle-thumb ${theme === 'light' ? 'slide-right' : 'slide-left'}`} />
 
-      {/* Right icon - Sun */}
+      {/* Sun icon for light theme */}
       <div className="icon sun-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="5" />

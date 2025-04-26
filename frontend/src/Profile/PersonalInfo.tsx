@@ -1,8 +1,8 @@
 /**
- * PersonalInfo.tsx
+ * PersonalInfo Component
  * 
- * Component for displaying and editing basic user information
- * such as name, email, and other personal details.
+ * Manages user personal information display and editing.
+ * Handles form state, API communication, and animated transitions.
  */
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
@@ -19,7 +19,7 @@ interface PersonalInfoProps {
 }
 
 /**
- * PersonalInfo component for displaying and updating user's personal information
+ * Component for editing basic user information like name and email
  */
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   // State for error handling and loading
@@ -33,7 +33,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   });
 
   /**
-   * Handles input changes in form fields
+   * Updates form state when input values change
    */
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -45,7 +45,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   }, []);
 
   /**
-   * Updates the user's profile information
+   * Sends updated profile information to the server
    */
   const handleUpdateInfo = async () => {
     try {
@@ -56,7 +56,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         throw new Error("No token found. Please try again.");
       }
       
-      // Send updated profile to the server
       const response = await fetch(`${API_BASE_URL}/account/me`, {
         method: "PATCH",
         headers: {
@@ -73,7 +72,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
         throw new Error("Failed to update profile");
       }
 
-      // Call the onSave callback
       onSave();
       setProfileError(null);
     } catch (error: any) {
@@ -84,7 +82,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ onSave }) => {
   };
 
   /**
-   * Fetch user profile data on component mount
+   * Fetches user profile data on component mount
    */
   useEffect(() => {
     const fetchProfileData = async () => {

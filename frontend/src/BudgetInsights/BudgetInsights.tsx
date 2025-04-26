@@ -1,21 +1,22 @@
+/**
+ * BudgetInsights Component
+ * 
+ * Financial dashboard that visualizes budget allocation and provides AI-generated
+ * financial insights based on the 50-30-20 budgeting rule (50% needs, 30% wants, 20% savings).
+ * Displays expense breakdowns, comparison to recommended spending, and personalized
+ * financial analysis.
+ */
 import React, { useEffect, useRef, useState } from 'react';
 import './BudgetInsights.css';
 import Header from '../Dashboard/components/Header';
 import Footer from '../Dashboard/components/Footer';
 import { ExpenseCategory, generateEnhancedPieChart, generateMonthlyComparisonChart, recommendedAllocationPercentages } from './utils/insightChartUtils';
-import * as d3 from 'd3';
 import { API_BASE_URL } from "./../config";
 
 interface BudgetInsightsProps {
   onTransactionChange?: boolean;
 }
 
-/**
- * BudgetInsights Component
- * 
- * A financial dashboard that visualizes budget allocation and provides AI-generated
- * financial insights based on the 50-30-20 budgeting rule.
- */
 const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = false }) => {
   // Chart container references
   const pieChartRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
   
   /**
    * Fetch transaction data from API
+   * Retrieves user's financial transactions for analysis
    */
   useEffect(() => {
     const fetchTransactionData = async () => {
@@ -81,13 +83,12 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
 
   /**
    * Process transaction data and calculate financial metrics
+   * Categorizes expenses, calculates totals and percentages for visualization
    */
   useEffect(() => {
     if (isLoading || error || transactions.length === 0) return;
     
-    // For pie chart visualization, we may want to filter out the income category
-    // when displaying expense breakdown only
-    const shouldIncludeIncomeInPieChart = false; // Set to true if you want income in the pie chart
+    const shouldIncludeIncomeInPieChart = false;
 
     const currentDate = new Date();
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + selectedMonthOffset, 1);
@@ -96,19 +97,17 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
 
     // Initialize category accumulators
     const categories: Record<string, ExpenseCategory> = {
-      food:         { id: 'food', category: 'Food', value: 0, color: '#dc143c', type: 'needs', percentage: 0 },        // Neon Green
-      rent:         { id: 'rent', category: 'Rent', value: 0, color: '#00e5ff', type: 'needs', percentage: 0 },        // Crimson Red
-      utilities:    { id: 'utilities', category: 'Utilities', value: 0, color: '#f9e79f', type: 'needs', percentage: 0 }, // Cyan
-      healthcare:   { id: 'healthcare', category: 'Healthcare', value: 0, color: '#1f3f73', type: 'needs', percentage: 0 }, // Royal Blue
-      entertainment:{ id: 'entertainment', category: 'Entertainment', value: 0, color: '#ff6f00', type: 'wants', percentage: 0 }, // Violet
-      personal:     { id: 'personal', category: 'Personal', value: 0, color: '#5b2c6f', type: 'wants', percentage: 0 },  // Electric Purple
-      transportation:{ id: 'transportation', category: 'Transportation', value: 0, color: '#008b8b', type: 'needs', percentage: 0 }, // Amber
-      income:       { id: 'income', category: 'Income', value: 0, color: '#1abc9c', type: 'savings', percentage: 0 },  // Mint Green
-      other:        { id: 'other', category: 'Other', value: 0, color: '#888888', type: 'wants', percentage: 0 }       // Gray fallback
+      food:         { id: 'food', category: 'Food', value: 0, color: '#dc143c', type: 'needs', percentage: 0 },
+      rent:         { id: 'rent', category: 'Rent', value: 0, color: '#00e5ff', type: 'needs', percentage: 0 },
+      utilities:    { id: 'utilities', category: 'Utilities', value: 0, color: '#f9e79f', type: 'needs', percentage: 0 },
+      healthcare:   { id: 'healthcare', category: 'Healthcare', value: 0, color: '#1f3f73', type: 'needs', percentage: 0 },
+      entertainment:{ id: 'entertainment', category: 'Entertainment', value: 0, color: '#ff6f00', type: 'wants', percentage: 0 },
+      personal:     { id: 'personal', category: 'Personal', value: 0, color: '#5b2c6f', type: 'wants', percentage: 0 },
+      transportation:{ id: 'transportation', category: 'Transportation', value: 0, color: '#008b8b', type: 'needs', percentage: 0 },
+      income:       { id: 'income', category: 'Income', value: 0, color: '#1abc9c', type: 'savings', percentage: 0 },
+      other:        { id: 'other', category: 'Other', value: 0, color: '#888888', type: 'wants', percentage: 0 }
     };
     
-    
-
     let totalIncome = 0;
     let totalExpense = 0;
     
@@ -122,13 +121,11 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
       if (month === targetMonth && year === targetYear) {
         if (tx.type === 'INCOME') {
           totalIncome += amount;
-          // Also track income in the income category for the pie chart
           categories.income.value += amount;
         } else if (tx.type === 'EXPENSE') {
           totalExpense += amount;
           
           // Map transaction to a category based on its description or category field
-          // This is a simplified example and would need to be adjusted based on your actual data structure
           if (tx.category) {
             const categoryLower = tx.category.toLowerCase();
             
@@ -206,6 +203,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
 
   /**
    * Initialize and rerender charts when component mounts or financial data changes
+   * Renders both pie chart and comparison bar chart visualizations
    */
   useEffect(() => {
     // Function to render both chart visualizations
@@ -262,15 +260,10 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
       setIsGenerating(false);
     }
   };
-  
-  
+
   /**
-   * Transforms markdown text into appropriate React elements
-   * Handles headings, list items, and paragraphs
-   * 
-   * @param line Single line of markdown text
-   * @param index Array index for React key prop
-   * @returns Appropriate React element based on markdown syntax
+   * Formats markdown text into appropriate React elements
+   * Handles headings, list items, and paragraphs for report display
    */
   const renderMarkdownLine = (line: string, index: number) => {
     if (line.startsWith('# ')) {
@@ -376,39 +369,39 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
         <div className="bottom-container">
           {/* Monthly Comparison Chart */}
           <div className="chart-container bar-chart-container">
-          <div className="bar-chart-header">
-  <h3 className="bar-chart-title">Actual vs Suggested Spending</h3>
-</div>
+            <div className="bar-chart-header">
+              <h3 className="bar-chart-title">Actual vs Suggested Spending</h3>
+            </div>
 
-{isLoading ? (
-  <div className="loading-indicator" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    Loading comparison data...
-  </div>
-) : error ? (
-  <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    Error loading comparison data
-  </div>
-) : expenseData.length === 0 ? (
-  <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    No expense data available for this month
-  </div>
-) : (
-  <>
-    <div className="bar-chart-wrapper" ref={barChartRef}></div>
-    
-    {/* Legend now below the chart */}
-    <div className="bar-chart-legend-row below-legend" style={{ marginTop: '1rem' }}>
-      <div className="legend-item">
-        <div className="legend-color actual" style={{ backgroundColor: '#2ecc71' }}></div>
-        <span>Actual Spending</span>
-      </div>
-      <div className="legend-item">
-        <div className="legend-color suggested" style={{ backgroundColor: '#dc143c' }}></div>
-        <span>Suggested Spending</span>
-      </div>
-    </div>
-  </>
-)}
+            {isLoading ? (
+              <div className="loading-indicator" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                Loading comparison data...
+              </div>
+            ) : error ? (
+              <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                Error loading comparison data
+              </div>
+            ) : expenseData.length === 0 ? (
+              <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                No expense data available for this month
+              </div>
+            ) : (
+              <>
+                <div className="bar-chart-wrapper" ref={barChartRef}></div>
+                
+                {/* Legend below the chart */}
+                <div className="bar-chart-legend-row below-legend" style={{ marginTop: '1rem' }}>
+                  <div className="legend-item">
+                    <div className="legend-color actual" style={{ backgroundColor: '#2ecc71' }}></div>
+                    <span>Actual Spending</span>
+                  </div>
+                  <div className="legend-item">
+                    <div className="legend-color suggested" style={{ backgroundColor: '#dc143c' }}></div>
+                    <span>Suggested Spending</span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           
           {/* AI Financial Analysis */}
@@ -441,9 +434,9 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
             </div>
             
             <div
-  className="report-content"
-  dangerouslySetInnerHTML={{ __html: report }}
-></div>
+              className="report-content"
+              dangerouslySetInnerHTML={{ __html: report }}
+            ></div>
           </div>
         </div>
       </main>

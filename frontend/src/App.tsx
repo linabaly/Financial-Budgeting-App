@@ -17,8 +17,8 @@ import {
   faTimes,
   faArrowLeft,
   faChartPie,
-  faSun,  // Add this for theme icons
-  faMoon   // Add this for theme icons
+  faSun,
+  faMoon
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   faGoogle, 
@@ -48,15 +48,12 @@ library.add(
 const LoginPage = lazy(() => import("./Login/LoginPage"));
 const RegisterPage = lazy(() => import("./Register/RegisterPage"));
 const DashboardPage = lazy(() => import("./Dashboard/Dashboard"));
-const ResetPassPage = lazy(() => import("./ResetPassword/ResetPassPage"));
 const BudgetInsights = lazy(() => import("./BudgetInsights/BudgetInsights"));
 const Transactions = lazy(() => import("./Transactions/Transactions"));
 
 // Profile-related components
 const ProfilePage = lazy(() => import("./Profile/ProfilePage"));
-const AccountSettings = lazy(() => import("./Profile/AccountSettings"));
 const FinancialGoals = lazy(() => import("./Profile/FinancialGoals"));
-const NotificationPreferences = lazy(() => import("./Profile/NotificationPreferences"));
 const PersonalInfo = lazy(() => import("./Profile/PersonalInfo"));
 const SecuritySettings = lazy(() => import("./Profile/SecuritySettings"));
 
@@ -118,8 +115,7 @@ class ErrorBoundary extends React.Component<
  * Ensures only authenticated users can access certain routes
  */
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // In a real app, you would check actual authentication status
-  const isAuthenticated = true; // Replace with actual authentication check
+  const isAuthenticated = true;
 
   return isAuthenticated ? (
     <>{children}</>
@@ -175,7 +171,6 @@ function App() {
               {/* Public Routes */}
               <Route path="/" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/reset-password" element={<ResetPassPage />} />
 
               {/* Protected Routes */}
               <Route 
@@ -213,31 +208,11 @@ function App() {
                 }
               />
               <Route
-                path="/profile/account-settings"
-                element={
-                  <ProtectedRoute>
-                    <AccountSettings onSave={() => {
-                      showNotification('Account settings updated successfully!');
-                    }} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path="/profile/financial-goals"
                 element={
                   <ProtectedRoute>
                     <FinancialGoals onSave={() => {
                       showNotification('Financial goals updated successfully!');
-                    }} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/notification-preferences"
-                element={
-                  <ProtectedRoute>
-                    <NotificationPreferences onSave={() => {
-                      showNotification('Notification preferences updated successfully!');
                     }} />
                   </ProtectedRoute>
                 }

@@ -1,130 +1,142 @@
+/**
+ * ThemeToggle.css
+ * 
+ * Styles for the theme toggle component with support for both light and dark modes.
+ * Includes animations, transitions, and responsive adjustments.
+ */
+
+/* CSS Variables for easy theme customization */
 :root {
-    --toggle-bg-light: #e6e6e6;
-    --toggle-bg-dark: #2c2c2c;
-    --toggle-accent-light: #8a4fff;
-    --toggle-accent-dark: #b180ff;
-    --toggle-text-light: #6c757d;
-    --toggle-text-dark: #f0f0f0;
-  }
-  
-  .switch-toggle {
-    width: 110px;
-    height: 56px;
-    border-radius: 28px;
-    background-color: var(--toggle-bg-light);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.1),
-      inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Dark mode styles */
-  body.dark-theme .switch-toggle {
-    background-color: var(--toggle-bg-dark);
-    box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.2),
-      inset 0 1px 3px rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .icon {
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    transition: all 0.3s ease;
-  }
-  
-  .sun-icon svg,
+  --toggle-bg-light: #e6e6e6;
+  --toggle-bg-dark: #2c2c2c;
+  --toggle-accent-light: #8a4fff;
+  --toggle-accent-dark: #b180ff;
+  --toggle-text-light: #6c757d;
+  --toggle-text-dark: #f0f0f0;
+}
+
+/* Base toggle styles */
+.switch-toggle {
+  width: 110px;
+  height: 56px;
+  border-radius: 28px;
+  background-color: var(--toggle-bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode toggle background */
+body.dark-theme .switch-toggle {
+  background-color: var(--toggle-bg-dark);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    inset 0 1px 3px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Icon containers */
+.icon {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all 0.3s ease;
+}
+
+/* SVG icon styling */
+.sun-icon svg,
 .moon-icon svg {
   width: 24px;
   height: 24px;
   stroke: #000;
   transition: stroke 0.3s ease;
 }
-  
-  body.dark-theme .sun-icon svg,
-  body.dark-theme .moon-icon svg {
-    stroke: var(--toggle-text-dark);
-  }
-  
-  .toggle-thumb {
-    position: absolute;
-    top: 3.5px;
-    width: 48px;
-    height: 48px;
-    background-color: var(--toggle-accent-light);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    z-index: 1;
-    box-shadow: 
-      0 3px 6px rgba(0, 0, 0, 0.16),
-      0 3px 6px rgba(0, 0, 0, 0.23);
-  }
-  
-  body.dark-theme .toggle-thumb {
-    background-color: var(--toggle-accent-dark);
-    box-shadow: 
-      0 3px 6px rgba(0, 0, 0, 0.25),
-      0 3px 6px rgba(0, 0, 0, 0.22);
-  }
-  
-  .slide-left {
-    left: 3px;
-    transform: translateX(0);
-  }
-  
-  .slide-right {
-    left: 3px;
-    transform: translateX(56px);
-  }
-  
-  /* Hover and focus states */
-  .switch-toggle:hover {
-    box-shadow: 
-      0 6px 8px rgba(0, 0, 0, 0.15),
-      inset 0 1px 3px rgba(0, 0, 0, 0.15);
-  }
-  
-  body.dark-theme .switch-toggle:hover {
-    box-shadow: 
-      0 6px 8px rgba(0, 0, 0, 0.25),
-      inset 0 1px 3px rgba(255, 255, 255, 0.15);
-  }
-  
-  /* Ensure smooth icon color transitions */
-  .icon svg {
-    transition: stroke 0.3s ease;
-  }
 
+/* Dark theme icon color adjustment */
+body.dark-theme .sun-icon svg,
+body.dark-theme .moon-icon svg {
+  stroke: var(--toggle-text-dark);
+}
+
+/* Toggle slider thumb */
+.toggle-thumb {
+  position: absolute;
+  top: 3.5px;
+  width: 48px;
+  height: 48px;
+  background-color: var(--toggle-accent-light);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 1;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+/* Dark theme thumb styling */
+body.dark-theme .toggle-thumb {
+  background-color: var(--toggle-accent-dark);
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.25),
+    0 3px 6px rgba(0, 0, 0, 0.22);
+}
+
+/* Slider position classes */
+.slide-left {
+  left: 3px;
+  transform: translateX(0);
+}
+
+.slide-right {
+  left: 3px;
+  transform: translateX(56px);
+}
+
+/* Hover effects */
+.switch-toggle:hover {
+  box-shadow: 
+    0 6px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme .switch-toggle:hover {
+  box-shadow: 
+    0 6px 8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 3px rgba(255, 255, 255, 0.15);
+}
+
+/* Container positioning */
+.theme-toggle-container {
+  position: absolute;
+  top: 2.5rem;
+  right: 8rem;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .theme-toggle-container {
-    position: absolute;
-    top: 2.5rem;
-    right: 8rem;
-    z-index: 10;
-    display: flex;
-    justify-content: flex-end;
+    top: 0.5rem;
+    right: 1rem;
   }
-  
-  @media (max-width: 768px) {
-    .theme-toggle-container {
-      top: 0.5rem;
-      right: 1rem;
-    }
+}
+
+@media (max-width: 480px) {
+  .theme-toggle-container {
+    top: 0.25rem;
+    right: 1rem;
   }
-  
-  @media (max-width: 480px) {
-    .theme-toggle-container {
-      top: 0.25rem;
-      right: 1rem;
-    }
-  }
+}
