@@ -1,13 +1,3 @@
-// model Goal {
-//   id           String   @id @default(uuid())
-//   account      Account  @relation(fields: [accountId], references: [id])
-//   name         String
-//   targetAmount Decimal  @default(0) @db.Decimal(10, 2)
-//   currentSaved Decimal  @default(0) @db.Decimal(10, 2)
-//   deadline     DateTime @default(now())
-//   createdAt    DateTime @default(now())
-//   accountId    String
-// }
 import { AccountManager } from ".";
 import { Account } from "@prisma/client";
 import { PrismaDBClient as prisma, PrismaDBClient } from "../index";
@@ -24,6 +14,11 @@ export interface GoalDetails {
 }
 
 export default class GoalManager {
+  /**
+   * This method fetches all matching goals for the specified account by querying its ID
+   * @author Matthew R
+   * @param accountID The ID of the account to query by
+   */
   public static async getGoalsForAccount(accountID: string) {
     const goals = await prisma.goal.findMany({
       where: { account: { id: accountID } },
@@ -34,12 +29,27 @@ export default class GoalManager {
     return goals;
   }
 
+  /**
+   * This method fetches a goal with the queried ID
+   * @author Matthew R
+   * @param goalID The ID of the goal to fetch
+   */
   public static async getGoal(goalID: string) {
     const goal = await prisma.goal.findUnique({ where: { id: goalID } });
     if (!goal) return null;
     return goal;
   }
 
+  /**
+   * This method creates a new goal with the specified data.
+   * @author Matthew R
+   * @param accountID The ID of the account to associate this goal with
+   * @param goal
+   * @param goal.name The name of the goal
+   * @param goal.targetAmount The target amount for the goal
+   * @param goal.currentSaved How much has been saved for the goal
+   * @param goal.deadline The deadline date for the goal to be obtained by
+   */
   public static async createGoal(accountID: string, goal: GoalDetails) {
     if (!goal.name || !goal.targetAmount || !accountID)
       throw new TypeError(
@@ -60,6 +70,11 @@ export default class GoalManager {
     return PrismaDBClient.goal.create({ data: passedGoalQuery });
   }
 
+  /**
+   * this method updates the specified goal with the provided parameters
+   * @param goalID
+   * @param g
+   */
   public static async updateGoal(goalID: string, g: GoalDetails) {
     if (!g.name && !g.targetAmount && !g.currentSaved && !g.deadline)
       throw new RangeError("No applicable data set to be modified.");
@@ -79,6 +94,11 @@ export default class GoalManager {
     });
   }
 
+  /**
+   * This method deletes the specified goal
+   * @author Matthew R
+   * @param goalID The ID of the goal to delete
+   */
   public static async deleteGoal(goalID: string) {
     const goal = await this.getGoal(goalID);
     if (!goal) throw new Error(`Goal with ID '${goalID}' not found.`);
