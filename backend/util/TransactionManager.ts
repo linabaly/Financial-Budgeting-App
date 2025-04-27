@@ -31,17 +31,6 @@ export interface TransactionDetails {
   createdAt?: Date;
 }
 
-// TODO: this should be deleted, filtering should happen on the frontend
-export interface TransactionFilters {
-  accountId?: string;
-  category?: TransactionCategory;
-  type?: TransactionType;
-  startDate?: Date;
-  endDate?: Date;
-  minAmount?: number;
-  maxAmount?: number;
-}
-
 export interface TransactionSummary {
   totalTransactions: number;
   totalIncome: number;
