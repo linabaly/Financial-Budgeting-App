@@ -3,18 +3,33 @@ import SecurityManager from "../util/SecurityManager";
 import Route from "../util/Route";
 import { PrismaDBClient } from "../index";
 import { Server } from "../util";
-
 /**
+ * Route handler for all account-related operations.
+ * Provides endpoints for login, account creation, password reset, profile retrieval, profile update, and account deletion.
  * @author Matthew R
+ * @extends Route
  */
 export default class AccountRoute extends Route {
+  /**
+   * Constructs the AccountRoute.
+   * @param {Server} server - The server instance to attach routes to.
+   */
   constructor(server: Server) {
     super(server);
     this.conf.path = "/account";
     this.server = server;
   }
 
+  /**
+   * Binds all account-related routes to the router.
+   */
   public bind() {
+    /**
+     * POST /account/login
+     * Authenticates a user and sets an HTTP-only token cookie.
+     * @param {Request} req - Express request, expects { email, password } in body.
+     * @param {Response} res - Express response.
+     */
     this.router.post("/login", async (req, res) => {
       if (!req.body.email || !req.body.password) return this.sendClientError(res);
       const passedCreds = {
@@ -47,6 +62,12 @@ export default class AccountRoute extends Route {
       }
     });
 
+    /**
+     * POST /account/create
+     * Creates a new user account.
+     * @param {Request} req - Express request, expects { email, password, name } in body.
+     * @param {Response} res - Express response.
+     */
     this.router.post("/create", async (req, res) => {
       if (!req.body.email || !req.body.password || !req.body.name) return this.sendClientError(res);
       const accountDetails = {
@@ -70,6 +91,12 @@ export default class AccountRoute extends Route {
       }
     });
 
+    /**
+     * PUT /account/reset-password
+     * Resets the authenticated user's password.
+     * @param {Request} req - Express request, expects { currentPassword, newPassword } in body.
+     * @param {Response} res - Express response.
+     */
     this.router.put("/reset-password", async (req, res) => {
       try {
         if (!req.body.currentPassword || !req.body.newPassword || req.body.newPassword?.length < 1)
@@ -94,6 +121,12 @@ export default class AccountRoute extends Route {
       }
     });
 
+    /**
+     * GET /account/me
+     * Retrieves the authenticated user's account information.
+     * @param {Request} req - Express request with authentication token.
+     * @param {Response} res - Express response.
+     */
     this.router.get("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
@@ -106,6 +139,12 @@ export default class AccountRoute extends Route {
       }
     });
 
+    /**
+     * PATCH /account/me
+     * Updates the authenticated user's account details.
+     * @param {Request} req - Express request, accepts optional { email, name } in body.
+     * @param {Response} res - Express response.
+     */
     this.router.patch("/me", async (req, res) => {
       try {
         if (!req.body.email && !req.body.name) return this.sendClientError(res);
@@ -129,6 +168,12 @@ export default class AccountRoute extends Route {
       }
     });
 
+    /**
+     * DELETE /account/me
+     * Deletes the authenticated user's account.
+     * @param {Request} req - Express request with authentication token.
+     * @param {Response} res - Express response.
+     */
     this.router.delete("/me", async (req, res) => {
       try {
         const account = await this.authenticate(req, res);
