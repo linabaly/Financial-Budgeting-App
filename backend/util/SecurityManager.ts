@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+// uses the JWT_SECRET from the process environment or generates a 10-11 character string to use for the current process session
+const JWT_SECRET = process.env.JWT_SECRET || Math.random().toString(36).substring(2);
 
 /**
  * @author Jacob D
