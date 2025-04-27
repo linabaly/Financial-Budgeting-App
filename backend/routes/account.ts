@@ -84,8 +84,9 @@ export default class AccountRoute extends Route {
         if (!currentPasswordSecurity) return this.sendForbidden(res);
 
         await AccountManager.updateAccount({
+          id: account.id,
           password: req.body.newPassword.trim(),
-        });
+        });        
         res.sendStatus(204);
         return;
       } catch (error) {

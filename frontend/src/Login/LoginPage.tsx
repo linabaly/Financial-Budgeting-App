@@ -79,8 +79,34 @@ export default function LoginPage() {
 
   // ========== EVENT HANDLERS ==========
 
+  // ========== EVENT HANDLERS ==========
+
   /**
-   * Handles form submission and authentication
+   * Handles form input changes
+   * Updates the credentials state when input values change
+   * 
+   * @param e - The input change event
+   */
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setCredentials(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  }, []);
+
+  /**
+   * Toggles password visibility between plain text and hidden
+   */
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
+  /**
+   * Handles the sign-in process
+   * Validates input, makes authentication API call, and handles success/failure
+   * 
+   * @param e - The form submission event
    */
   const handleSignIn = useCallback(async (e: FormEvent) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -101,7 +127,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Make API request to authenticate user
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+  
       const response = await fetch(`${API_BASE_URL}/account/login`, {
         method: "POST",
         headers: {
@@ -111,12 +139,24 @@ export default function LoginPage() {
           email: credentials.login,
           password: credentials.password,
         }),
+        signal: controller.signal,
       });
-    
-      // Handle unsuccessful response
+  
+      clearTimeout(timeoutId);
+  
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to log in");
+        let message = "Login failed";
+        try {
+          const data = await response.json();
+          if (data.message) message = data.message;
+        } catch {
+          if (response.status === 401) {
+            message = "Incorrect email or password";
+          }
+        }
+        setErrors([message]);
+        setIsLoading(false);
+        return;
       }
     
       // Process successful response
@@ -128,32 +168,17 @@ export default function LoginPage() {
     
       // Navigate to dashboard on successful login
       navigate("/Dashboard");
+  
     } catch (error: any) {
-      // Display error message if login fails
-      setErrors(["Login failed: " + error.message]);
+      if (error.name === "AbortError") {
+        setErrors(["Account not found or invalid login credentials."]);
+      } else {
+        setErrors(["Login failed: " + error.message]);
+      }
     } finally {
-      // Reset loading state regardless of outcome
       setIsLoading(false);
     }
   }, [credentials, navigate]);
-
-  /**
-   * Updates form state when input values change
-   */
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    const { id, value } = event.target;
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [id]: value,
-    }));
-  }
-
-  /**
-   * Toggles password visibility between plain text and masked
-   */
-  function togglePasswordVisibility(): void {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  }
 
   return (
     <div className="main-container">
@@ -224,9 +249,9 @@ export default function LoginPage() {
                 Password
               </label>
               <a 
-                href="/reset-password" 
+                href="mailto:contact@finovators.com?subject=Password%20Help&body=Hi%20Finovators%20Team,%0D%0A%0D%0AI%20need%20help%20resetting%20my%20password.%20My%20account%20email%20is:%20[insert%20your%20email%20here].%0D%0A%0D%0AThank%20you!"
                 className="forgot-link"
-                aria-label="Forgot password"
+                aria-label="Email support for password help"
               >
                 Forgot password?
               </a>

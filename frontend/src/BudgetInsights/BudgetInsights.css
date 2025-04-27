@@ -1061,7 +1061,7 @@ span.budget-amount {
  * ACCESSIBILITY & RESPONSIVE DESIGN
  * Accessibility features and responsive layout adjustments
  * --------------------------------------------- */
-@media (prefers-reduced-motion: reduce) {
+ @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
@@ -1110,4 +1110,39 @@ span.budget-amount {
   .legend-item:nth-child(n) {
     animation-delay: 0.5s;
   }
+}
+
+/* Light mode override */
+html[data-theme='light'] .pie-center-subtext {
+  fill: #555555;
+}
+
+.pie-chart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  padding-top: 40px;
+  box-sizing: border-box;
+}
+
+.pie-chart-wrapper svg {
+  overflow: visible;
+}
+
+.pie-chart-wrapper svg path {
+  stroke: #000;
+  stroke-width: 1.2;
+}
+
+/* Default dark mode: text is white */
+.bar-chart-title,
+.bar-chart-legend-row .legend-item {
+  color: #ffffff;
+}
+
+/* Light mode: text is black */
+html[data-theme='light'] .bar-chart-title,
+html[data-theme='light'] .bar-chart-legend-row .legend-item {
+  color: #000000;
 }
