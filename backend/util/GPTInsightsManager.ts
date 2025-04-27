@@ -2,6 +2,11 @@ import OpenAI from "openai";
 import { TransactionManager } from ".";
 
 export default class GPTInsightsManager {
+  /**
+   * This method produces a specifically formatted AI response to get budget insights and recommendations for a specific account's transactions
+   * @author Matthew R
+   * @param accountID The ID of the account to generate insights for
+   */
   public static async getBudgetRecommendationsForAccount(accountID: string) {
     const transactions = await TransactionManager.getAssociatedTransactionsForAccount(accountID);
     if (!transactions || transactions.length < 1) return null;
