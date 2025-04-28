@@ -313,7 +313,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
               {isLoading ? (
                 <div className="loading-indicator">Loading...</div>
               ) : error ? (
-                <div className="error-message">Error loading data</div>
+                <div className="error-message" style={{ color: '#e74c3c'}}> Add Transactions</div>
               ) : (
                 <div className="amount positive">${remainingBudget.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               )}
@@ -326,7 +326,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
               {isLoading ? (
                 <div className="loading-indicator">Loading...</div>
               ) : error ? (
-                <div className="error-message">Error loading data</div>
+                <div className="error-message" style={{ color: '#e74c3c'}}> Add Transactions</div>
               ) : (
                 <div className="amount negative">${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               )}
@@ -339,7 +339,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
               {isLoading ? (
                 <div className="loading-indicator">Loading...</div>
               ) : error ? (
-                <div className="error-message">Error loading data</div>
+                <div className="error-message" style={{ color: '#e74c3c'}}> Add Transactions</div>
               ) : (
                 <div className="amount positive">${monthlyIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               )}
@@ -352,7 +352,7 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
           {isLoading ? (
             <div className="loading-indicator" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading expense data...</div>
           ) : error ? (
-            <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Error loading expense data</div>
+            <div className="error-message" style={{ color: '#e74c3c', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Add Transactions</div>
           ) : expenseData.length === 0 ? (
             <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No expense data available for this month</div>
           ) : (
@@ -385,8 +385,8 @@ const BudgetInsights: React.FC<BudgetInsightsProps> = ({ onTransactionChange = f
     Loading comparison data...
   </div>
 ) : error ? (
-  <div className="error-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    Error loading comparison data
+  <div className="error-message" style={{ color: '#e74c3c', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    Add Transactions
   </div>
 ) : expenseData.length === 0 ? (
   <div className="no-data-message" style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
