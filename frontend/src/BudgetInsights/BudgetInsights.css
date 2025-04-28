@@ -1057,6 +1057,61 @@ span.budget-amount {
   fill: rgba(255, 255, 255, 0.7);
 }
 
+/* ---------------------------------------------
+ * ACCESSIBILITY & RESPONSIVE DESIGN
+ * Accessibility features and responsive layout adjustments
+ * --------------------------------------------- */
+ @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .insights-summary,
+  .bottom-container,
+  .pie-chart-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .pie-chart-wrapper {
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .insights-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .insights-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .generate-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .insights-summary,
+  .chart-container,
+  .bottom-container {
+    animation-delay: 0.4s;
+  }
+  
+  .summary-card:nth-child(n),
+  .legend-item:nth-child(n) {
+    animation-delay: 0.5s;
+  }
+}
+
 /* Light mode override */
 html[data-theme='light'] .pie-center-subtext {
   fill: #555555;
@@ -1080,3 +1135,14 @@ html[data-theme='light'] .pie-center-subtext {
   stroke-width: 1.2;
 }
 
+/* Default dark mode: text is white */
+.bar-chart-title,
+.bar-chart-legend-row .legend-item {
+  color: #ffffff;
+}
+
+/* Light mode: text is black */
+html[data-theme='light'] .bar-chart-title,
+html[data-theme='light'] .bar-chart-legend-row .legend-item {
+  color: #000000;
+}

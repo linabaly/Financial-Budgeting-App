@@ -1,4 +1,4 @@
-  /* ====================================================
+ /* ====================================================
     ROOT VARIABLES - Color palette, typography, and transitions
     ==================================================== */
     :root {
@@ -519,29 +519,46 @@
     /* ====================================================
       RESPONSIVE DESIGN - Adapt layout for different screens
       ==================================================== */
-    @media (max-width: 1200px) {
-      .login-card {
-        right: 5%;
-        width: 400px;
-      }
-    
-      .welcome-container {
-        left: 20%;
+      @media (max-width: 1200px), (max-height: 700px) {       
+        .main-container {
+          flex-direction: column;
+          justify-content: center;
+          height: auto;
+          min-height: 100vh;
+          padding: 2rem 0;
+        }
+      
+        .login-card {
+          position: relative;
+          right: auto;
+          width: 90%;
+          max-width: 450px;
+          margin-bottom: 2rem;
+          order: 2;
+          animation: mobileCardReveal 0.8s ease-out forwards;
+        }
+        
+        .welcome-container {
+          position: relative;
+          top: auto;
+          left: auto;
+          transform: none;
+          margin: 0 auto 2rem auto;
+          order: 1;
+          animation: mobileReveal 0.8s ease-out forwards;
+        }
+        
+        @keyframes mobileCardReveal {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes mobileReveal {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
       }
       
-      .welcome-to {
-        font-size: 3.5rem;
-      }
-      
-      .finovators {
-        font-size: 6rem;
-      }
-      
-      .brand-tagline {
-        font-size: 2rem;
-      }
-    }
-    
     @media (max-width: 900px) {
       .main-container {
         flex-direction: column;

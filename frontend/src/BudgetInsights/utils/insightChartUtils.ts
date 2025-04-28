@@ -623,13 +623,14 @@ suggestedGradient.append('stop')
         .attr('stroke-width', 1);
     
       // Reset only the label for the bar being hovered out
-      d3.select(this.parentNode)
+      d3.select(this as Element)
         .selectAll('.bar-label')
         .filter((labelData: any) => labelData.name === d.name)
         .transition()
         .duration(200)
         .style('font-size', '16px') // Set back to default size
         .attr('y', (labelData: any) => y(labelData.value) - 5);
+
     
       // Remove tooltip
       d3.select(containerRef.current).selectAll('.tooltip').remove();

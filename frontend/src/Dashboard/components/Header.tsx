@@ -12,37 +12,43 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Check if current path matches the nav item path
   const isActive = (path: string): boolean => location.pathname === path;
 
+  // Handle scroll events to update header appearance
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0); // Only remove "scrolled" class if at top
+      setScrolled(window.scrollY > 0);
     };
   
-    handleScroll(); // ← Run once on mount in case page isn't at top
+    handleScroll();
   
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);  
 
+  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
+    
     if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
+  // Navigation handlers
   const handleLogoClick = () => navigate('/dashboard');
+  
   const handleNavClick = (path: string) => {
     navigate(path);
     setMenuOpen(false);
   };
 
   return (
-    <header className={`header ${scrolled ? 'scrolled' : ''}`}>
+    <header className={`header ${scrolled ? 'scrolled' : ''}`} data-theme={theme}>
       <div className="header-content">
         <div className="logo-container" onClick={handleLogoClick}>
           <div className="logo">
@@ -63,8 +69,11 @@ const Header: React.FC = () => {
 
         {/* Slide-out Menu */}
         <nav ref={menuRef} className={`navigation ${menuOpen ? 'open' : ''}`}>
-          <button className={`nav-button ${isActive('/dashboard') ? 'active' : ''}`} onClick={() => handleNavClick('/dashboard')}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button 
+            className={`nav-button ${isActive('/dashboard') ? 'active' : ''}`} 
+            onClick={() => handleNavClick('/dashboard')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="7" height="9"></rect>
               <rect x="14" y="3" width="7" height="5"></rect>
               <rect x="14" y="12" width="7" height="9"></rect>
@@ -73,8 +82,11 @@ const Header: React.FC = () => {
             <span>Dashboard</span>
           </button>
 
-          <button className={`nav-button ${isActive('/insights') ? 'active' : ''}`} onClick={() => handleNavClick('/insights')}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button 
+            className={`nav-button ${isActive('/insights') ? 'active' : ''}`} 
+            onClick={() => handleNavClick('/insights')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
               <line x1="9" y1="9" x2="9.01" y2="9"></line>
@@ -83,8 +95,11 @@ const Header: React.FC = () => {
             <span>My Insights</span>
           </button>
 
-          <button className={`nav-button ${isActive('/transactions') ? 'active' : ''}`} onClick={() => handleNavClick('/transactions')}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button 
+            className={`nav-button ${isActive('/transactions') ? 'active' : ''}`} 
+            onClick={() => handleNavClick('/transactions')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="1" x2="12" y2="23"></line>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>

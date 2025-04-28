@@ -5,6 +5,7 @@
     "lib": ["DOM", "ESNext"],
     "strict": true,
     "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -15,6 +16,6 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
-  "include": [],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

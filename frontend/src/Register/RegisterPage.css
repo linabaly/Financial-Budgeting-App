@@ -588,28 +588,49 @@
      RESPONSIVE DESIGN - Screen size adaptations
      Adjusts layout and sizing for different screen sizes
      ==================================================== */
-  @media (max-width: 1200px) {
-    .register-card {
-      right: 5%;
-      width: 400px;
-    }
-  
-    .welcome-container {
-      left: 20%;
-    }
-    
-    .welcome-to {
-      font-size: 3.5rem;
-    }
-    
-    .finovators {
-      font-size: 6rem;
-    }
-    
-    .brand-tagline {
-      font-size: 2rem;
-    }
-  }
+     @media (max-width: 1200px),
+     (max-height: 700px) {
+
+.main-container {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  height: auto;
+  min-height: 100vh;
+}
+
+.register-card {
+  position: relative;
+  right: auto;
+  width: 90%;
+  max-width: 450px;
+  margin: 0 auto 2rem auto;
+  order: 2;
+  animation: none;
+}
+
+.welcome-container {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin: 0 auto;
+  order: 1;
+  animation: none;
+  text-align: center;
+  opacity: 1; /* 🛠️ Force it visible */
+}
+
+.welcome-to,
+.finovators,
+.brand-tagline {
+  opacity: 1 !important; /* 🛠️ Force children visible */
+  transform: none !important; /* 🛠️ Remove any leftover animations */
+  animation: none !important; /* 🛠️ Disable animation permanently in stacked mode */
+}
+}
   
   @media (max-width: 900px) {
     .main-container {
