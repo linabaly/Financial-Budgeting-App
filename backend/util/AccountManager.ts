@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { PrismaDBClient as prisma } from "../index";
-import SecurityManager from "./SecurityManager";
+import { SecurityManager } from ".";
 
 /**
  * @author Matthew R
