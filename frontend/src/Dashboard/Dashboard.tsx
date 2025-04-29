@@ -363,12 +363,19 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Analytics and insights section */}
+        {/*income expense chart section */}
         <div className="analytics-container">
-          <div className="analytics-section">
+
             <div className="income-expense-chart-container">
               <IncomeExpenseChart />
             </div>
+      
+        </div>
+
+
+        {/* Analytics and insights section */}
+        <div className="analytics-container">
+
             <div className="insights-container">
               <SmartInsights />
               <SavingsProgress
@@ -382,7 +389,7 @@ const Dashboard: React.FC = () => {
               <RecurringPayments />
               <ExpenseAlerts />
             </div>
-          </div>
+
         </div>
 
         {/* === MODAL COMPONENTS === */}
