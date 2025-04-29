@@ -1,14 +1,13 @@
-import { Server, Route, GoalManager } from "../util";
-import { GoalDetails } from "../util/GoalManager";
+import { Server, Route, BudgetManager } from "../util";
+import { BudgetDetails } from "../util/BudgetManager";
 
-type PassedGoalDetails = GoalDetails;
 /**
  * @author Matthew R
  */
-export default class GoalRoute extends Route {
+export default class BudgetRoute extends Route {
   constructor(server: Server) {
     super(server);
-    this.conf.path = "/goal";
+    this.conf.path = "/budget";
     this.server = server;
   }
 
@@ -18,12 +17,12 @@ export default class GoalRoute extends Route {
         const account = await this.authenticate(req, res);
         if (!account) return;
 
-        const goals = await GoalManager.getGoalsForAccount(account.id);
-        if (!goals || goals.length < 1) {
+        const budgets = await BudgetManager.getBudgetsForAccountByID(account.id);
+        if (!budgets || budgets.length < 1) {
           res.sendStatus(204);
           return;
         }
-        res.status(200).json(goals);
+        res.status(200).json(budgets);
         return;
       } catch (error) {
         return this.handleServerError(error as Error, res);
@@ -35,11 +34,11 @@ export default class GoalRoute extends Route {
         if (!req.params.id || typeof req.params.id !== "string") return this.sendClientError(res);
         const account = await this.authenticate(req, res);
         if (!account) return;
-        const goal = await GoalManager.getGoal(req.params.id);
-        if (!goal) return this.sendClientError(res);
-        // if the requested goal owner isn't the authenticated user, sent forbidden
-        if (goal.accountId !== account.id) return this.sendForbidden(res);
-        res.status(200).json(goal);
+        const budget = await BudgetManager.getBudgetByID(req.params.id);
+        if (!budget) return this.sendClientError(res);
+        // if the requested budget owner isn't the authenticated user, sent forbidden
+        if (budget.accountId !== account.id) return this.sendForbidden(res);
+        res.status(200).json(budget);
         return;
       } catch (error) {
         return this.handleServerError(error as Error, res);
@@ -52,14 +51,15 @@ export default class GoalRoute extends Route {
         const account = await this.authenticate(req, res);
         if (!account) return;
         // form the database query
-        const passedGoalDetails: PassedGoalDetails = {
-          name: req.body.name,
-          targetAmount: req.body.targetAmount,
-          currentSaved: req.body.currentSaved,
-          deadline: req.body.deadline,
+        const passedBudgetDetails: BudgetDetails = {
+          limit: req.body.limit,
+          category: req.body.category.toUpperCase(),
+          startDate: new Date(req.body.startDate),
+          endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
+          createdAt: new Date(),
         };
 
-        const createQuery = await GoalManager.createGoal(account.id, passedGoalDetails);
+        const createQuery = await BudgetManager.createBudget(account.id, passedBudgetDetails);
         // 201 CREATED
         res.status(201).json(createQuery);
       } catch (error) {
@@ -84,18 +84,17 @@ export default class GoalRoute extends Route {
         // authenticate the account
         const account = await this.authenticate(req, res);
         if (!account) return;
-        // locate the goal
-        const goal = await GoalManager.getGoal(req.params.id);
-        if (!goal) return this.sendNotFound(res);
+        // locate the budget
+        const budget = await BudgetManager.getBudgetByID(req.params.id);
+        if (!budget) return this.sendNotFound(res);
         // form the database query
-        const passedGoalDetails: PassedGoalDetails = {
-          name: req.body.name,
-          targetAmount: req.body.targetAmount,
-          currentSaved: req.body.currentSaved,
-          deadline: req.body.deadline,
+        const passedBudgetDetails: BudgetDetails = {
+          category: req.body.category.toUpperCase() || undefined,
+          limit: Number(req.body.limit) || undefined,
+          endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
         };
         try {
-          const updateQuery = await GoalManager.updateGoal(goal.id, passedGoalDetails);
+          const updateQuery = await BudgetManager.updateBudget(budget.id, passedBudgetDetails);
           // 201 CREATED
           res.status(200).json(updateQuery);
         } catch (error) {
@@ -122,14 +121,14 @@ export default class GoalRoute extends Route {
         // check if the account can be found and authenticated
         const account = await this.authenticate(req, res);
         if (!account) return;
-        // check if the goal requested can be located
-        const goal = await GoalManager.getGoal(req.params.id);
-        if (!goal) return this.sendNotFound(res);
-        // if the requested goal owner isnt the authenticated user, sent forbidden
-        if (goal.accountId !== account.id) return this.sendForbidden(res);
+        // check if the budget requested can be located
+        const budget = await BudgetManager.getBudgetByID(req.params.id);
+        if (!budget) return this.sendNotFound(res);
+        // if the requested budget owner isnt the authenticated user, sent forbidden
+        if (budget.accountId !== account.id) return this.sendForbidden(res);
 
         try {
-          await GoalManager.deleteGoal(req.params.id);
+          await BudgetManager.deleteBudget(req.params.id);
         } catch {
           return this.sendClientError(res);
         }

@@ -2,6 +2,7 @@
  * @author Matthew R
  */
 export { default as AccountManager } from "./AccountManager";
+export { default as BudgetManager } from "./BudgetManager";
 export { default as Collection } from "./Collection";
 export { default as GoalManager } from "./GoalManager";
 export { default as GPTInsightsManager } from "./GPTInsightsManager";
