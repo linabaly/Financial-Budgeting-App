@@ -1,28 +1,3 @@
-// enum TransactionCategory {
-//   FOOD
-//   RENT
-//   ENTERTAINMENT
-//   UTILITIES
-//   TRANSPORTATION
-//   HEALTHCARE
-//   OTHER
-//   INCOME
-//   PERSONAL
-// }
-//
-// model Budget {
-//   id        String              @id @default(uuid()) // UUID instead of auto-incrementing INT
-//   category  TransactionCategory
-//   limit     Decimal             @db.Decimal(10, 2)
-//   accountId String // Foreign Key linking to Account
-//   createdAt DateTime            @default(now())
-//   startDate DateTime
-//   endDate   DateTime
-//
-//   // Relationship to Account model
-//   account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-// }
-
 import { AccountManager } from ".";
 import { Account } from "@prisma/client";
 import { PrismaDBClient as prisma, PrismaDBClient } from "../index";
@@ -33,7 +8,6 @@ export interface BudgetDetails {
   account?: Account;
   category?: TransactionCategory;
   limit?: number;
-  currentSaved?: number;
   startDate?: Date;
   endDate?: Date;
   createdAt?: Date;
@@ -57,17 +31,6 @@ export default class BudgetManager {
     return budget;
   }
 
-//   export interface BudgetDetails {
-//   id?: string;
-//   account?: Account;
-//   category?: TransactionCategory;
-//   limit?: number;
-//   currentSaved?: number;
-//   startDate?: Date;
-//   createdAt?: Date;
-//   accountId?: string;
-// }
-
   public static async createBudget(accountID: string, budget: BudgetDetails) {
     if (!budget.category || !budget.limit || !accountID)
       throw new TypeError(
@@ -79,7 +42,6 @@ export default class BudgetManager {
     const passedBudgetQuery = {
       category: budget.category,
       limit: Number(budget.limit),
-      currentSaved: budget.currentSaved ? Number(budget.currentSaved) : 0,
       createdAt: new Date(),
       accountId: account.id,
       startDate: budget.startDate ? new Date(budget.startDate) : new Date(),
@@ -90,7 +52,7 @@ export default class BudgetManager {
   }
 
   public static async updateBudget(budgetID: string, b: BudgetDetails) {
-    if (!b.category && !b.limit && !b.currentSaved && !b.endDate)
+    if (!b.category && !b.limit && !b.endDate)
       throw new RangeError("No applicable data set to be modified.");
     const budget = await this.getBudgetByID(budgetID);
     if (!budget) throw new Error(`Budget with ID '${budgetID}' not found.`);
@@ -98,7 +60,6 @@ export default class BudgetManager {
     const updateDetails = {
       category: b.category ? b.category : undefined,
       limit: b.limit ? Number(b.limit) : undefined,
-      currentSaved: b.currentSaved ? Number(b.currentSaved) : undefined,
       endDate: b.endDate ? new Date(b.endDate) : undefined,
     };
 
