@@ -91,52 +91,60 @@ export default class RecurringTransactionRoute extends Route {
       }
     });
 
-    // this.router.patch("/:id", async (req, res) => {
-    //   try {
-    //     // check if the required parameters are present
-    //     if (!req.params.id) return this.sendClientError(res);
-    //     // check if the account can be found and authenticated
-    //     const account = await this.authenticate(req, res);
-    //     if (!account) return;
-    //     // check if the transaction requested can be located
-    //     const transaction = await TransactionManager.getTransactionById(req.params.id);
-    //     if (!transaction) return this.sendNotFound(res);
-    //     // if the requested transaction owner isnt the authenticated user, sent forbidden
-    //     if (transaction.accountID !== account.id) return this.sendForbidden(res);
-    //     // if type is submitted to update, ensure that the submitted type is typeof TransactionType
-    //     if (req.body.type && !Object.values(TransactionType).includes(req.body.type)) {
-    //       return this.sendClientError(res);
-    //     }
-    //     // if category is submitted to update, ensure that the submitted category is typeof TransactionCategory
-    //     if (req.body.category && !Object.values(TransactionCategory).includes(req.body.category)) {
-    //       return this.sendClientError(res);
-    //     }
-    //
-    //     const updateDetails: {
-    //       id: string;
-    //       amount?: number | undefined;
-    //       category?: TransactionCategory | undefined;
-    //       descriptor?: string | undefined;
-    //       type?: TransactionType | undefined;
-    //     } = {
-    //       id: transaction.id,
-    //     };
-    //
-    //     if (req.body.amount) updateDetails.amount = req.body.amount;
-    //     if (req.body.category) updateDetails.category = req.body.category;
-    //     if (req.body.descriptor) updateDetails.descriptor = req.body.descriptor;
-    //     if (req.body.type) updateDetails.type = req.body.type;
-    //
-    //     const updateQuery = await PrismaDBClient.transaction.update({
-    //       where: { id: transaction.id },
-    //       data: updateDetails,
-    //     });
-    //     res.status(200).json(updateQuery);
-    //     return;
-    //   } catch (error) {
-    //     return this.handleServerError(error as Error, res);
-    //   }
-    // });
+    this.router.patch("/:id", async (req, res) => {
+      try {
+        // check if the required parameters are present
+        if (!req.params.id) return this.sendClientError(res);
+        // check if the account can be found and authenticated
+        const account = await this.authenticate(req, res);
+        if (!account) return;
+        // check if the recurring transaction requested can be located
+        const transaction = await TransactionManager.getRecurringTransactionByID(req.params.id);
+        if (!transaction) return this.sendNotFound(res);
+        // if the requested transaction owner isnt the authenticated user, sent forbidden
+        if (transaction.accountId !== account.id) return this.sendForbidden(res);
+        // if type is submitted to update, ensure that the submitted type is typeof TransactionType
+        if (req.body.type && !Object.values(TransactionType).includes(req.body.type.toUpperCase())) {
+          return this.sendClientError(res);
+        }
+        // if category is submitted to update, ensure that the submitted category is typeof TransactionCategory
+        if (req.body.category && !Object.values(TransactionCategory).includes(req.body.category.toUpperCase())) {
+          return this.sendClientError(res);
+        }
+        // if frequency is submitted to update, ensure that the submitted frequency is typeof RecurringTransactionFrequency
+        if (
+          req.body.frequency &&
+          !Object.values(RecurringTransactionFrequency).includes(req.body.frequency.toUpperCase())
+        ) {
+          return this.sendClientError(res);
+        }
+
+        const updateDetails: {
+          amount?: number | undefined;
+          category?: TransactionCategory | undefined;
+          descriptor?: string | undefined;
+          type?: TransactionType | undefined;
+          frequency?: RecurringTransactionFrequency | undefined;
+          endDate?: Date | undefined;
+        } = {
+          amount: !isNaN(Number(req.body.amount)) ? Number(req.body.amount) : undefined,
+          category: req.body.category.toUpperCase() ?? undefined,
+          descriptor:
+            req.body.descriptor?.length > 1 ? req.body.descriptor.trim().toUpperCase() : undefined,
+          frequency: req.body.frequency ? req.body.frequency.toUpperCase() : undefined,
+          endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
+        };
+
+        const updateQuery = await PrismaDBClient.recurringTransaction.update({
+          where: { id: transaction.id },
+          data: updateDetails,
+        });
+        res.status(200).json(updateQuery);
+        return;
+      } catch (error) {
+        return this.handleServerError(error as Error, res);
+      }
+    });
 
     this.router.delete("/:id", async (req, res) => {
       try {
