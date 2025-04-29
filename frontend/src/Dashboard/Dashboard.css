@@ -487,7 +487,6 @@
    }
    
    /* Insight widgets */
-   .smart-insights,
    .savings-progress,
    .recurring-payments,
    .expense-alerts {
@@ -533,13 +532,6 @@
      z-index: 1;
    }
    
-   .insight-item.danger {
-     background-color: rgba(255, 107, 107, 0.1);
-   }
-   
-   .insight-item.info {
-     background-color: rgba(46, 204, 113, 0.1);
-   }
    
    .insight-item:hover {
      transform: scale(1.05);
@@ -566,6 +558,203 @@
      font-size: 1rem;
      color: #ddd;
    }
+
+   .insights-header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333;
+  }
+  
+  .insights-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid #6366f1;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .insights-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid #ef4444;
+    padding: 16px;
+    border-radius: 6px;
+    margin: 20px 0;
+  }
+  
+  .insights-error button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .insights-error button:hover {
+    background-color: #dc2626;
+  }
+  
+  .insights-category-tabs {
+    display: flex;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #262626;
+  }
+  
+  .insights-category-tabs button {
+    flex: 1;
+    background-color: transparent;
+    color: #a3a3a3;
+    border: none;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .insights-category-tabs button.active {
+    background-color: #3e3fc4;
+    color: white;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  }
+  
+  .insights-category-tabs button:hover:not(.active) {
+    background-color: #333;
+    color: #e5e5e5;
+  }
+  
+  .insights-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+  }
+  
+  .insight-card {
+    background-color: #262626;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .insight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .insight-icon-container {
+    margin-right: 16px;
+  }
+  
+  .insight-icon {
+    font-size: 28px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+  }
+  
+  .insight-content {
+    flex: 1;
+  }
+  
+  .insight-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: #ffffff;
+  }
+  
+  .insight-description {
+    font-size: 14px;
+    color: #d1d5db;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  
+  .insight-actionable {
+    font-size: 14px;
+    color: #6ee7b7;
+    font-weight: 500;
+    padding: 8px 0;
+    border-top: 1px solid #333;
+  }
+  
+  .no-insights {
+    text-align: center;
+    padding: 30px;
+    color: #a3a3a3;
+    background-color: #262626;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  
+  /* For alerts and warnings */
+  .insight-alert {
+    background-color: #27272a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .insight-alert.warning {
+    border-left: 4px solid #f59e0b;
+  }
+  
+  .insight-alert.danger {
+    border-left: 4px solid #ef4444;
+  }
+  
+  .insight-alert.success {
+    border-left: 4px solid #10b981;
+  }
+  
+  .alert-icon {
+    margin-right: 12px;
+    font-size: 20px;
+    color: #f59e0b;
+  }
+  
+  .danger .alert-icon {
+    color: #ef4444;
+  }
+  
+  .success .alert-icon {
+    color: #10b981;
+  }
+  
+ 
   
 /*Recurring Payments*/
 /* Main widget container */
@@ -856,53 +1045,53 @@
 
 /* Responsive adjustments */
 @media (max-width: 1366px) {
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     padding: 0.6rem;
   }
   
-  .recurring-payments .payment-service {
+  .insight-card .recurring-payments .payment-service {
     font-size: 1rem;
   }
   
-  .recurring-payments .payment-amount {
+  .insight-card .recurring-payments .payment-amount {
     font-size: 1rem;
   }
 }
 
 @media (max-width: 1024px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: scale(1.15);
   }
 }
 
 @media (max-width: 768px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
   
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     margin-bottom: 1rem;
     padding: 0.75rem;
   }
   
-  .recurring-payments .payment-service {
+  .insight-card .recurring-payments .payment-service {
     font-size: 1.1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: none;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
   
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     padding: 0.5rem;
     margin-bottom: 0.75rem;
   }
   
-  .recurring-payments .payment-icon {
+  .insight-card .recurring-payments .payment-icon {
     width: 28px;
     height: 28px;
     font-size: 1rem;
@@ -1700,7 +1889,7 @@
     }
     
     /* Ensure widget content has proper spacing */
-    .smart-insights .insight-item,
+    .smart-insights, .insight-item,
     .recurring-payments .payment-item,
     .expense-alerts .alert-item {
       margin-bottom: 0.75rem;
@@ -1747,7 +1936,7 @@
   }
   
   /* Increase spacing between items for readability */
-  .smart-insights .insight-item,
+  .insight-item,
   .recurring-payments .payment-item,
   .expense-alerts .alert-item {
     margin-bottom: 1rem;
@@ -1765,7 +1954,7 @@
   .savings-progress:hover,
   .recurring-payments:hover,
   .expense-alerts:hover {
-    transform: scale(1.05);
+    transform: scale(.8);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
@@ -2112,6 +2301,19 @@
 
 [data-theme='light'] .insight-text {
   color: #555555;
+}
+
+[data-theme='light'] .insight-card {
+  background-color: #ffffff;
+}
+
+[data-theme='light'] .insight-description {
+  color: #333333;
+  font-size: 18px;
+}
+
+[data-theme='light'] .insights-category-tabs {
+  background-color: #555555;
 }
 
 /* Savings progress */

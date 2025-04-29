@@ -207,7 +207,7 @@ const IncomeExpenseChart: React.FC = () => {
   };
 
   return (
-    <div className='income-expense-chart-container' style={{ padding: '1rem', position: 'relative' }}>
+    <div className='monthly-chart-container' style={{ padding: '1rem', position: 'relative' }}>
       {/* Header & Year Toggle */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
