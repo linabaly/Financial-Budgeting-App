@@ -113,7 +113,7 @@ export default class AccountRoute extends Route {
         await AccountManager.updateAccount({
           id: account.id,
           password: req.body.newPassword.trim(),
-        });        
+        });
         res.sendStatus(204);
         return;
       } catch (error) {
