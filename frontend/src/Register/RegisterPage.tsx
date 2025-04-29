@@ -459,8 +459,8 @@ export default function RegisterPage() {
             {/* Submit button with loading state and password strength check */}
             <button 
               type="submit" 
-              className="register-button" 
-              disabled={isRegisterDisabled}
+              className="register-button"
+              disabled={!!isRegisterDisabled}
               style={{
                 opacity: isRegisterDisabled ? 0.7 : 1,
                 cursor: isRegisterDisabled ? 'not-allowed' : 'pointer'
