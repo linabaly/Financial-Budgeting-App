@@ -566,6 +566,348 @@
      font-size: 1rem;
      color: #ddd;
    }
+  
+/*Recurring Payments*/
+/* Main widget container */
+.recurring-payments {
+  background-color: #333;
+  border-radius: 12px;
+  height: 200px;
+  padding: 1rem;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  transform-origin: center;
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.recurring-payments:hover {
+  transform: scale(1.25);
+  z-index: 2;
+  box-shadow: 0 17px 37.5px rgba(108, 92, 231, 0.4);
+}
+
+/* Individual payment item */
+.recurring-payments .payment-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transform-origin: center;
+}
+
+.recurring-payments .payment-item:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Payment icon */
+.recurring-payments .payment-icon {
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: rgba(108, 92, 231, 0.2);
+  border-radius: 8px;
+  margin-right: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.recurring-payments .payment-item:hover .payment-icon {
+  transform: scale(1.1);
+  background-color: rgba(108, 92, 231, 0.3);
+}
+
+/* Payment content area */
+.recurring-payments .payment-content {
+  flex-grow: 1;
+  margin-right: 0.5rem;
+  overflow: hidden;
+}
+
+  /* Payment service name */
+  .recurring-payments .payment-service {
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+    margin-bottom: 0.25rem;
+    transition: transform 0.3s ease;
+    max-width: 100%;
+  }
+
+.recurring-payments .payment-item:hover .payment-service {
+  transform: translateX(3px);
+}
+
+/* Payment details container */
+.recurring-payments .payment-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Payment amount */
+.recurring-payments .payment-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ff6b6b;
+  transition: all 0.3s ease;
+}
+
+.recurring-payments .payment-item:hover .payment-amount {
+  color: #ff8b8b;
+}
+
+/* Payment frequency */
+.recurring-payments .payment-frequency {
+  font-size: 0.9rem;
+  color: #aaa;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.recurring-payments .payment-item:hover .payment-frequency {
+  background-color: rgba(108, 92, 231, 0.2);
+}
+
+/* Payment due date */
+.recurring-payments .payment-date {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.recurring-payments .payment-date.urgent {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.recurring-payments .payment-date.soon {
+  color: #ffdf64;
+  font-weight: 500;
+}
+
+.recurring-payments .payment-item:hover .payment-date {
+  transform: translateY(-2px);
+}
+
+/* Payment history container */
+.recurring-payments .payment-history {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.recurring-payments .payment-history-label {
+  margin-right: 0.25rem;
+}
+
+.recurring-payments .payment-history-date {
+  font-weight: 500;
+}
+
+/* Empty state message */
+.recurring-payments .no-payments-message {
+  padding: 1rem;
+  text-align: center;
+  color: #aaa;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Loading state */
+.recurring-payments .loading-payments {
+  padding: 1rem;
+  text-align: center;
+  color: #aaa;
+  position: relative;
+}
+
+.recurring-payments .loading-payments::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(108, 92, 231, 0.3);
+  border-top-color: #6c5ce7;
+  margin: 1rem auto 0;
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error message */
+.recurring-payments .error-message {
+  padding: 1rem;
+  text-align: center;
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+/* Light mode styles */
+[data-theme='light'] .recurring-payments {
+  background-color: #ffffff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .recurring-payments:hover {
+  box-shadow: 0 17px 37.5px rgba(108, 92, 231, 0.15);
+}
+
+[data-theme='light'] .recurring-payments .section-header {
+  color: #333333;
+}
+
+[data-theme='light'] .recurring-payments .payment-item {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .recurring-payments .payment-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .recurring-payments .payment-icon {
+  color: #333333 !important;
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+[data-theme='light'] .recurring-payments .payment-service {
+  color: #555555;
+}
+
+[data-theme='light'] .recurring-payments .payment-amount {
+  color: #e74c3c;
+}
+
+[data-theme='light'] .recurring-payments .payment-item:hover .payment-amount {
+  color: #c0392b;
+}
+
+[data-theme='light'] .recurring-payments .payment-frequency {
+  color: #777777;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .recurring-payments .payment-item:hover .payment-frequency {
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+[data-theme='light'] .recurring-payments .payment-date {
+  color: #777777;
+}
+
+[data-theme='light'] .recurring-payments .payment-date.urgent {
+  color: #e74c3c;
+}
+
+[data-theme='light'] .recurring-payments .payment-date.soon {
+  color: #f39c12;
+}
+
+[data-theme='light'] .recurring-payments .payment-history {
+  color: #777777;
+}
+
+[data-theme='light'] .recurring-payments .no-payments-message {
+  color: #777777;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .recurring-payments .loading-payments {
+  color: #777777;
+}
+
+[data-theme='light'] .recurring-payments .error-message {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1366px) {
+  .recurring-payments .payment-item {
+    padding: 0.6rem;
+  }
+  
+  .recurring-payments .payment-service {
+    font-size: 1rem;
+  }
+  
+  .recurring-payments .payment-amount {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .recurring-payments:hover {
+    transform: scale(1.15);
+  }
+}
+
+@media (max-width: 768px) {
+  .recurring-payments:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .recurring-payments .payment-item {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .recurring-payments .payment-service {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recurring-payments:hover {
+    transform: none;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .recurring-payments .payment-item {
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .recurring-payments .payment-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+}
    
    /* Savings progress */
    .savings-content {
