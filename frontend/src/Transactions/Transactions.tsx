@@ -5,7 +5,7 @@ import Footer from '../Dashboard/components/Footer';
 import { API_BASE_URL } from "../config";
 import TotalBalance from '../Dashboard/components/TotalBalance';
 
-const API_URL = 'http://localhost:5005';
+const API_URL = 'http://localhost:5005/';
 
 /**
  * Transaction interface to define the shape of transaction data
