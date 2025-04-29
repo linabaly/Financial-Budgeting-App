@@ -20,17 +20,6 @@ const Footer: React.FC = () => {
   const [showModal, setShowModal] = useState<string | null>(null);
   
   /**
-   * Track the email input for the newsletter subscription form
-   */
-  const [emailInput, setEmailInput] = useState('');
-  
-  /**
-   * Track whether the user has successfully subscribed to the newsletter
-   * Controls display of success message
-   */
-  const [subscribed, setSubscribed] = useState(false);
-  
-  /**
    * Track which accordion item is expanded in the FAQs modal
    * null means no item is expanded
    */
@@ -52,22 +41,6 @@ const Footer: React.FC = () => {
    */
   const closeModal = () => {
     setShowModal(null);
-  };
-  
-  /**
-   * Handles newsletter subscription form submission
-   * Validates email format and shows a temporary success message
-   * @param e - Form submission event
-   */
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Basic email validation (contains @ and .)
-    if (emailInput.includes('@') && emailInput.includes('.')) {
-      setSubscribed(true);
-      setEmailInput('');
-      // Reset success message after 3 seconds
-      setTimeout(() => setSubscribed(false), 3000);
-    }
   };
   
   /**
@@ -268,7 +241,7 @@ const Footer: React.FC = () => {
                     <li>Withdrawing consent when processing is based on consent</li>
                     <li>Opting out of certain data sharing practices</li>
                   </ul>
-                  <p>To exercise these rights, please contact us at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or visit the Privacy Settings section in your account. We will respond to all legitimate requests within 30 days.</p>
+                  <p>To exercise these rights, please contact us at <a href="mailto:finovators.contact@gmail.com">finovators.contact@gmail.com</a> or visit the Privacy Settings section in your account. We will respond to all legitimate requests within 30 days.</p>
                 </div>
                 
                 <div className="policy-section">
@@ -288,7 +261,7 @@ const Footer: React.FC = () => {
                 
                 <div className="policy-section">
                   <h3>Contact Us</h3>
-                  <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact our Data Protection Officer at <a href="mailto:privacy@finovators.com">privacy@finovators.com</a> or by mail at Finovators Privacy Office, 100 Financial Plaza, Suite 500, San Francisco, CA 94103.</p>
+                  <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at <a href="mailto:finovators.contact@gmail.com">finovators.contact@gmail.com</a>.</p>
                 </div>
               </div>
             )}
@@ -361,14 +334,14 @@ const Footer: React.FC = () => {
                 
                 <div className="policy-section">
                   <h3>Dispute Resolution</h3>
-                  <p>In the event of any dispute arising from or relating to our services, we encourage users to first contact our customer support team at <a href="mailto:support@finovators.com">support@finovators.com</a> to seek a resolution.</p>
+                  <p>In the event of any dispute arising from or relating to our services, we encourage users to first contact our customer support team at <a href="mailto:finovators.contact@gmail.com">finovators.contact@gmail.com</a> to seek a resolution.</p>
                   <p>If the matter cannot be resolved directly, depending on the nature of the dispute and your location, resolution may proceed through arbitration, small claims court, or other legal channels as specified in our Terms of Service.</p>
                   <p>Any legal proceedings arising from the use of our services shall be governed by and construed in accordance with the laws of the State of California, without giving effect to any choice of law or conflict of law provisions.</p>
                 </div>
                 
                 <div className="policy-section">
                   <h3>Contact Information</h3>
-                  <p>For legal inquiries or compliance questions, please contact our legal department at <a href="mailto:legal@finovators.com">legal@finovators.com</a>.</p>
+                  <p>For legal inquiries or compliance questions, please contact us at <a href="mailto:finovators.contact@gmail.com">finovators.contact@gmail.com</a>.</p>
                   
                   <p>For official notices, correspondence, or legal documents, please send mail to:</p>
                   <address className="legal-address">
@@ -378,7 +351,7 @@ const Footer: React.FC = () => {
                     United States
                   </address>
                   
-                  <p>Our Compliance Officer can be reached directly at <a href="mailto:compliance@finovators.com">compliance@finovators.com</a> or by phone at +1 (800) 123-4567 ext. 2240 during business hours (Monday-Friday, 9am-5pm PT).</p>
+                  <p>To reach our Compliance Officer contact us at <a href="mailto:finovators.contact@gmail.com">finovatorshq@gmail.com</a> during business hours (Monday–Friday, 9am–5pm PT).</p>
                 </div>
               </div>
             )}
@@ -396,37 +369,6 @@ const Footer: React.FC = () => {
               <div className="footer-logo">
                 <h1 className="logo-text">Finovators</h1>
                 <div className="logo-tagline">Track, Manage, Thrive with us</div>
-              </div>
-              
-              {/* Newsletter signup form or success message */}
-              <div className="newsletter-signup">
-                {subscribed ? (
-                  // Success message shown after subscription
-                  <div className="subscribe-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <span>Thank you for subscribing!</span>
-                  </div>
-                ) : (
-                  // Newsletter subscription form
-                  <form className="newsletter-form" onSubmit={handleSubscribe}>
-                    <input 
-                      type="email" 
-                      placeholder="Your email address"
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
-                      required
-                    />
-                    <button type="submit" className="subscribe-btn">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                      </svg>
-                    </button>
-                  </form>
-                )}
               </div>
             </div>
             
@@ -457,8 +399,8 @@ const Footer: React.FC = () => {
       alt="Email"
       className="contact-icon"
     />
-    <a href="mailto:contact@finovators.com" className="contact-link">
-      contact@finovators.com
+    <a href="mailto:finovators.contact@gmail.com" className="contact-link">
+    finovators.contact@gmail.com
     </a>
   </div>
 </div>
@@ -467,7 +409,7 @@ const Footer: React.FC = () => {
             <div className="social-links">
             <div className="social-links">
             <a
-  href="https://twitter.com"
+  href="https://x.com/TheFinovators"
   target="_blank"
   rel="noopener noreferrer"
   className="social-link"
@@ -483,10 +425,10 @@ const Footer: React.FC = () => {
   </svg>
 </a>
 
-  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
+  <a href="https://www.instagram.com/the_finovators/" target="_blank" rel="noopener noreferrer" className="social-link">
     <img src="/icons/instagram-icon.svg" alt="Instagram" className="social-icon" />
   </a>
-  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-link">
+  <a href="https://www.linkedin.com/in/finovators/" target="_blank" rel="noopener noreferrer" className="social-link">
     <img src="/icons/linkedin-icon.svg" alt="LinkedIn" className="social-icon" />
   </a>
 </div>
