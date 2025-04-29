@@ -487,7 +487,6 @@
    }
    
    /* Insight widgets */
-   .smart-insights,
    .savings-progress,
    .recurring-payments,
    .expense-alerts {
@@ -1046,53 +1045,53 @@
 
 /* Responsive adjustments */
 @media (max-width: 1366px) {
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     padding: 0.6rem;
   }
   
-  .recurring-payments .payment-service {
+  .insight-card .recurring-payments .payment-service {
     font-size: 1rem;
   }
   
-  .recurring-payments .payment-amount {
+  .insight-card .recurring-payments .payment-amount {
     font-size: 1rem;
   }
 }
 
 @media (max-width: 1024px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: scale(1.15);
   }
 }
 
 @media (max-width: 768px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
   
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     margin-bottom: 1rem;
     padding: 0.75rem;
   }
   
-  .recurring-payments .payment-service {
+  .insight-card .recurring-payments .payment-service {
     font-size: 1.1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .recurring-payments:hover {
+  .insight-card .recurring-payments:hover {
     transform: none;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
   
-  .recurring-payments .payment-item {
+  .insight-card .recurring-payments .payment-item {
     padding: 0.5rem;
     margin-bottom: 0.75rem;
   }
   
-  .recurring-payments .payment-icon {
+  .insight-card .recurring-payments .payment-icon {
     width: 28px;
     height: 28px;
     font-size: 1rem;
@@ -1890,7 +1889,7 @@
     }
     
     /* Ensure widget content has proper spacing */
-    .smart-insights .insight-item,
+    .smart-insights, .insight-item,
     .recurring-payments .payment-item,
     .expense-alerts .alert-item {
       margin-bottom: 0.75rem;
