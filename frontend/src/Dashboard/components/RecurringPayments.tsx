@@ -849,7 +849,7 @@ const RecurringPayments: React.FC = () => {
         {isLoading ? (
           <div className="loading-payments">Loading payments...</div>
         ) : error ? (
-          <div className="error-message">{error}</div>
+          <div className="error-message" style={{ color: '#e74c3c', position: 'relative', fontSize: '1.1rem', zIndex: 1 }}>Add Transactions</div>
         ) : (
           <div className="payments-list" ref={paymentsRef}></div>
         )}

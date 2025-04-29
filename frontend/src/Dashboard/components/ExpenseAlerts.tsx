@@ -29,11 +29,22 @@ interface Goal {
   createdAt?: string;
 }
 
+interface Budget {
+  id: string;
+  limit: number;
+  category: string;
+  startDate: string;
+  endDate?: string;
+  createdAt: string;
+  accountId: string;
+}
+
 const ExpenseAlerts: React.FC = () => {
   const alertsRef = useRef<HTMLDivElement>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -119,8 +130,46 @@ const ExpenseAlerts: React.FC = () => {
     }
   };
 
+  // Fetch budget data from API
+  const fetchBudgets = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found.");
+      }
+      const response = await fetch(`${API_BASE_URL}/budget`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to fetch budgets");
+      }
+      const data = await response.json();
+      // Format budgets for display
+      const formattedBudgets = data.map((budget: any) => ({
+        id: budget.id,
+        limit: parseFloat(budget.limit),
+        category: budget.category,
+        startDate: new Date(budget.startDate).toLocaleDateString('en-US'),
+        endDate: budget.endDate ? new Date(budget.endDate).toLocaleDateString('en-US') : undefined,
+        createdAt: new Date(budget.createdAt).toLocaleDateString('en-US'),
+        accountId: budget.accountId
+      }));
+      setBudgets(formattedBudgets);
+      return formattedBudgets;
+    } catch (error: any) {
+      console.error("Error fetching budgets:", error.message);
+      setError(error.message);
+      return [];
+    }
+  };
+
   // Analyze data and generate alerts
-  const generateAlerts = (transactions: Transaction[], goals: Goal[]) => {
+  const generateAlerts = (transactions: Transaction[], goals: Goal[], budgets: Budget[]) => {
     const newAlerts: Alert[] = [];
     
     // Only proceed if we have data to analyze
@@ -129,7 +178,7 @@ const ExpenseAlerts: React.FC = () => {
     }
     
     // 1. Check for budget overspending by category
-    const categorySpending = analyzeSpendingByCategory(transactions);
+    const categorySpending = analyzeSpendingByCategory(transactions, budgets);
     
     // 2. Check month-over-month spending comparison
     const monthlyComparison = compareMonthlySpending(transactions);
@@ -157,9 +206,9 @@ const ExpenseAlerts: React.FC = () => {
       });
     }
     
-    // 4. Alert for categories where spending is over typical amount
+    // 4. Alert for categories where spending is over budget
     for (const category in categorySpending) {
-      if (categorySpending[category].isOverTypical) {
+      if (categorySpending[category].isOverBudget) {
         newAlerts.push({
           type: 'danger',
           message: `You're over budget in ${formatCategoryName(category)}!`,
@@ -226,6 +275,12 @@ const ExpenseAlerts: React.FC = () => {
         message: "Set a savings goal to track your progress toward financial objectives.",
         id: "set-goal"
       });
+    } else if (newAlerts.length === 2 && !budgets.length) {
+      newAlerts.push({
+        type: 'info',
+        message: "Set budget limits to better track your spending.",
+        id: "set-budget"
+      });
     }
     
     return newAlerts;
@@ -233,9 +288,15 @@ const ExpenseAlerts: React.FC = () => {
   
   // Helper functions for analysis
   
-  const analyzeSpendingByCategory = (transactions: Transaction[]) => {
-    // TODO: will be replaced with users' set budgets
-    const categoryThresholds: { [key: string]: number } = {
+  const analyzeSpendingByCategory = (transactions: Transaction[], budgets: Budget[]) => {
+    // Create a map of budgets by category for easy lookup
+    const budgetMap: { [key: string]: number } = {};
+    budgets.forEach(budget => {
+      budgetMap[budget.category] = budget.limit;
+    });
+    
+    // Fallback thresholds if no budgets are set
+    const defaultThresholds: { [key: string]: number } = {
       FOOD: 500,
       RENT: 1500,
       UTILITIES: 300,
@@ -256,16 +317,25 @@ const ExpenseAlerts: React.FC = () => {
       [key: string]: { 
         total: number, 
         transactions: Transaction[],
-        isOverTypical: boolean
+        isOverBudget: boolean,
+        budgetLimit: number
       } 
     } = {};
     
     // Initialize category spending
-    Object.keys(categoryThresholds).forEach(category => {
+    // Combine user budgets and default thresholds for any missing categories
+    const allCategories = new Set([
+      ...Object.keys(budgetMap),
+      ...Object.keys(defaultThresholds)
+    ]);
+    
+    allCategories.forEach(category => {
+      const limit = budgetMap[category] || defaultThresholds[category] || 0;
       categorySpending[category] = {
         total: 0,
         transactions: [],
-        isOverTypical: false
+        isOverBudget: false,
+        budgetLimit: limit
       };
     });
     
@@ -280,10 +350,19 @@ const ExpenseAlerts: React.FC = () => {
             categorySpending[transaction.category].total += transaction.amount;
             categorySpending[transaction.category].transactions.push(transaction);
             
-            // Check if over threshold
-            if (categorySpending[transaction.category].total > categoryThresholds[transaction.category]) {
-              categorySpending[transaction.category].isOverTypical = true;
+            // Check if over budget
+            const limit = categorySpending[transaction.category].budgetLimit;
+            if (limit > 0 && categorySpending[transaction.category].total > limit) {
+              categorySpending[transaction.category].isOverBudget = true;
             }
+          } else {
+            // Handle case where transaction category doesn't exist in our maps
+            categorySpending[transaction.category] = {
+              total: transaction.amount,
+              transactions: [transaction],
+              isOverBudget: false,
+              budgetLimit: 0 // No budget set for this category
+            };
           }
         }
       }
@@ -357,9 +436,10 @@ const ExpenseAlerts: React.FC = () => {
       try {
         const transactionData = await fetchTransactions();
         const goalData = await fetchGoals();
+        const budgetData = await fetchBudgets();
         
         // Generate alerts based on the data
-        const generatedAlerts = generateAlerts(transactionData, goalData);
+        const generatedAlerts = generateAlerts(transactionData, goalData, budgetData);
         setAlerts(generatedAlerts);
       } catch (err) {
         console.error("Error analyzing data:", err);
@@ -420,7 +500,7 @@ const ExpenseAlerts: React.FC = () => {
         {isLoading ? (
           <div className="loading-alerts">Loading alerts...</div>
         ) : error ? (
-          <div className="error-message">{error}</div>
+          <div className="error-message" style={{ color: '#e74c3c', position: 'relative', fontSize: '1.1rem', zIndex: 1 }}>Add Budget Goals</div>
         ) : (
           <div className="alerts-list" ref={alertsRef}></div>
         )}

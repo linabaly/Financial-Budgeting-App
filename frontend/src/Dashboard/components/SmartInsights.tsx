@@ -827,8 +827,8 @@ const SmartInsights: React.FC = () => {
           <p>Analyzing your financial data...</p>
         </div>
       ) : error ? (
-        <div className="insights-error">
-          <p>{error}</p>
+        <div className="error-message" style={{ color: '#e74c3c', position: 'relative', fontSize: '1.8rem', zIndex: 1 }}>Add Financial Information
+          <p></p>
           <button onClick={() => {
             setError(null);
             fetchTransactions();

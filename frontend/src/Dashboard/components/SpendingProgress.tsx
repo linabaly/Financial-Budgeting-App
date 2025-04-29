@@ -7,6 +7,16 @@ interface SpendingProgressProps {
   monthOffset?: number;
 }
 
+interface Budget {
+  id: string;
+  limit: number;
+  category: string;
+  startDate: string;
+  endDate?: string;
+  createdAt: string;
+  accountId: string;
+}
+
 const SpendingProgress: React.FC<SpendingProgressProps> = ({ 
   onTransactionChange = false,
   categoryFilter,
@@ -17,11 +27,16 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
+  // State for budget data
+  const [budgets, setBudgets] = useState<Budget[]>([]);
+  
   // Financial metrics
   const [spent, setSpent] = useState<number>(0);
   const [budget, setBudget] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(0);
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
+  const [remaining, setRemaining] = useState<number>(0);
+  const [totalBalance, setTotalBalance] = useState<number>(0);
 
   // Fetch transaction data from API
   useEffect(() => {
@@ -58,6 +73,51 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
     fetchTransactionData();
   }, [onTransactionChange]);
 
+  // Fetch budget data from API
+  useEffect(() => {
+    const fetchBudgets = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+          throw new Error("No token found.");
+        }
+        
+        const response = await fetch(`${API_BASE_URL}/budget`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+          },
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || "Failed to fetch budgets");
+        }
+        
+        const data = await response.json();
+        // Format budgets for display
+        const formattedBudgets = data.map((budget: any) => ({
+          id: budget.id,
+          limit: parseFloat(budget.limit),
+          category: budget.category,
+          startDate: new Date(budget.startDate).toLocaleDateString('en-US'),
+          endDate: budget.endDate ? new Date(budget.endDate).toLocaleDateString('en-US') : undefined,
+          createdAt: new Date(budget.createdAt).toLocaleDateString('en-US'),
+          accountId: budget.accountId
+        }));
+        
+        setBudgets(formattedBudgets);
+      } catch (error: any) {
+        console.error("Error fetching budgets:", error.message);
+        setError(error.message);
+      }
+    };
+
+    fetchBudgets();
+  }, [onTransactionChange]);
+
   // Process transactions based on month offset and category
   useEffect(() => {
     if (isLoading || error || transactions.length === 0) return;
@@ -70,6 +130,8 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
     let totalIncome = 0;
     let totalExpense = 0;
     let categoryExpense = 0;
+    let cumulativeIncome = 0;
+    let cumulativeExpenses = 0;
 
     // Process transactions for the target month
     transactions.forEach((tx: any) => {
@@ -77,6 +139,15 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
       const postedDate = new Date(tx.postedAt);
       const month = postedDate.getMonth();
       const year = postedDate.getFullYear();
+
+      // Calculate total balance (all transactions up to selected month)
+      const txIsBeforeOrEqualToTarget =
+        year < targetYear || (year === targetYear && month <= targetMonth);
+        
+      if (txIsBeforeOrEqualToTarget) {
+        if (tx.type === 'INCOME') cumulativeIncome += amount;
+        else if (tx.type === 'EXPENSE') cumulativeExpenses += amount;
+      }
 
       if (month === targetMonth && year === targetYear) {
         if (tx.type === 'INCOME') {
@@ -100,6 +171,10 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
       }
     });
 
+    // Calculate total balance
+    const balance = cumulativeIncome - cumulativeExpenses;
+    setTotalBalance(balance);
+    
     setMonthlyIncome(totalIncome);
     
     // Set spent amount based on category filter
@@ -108,22 +183,42 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
     } else {
       setSpent(totalExpense);
     }
-
-    // Calculate budget based on 50-30-20 rule
-    if (totalIncome > 0) {
-      let suggestedBudget;
-      
-      if (categoryFilter) {
-        // Apply category-specific budget allocation
-        suggestedBudget = calculateCategoryBudget(totalIncome, categoryFilter);
-      } else {
-        // Total budget is the entire income
-        suggestedBudget = totalIncome;
-      }
-      
-      setBudget(suggestedBudget);
-    }
   }, [transactions, monthOffset, categoryFilter, isLoading, error]);
+
+  // Set budget from user-defined budget goals
+  useEffect(() => {
+    if (budgets.length === 0) return;
+    
+    let budgetLimit = 0;
+    
+    if (categoryFilter) {
+      // Find budget for the specific category if it exists
+      const matchingBudget = budgets.find(
+        budget => budget.category.toLowerCase() === categoryFilter.toLowerCase()
+      );
+      
+      if (matchingBudget) {
+        budgetLimit = matchingBudget.limit;
+      } else {
+        // If no specific budget found, use the income-based calculation as fallback
+        budgetLimit = calculateCategoryBudget(monthlyIncome, categoryFilter);
+      }
+    } else {
+      // For total budget, sum all budget limits
+      budgetLimit = budgets.reduce((sum, budget) => sum + budget.limit, 0);
+      
+      // If no budgets defined, use total income as fallback
+      if (budgetLimit === 0) {
+        budgetLimit = monthlyIncome;
+      }
+    }
+    
+    setBudget(budgetLimit);
+    
+    // Set remaining balance from total balance
+    setRemaining(totalBalance - spent);
+    
+  }, [budgets, categoryFilter, monthlyIncome, spent, totalBalance]);
 
   // Calculate percentage spent
   useEffect(() => {
@@ -237,7 +332,6 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
   };
 
   const status = getSpendingStatus();
-  const remaining = budget - spent;
   
   // Format budget title based on category filter
   const getBudgetTitle = () => {
@@ -245,7 +339,7 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
     
     // Format category name
     const formattedCategory = categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1);
-    return `${formattedCategory} Budget (Based on 50/30/20)`;
+    return `${formattedCategory} Budget`;
   };
   
   return (
@@ -403,11 +497,11 @@ const SpendingProgress: React.FC<SpendingProgressProps> = ({
             }}
           >
             <div>
-              Suggested Budget: ${budget.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              Budget Limit: ${budget.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             {categoryFilter && (
               <div>
-                Based on ${monthlyIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} income
+                Based on User Budgets
               </div>
             )}
           </div>
