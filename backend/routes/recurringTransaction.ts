@@ -1,13 +1,11 @@
-// TODO: THIS ROUTE IS NOT FINISHED AND IS NOT ADDED TO INDEX.TS (NOT DEV READY / NOT PROD READY)
 import TransactionManager, {
   RecurringTransactionDetails,
+  RecurringTransactionFrequency,
   TransactionCategory,
-  TransactionDetails,
   TransactionType,
 } from "../util/TransactionManager";
-import Route from "../util/Route";
-import { PrismaDBClient } from "../index"; // TODO: this likely is not required
-import { Server } from "../util";
+import { Route, Server } from "../util";
+import { PrismaDBClient } from "../index";
 
 /**
  * @author Matthew R
