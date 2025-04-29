@@ -151,7 +151,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onSave }) => {
       const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token,
           "Content-Type": "application/json",
         },
         credentials: "include",
