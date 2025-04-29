@@ -5,7 +5,6 @@ import Footer from '../Dashboard/components/Footer';
 import { API_BASE_URL } from "../config";
 import TotalBalance from '../Dashboard/components/TotalBalance';
 
-const API_URL = 'http://localhost:5005/';
 
 /**
  * Transaction interface to define the shape of transaction data
@@ -526,7 +525,7 @@ const Transactions: React.FC = () => {
           throw new Error("No token found.");
         }
 
-        const response = await fetch(`${API_URL}/budget`, {
+        const response = await fetch(`${API_BASE_URL}/budget`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -573,14 +572,14 @@ const Transactions: React.FC = () => {
         throw new Error("No token found.");
       }
   
-      console.log("Making budget API request to:", `${API_URL}/budget`);
+      console.log("Making budget API request to:", `${API_BASE_URL}/budget`);
       console.log("With headers:", {
         "Content-Type": "application/json",
         "Authorization": "token exists: " + !!token
       });
       console.log("With body:", JSON.stringify(budgetData));
   
-      const response = await fetch(`${API_URL}/budget`, {
+      const response = await fetch(`${API_BASE_URL}/budget`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -631,7 +630,7 @@ const Transactions: React.FC = () => {
         throw new Error("No token found.");
       }
 
-      const response = await fetch(`${API_URL}/budget/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/budget/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
